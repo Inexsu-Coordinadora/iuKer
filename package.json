@@ -1,0 +1,35 @@
+{
+  "name": "iuker",
+  "version": "1.0.0",
+  "description": "Sistema de gestión clínica con validaciones y operaciones CRUD",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/index.js",
+    "dev": "tsx ./src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Inexsu-Coordinadora/iuKer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Inexsu-Coordinadora/iuKer/issues"
+  },
+  "homepage": "https://github.com/Inexsu-Coordinadora/iuKer#readme",
+  "dependencies": {
+    "dotenv": "17.2.3",
+    "fastify": "5.6.1",
+    "pg": "8.16.3",
+    "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "24.9.2",
+    "@types/pg": "8.15.6",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}
