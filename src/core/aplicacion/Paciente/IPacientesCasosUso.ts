@@ -1,6 +1,6 @@
-import { IPaciente } from './IPaciente.js';
+import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 
-export interface IRepositrioPacientes {
+export interface IPacientesCasosUso {
   obtenerPacientes(limite?: number): Promise<IPaciente[]>;
   obtenerPacientePorId(idPaciente: string): Promise<IPaciente>;
   crearPaciente(nuevoPaciente: IPaciente): Promise<string>;
