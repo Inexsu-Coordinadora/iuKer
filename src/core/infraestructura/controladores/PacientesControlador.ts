@@ -5,7 +5,6 @@ import {
   CrearPacienteEsquema,
 } from '../esquemas/esquemaPacientes.js';
 import { ZodError } from 'zod';
-import { request } from 'http';
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 
 export class PacientesControlador {
