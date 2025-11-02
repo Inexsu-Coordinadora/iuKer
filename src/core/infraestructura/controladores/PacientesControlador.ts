@@ -66,10 +66,11 @@ export class PacientesControlador {
   ) => {
     try {
       const nuevoPaciente = CrearPacienteEsquema.parse(request.body);
-      const idNuevoPaciente =
-        this.pacientesCasosUso.crearPaciente(nuevoPaciente);
+      const idNuevoPaciente = await this.pacientesCasosUso.crearPaciente(
+        nuevoPaciente
+      );
 
-      return reply.code(200).send({
+      return reply.code(201).send({
         mensaje: 'El paciente se creó correctamente',
         idNuevoPaciente: idNuevoPaciente,
       });
