@@ -1,9 +1,9 @@
-import { IRepositrioPacientes } from '../../dominio/Paciente/IRepositorioPacientes.js';
+import { IRepositorioPacientes } from '../../dominio/Paciente/IRepositorioPacientes.js';
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 import { Paciente } from '../../dominio/Paciente/Paciente.js';
 
-export class RepositorioPacientes implements IRepositrioPacientes {
+export class RepositorioPacientes implements IRepositorioPacientes {
   private mapearFila(paciente: IPaciente) {
     return {
       nombre: paciente.nombre,

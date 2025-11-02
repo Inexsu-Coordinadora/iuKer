@@ -19,4 +19,6 @@ export class Paciente implements IPaciente {
     this.telefono = data.telefono;
     this.direccion = data.direccion;
   }
+
+  //Implementar metodos para realizar las validaciónes
 }
