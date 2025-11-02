@@ -1,8 +1,21 @@
 import { IRepositrioPacientes } from '../../dominio/Paciente/IRepositorioPacientes.js';
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 import { ejecutarConsulta } from './clientePostgres.js';
+import { Paciente } from '../../dominio/Paciente/Paciente.js';
 
 export class RepositorioPacientes implements IRepositrioPacientes {
+  private mapearFila(paciente: IPaciente) {
+    return {
+      nombre: paciente.nombre,
+      apellidos: paciente.apellidos,
+      fecha_nacimiento: paciente.fecha_nacimiento,
+      sexo: paciente.sexo,
+      email: paciente.email,
+      telefono: paciente.telefono,
+      direccion: paciente.direccion,
+    };
+  }
+
   async obtenerPacientes(limite?: number): Promise<IPaciente[]> {
     let query = 'SELECT * FROM pacientes';
     const valores: number[] = [];
@@ -13,20 +26,24 @@ export class RepositorioPacientes implements IRepositrioPacientes {
     }
 
     const result = await ejecutarConsulta(query, valores);
-    return result.rows;
+    return result.rows.map((filaDB) => new Paciente(filaDB));
   }
 
   async obtenerPacientePorId(idPaciente: string): Promise<IPaciente> {
     const query = 'SELECT * FROM pacientes WHERE idPaciente = $1';
     const result = await ejecutarConsulta(query, [idPaciente]);
-    return result.rows[0] || null;
+
+    const filaDB = result.rows[0] || null;
+
+    return new Paciente(filaDB);
   }
 
   async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
-    const columnas: string[] = Object.keys(nuevoPaciente).map((key) =>
+    const dataBD = this.mapearFila(nuevoPaciente);
+    const columnas: string[] = Object.keys(dataBD).map((key) =>
       key.toLowerCase()
     );
-    const parametros: Array<string | number> = Object.values(nuevoPaciente);
+    const parametros: Array<string | number | Date> = Object.values(dataBD);
     const placeholders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
@@ -36,33 +53,39 @@ export class RepositorioPacientes implements IRepositrioPacientes {
     `;
 
     const result = await ejecutarConsulta(query, parametros);
-    return result.rows[0].id;
+    return result.rows[0].idPaciente;
   }
 
   async actualizarPaciente(
     idPaciente: string,
     datosPaciente: IPaciente
   ): Promise<IPaciente> {
-    const columnas: string[] = Object.keys(datosPaciente).map((key) =>
+    const dataBD = this.mapearFila(datosPaciente);
+    const columnas: string[] = Object.keys(dataBD).map((key) =>
       key.toLowerCase()
     );
-    const parametros: Array<string | number> = Object.values(datosPaciente);
+    const parametros: Array<string | number | Date> = Object.values(dataBD);
     const clausulaSet = columnas.map((col, i) => `${col}=$${i + 1}`).join(', ');
     parametros.push(idPaciente);
 
     const query = `
-      UPDATE platos
+      UPDATE pacientes
       SET ${clausulaSet}
       WHERE idPaciente=$${parametros.length}
       RETURNING *;
     `;
 
     const result = await ejecutarConsulta(query, parametros);
-    return result.rows[0];
+
+    if (!result.rows[0]) {
+      throw new Error(`Error al actualizar el Paciente con ID ${idPaciente}.`);
+    }
+
+    return new Paciente(result.rows[0]);
   }
 
   async borrarPaciente(idPaciente: string): Promise<void> {
-    await ejecutarConsulta('DELETE FROM platos WHERE idPaciente = $1', [
+    await ejecutarConsulta('DELETE FROM pacientes WHERE idPaciente = $1', [
       idPaciente,
     ]);
   }
