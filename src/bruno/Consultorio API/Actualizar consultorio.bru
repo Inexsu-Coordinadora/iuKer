@@ -1,0 +1,16 @@
+meta {
+  name: Actualizar consultorio
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://127.0.0.1:3008/api/consultorios/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
