@@ -3,19 +3,15 @@ import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 import { Paciente } from '../../dominio/Paciente/Paciente.js';
 
-export class RepositorioPacientes implements IRepositorioPacientes {
-  private mapearFila(paciente: IPaciente) {
-    return {
-      nombre: paciente.nombre,
-      apellidos: paciente.apellidos,
-      fecha_nacimiento: paciente.fecha_nacimiento,
-      sexo: paciente.sexo,
-      email: paciente.email,
-      telefono: paciente.telefono,
-      direccion: paciente.direccion,
-    };
-  }
+function camelCaseASnakeCase(keyAConvertir: string) {
+  let camelCaseString = keyAConvertir;
+  let miString = camelCaseString.split(/(?=[A-Z])/);
+  let snakeCaseString = miString.join('_').toLowerCase();
 
+  return snakeCaseString;
+}
+
+export class RepositorioPacientes implements IRepositorioPacientes {
   async obtenerPacientes(limite?: number): Promise<IPaciente[]> {
     let query = 'SELECT * FROM pacientes';
     const valores: number[] = [];
@@ -39,11 +35,11 @@ export class RepositorioPacientes implements IRepositorioPacientes {
   }
 
   async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
-    const dataBD = this.mapearFila(nuevoPaciente);
-    const columnas: string[] = Object.keys(dataBD).map((key) =>
-      key.toLowerCase()
+    const columnas: string[] = Object.keys(nuevoPaciente).map((key) =>
+      camelCaseASnakeCase(key)
     );
-    const parametros: Array<string | number | Date> = Object.values(dataBD);
+    const parametros: Array<string | number | Date> =
+      Object.values(nuevoPaciente);
     const placeholders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
@@ -60,11 +56,12 @@ export class RepositorioPacientes implements IRepositorioPacientes {
     idPaciente: string,
     datosPaciente: IPaciente
   ): Promise<IPaciente> {
-    const dataBD = this.mapearFila(datosPaciente);
-    const columnas: string[] = Object.keys(dataBD).map((key) =>
-      key.toLowerCase()
+    // const dataBD = this.mapearFila(datosPaciente);
+    const columnas: string[] = Object.keys(datosPaciente).map((key) =>
+      camelCaseASnakeCase(key)
     );
-    const parametros: Array<string | number | Date> = Object.values(dataBD);
+    const parametros: Array<string | number | Date> =
+      Object.values(datosPaciente);
     const clausulaSet = columnas.map((col, i) => `${col}=$${i + 1}`).join(', ');
     parametros.push(idPaciente);
 
