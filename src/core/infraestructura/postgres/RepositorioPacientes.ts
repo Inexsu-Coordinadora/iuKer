@@ -2,14 +2,7 @@ import { IRepositorioPacientes } from '../../dominio/Paciente/IRepositorioPacien
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 import { Paciente } from '../../dominio/Paciente/Paciente.js';
-
-function camelCaseASnakeCase(keyAConvertir: string) {
-  let camelCaseString = keyAConvertir;
-  let miString = camelCaseString.split(/(?=[A-Z])/);
-  let snakeCaseString = miString.join('_').toLowerCase();
-
-  return snakeCaseString;
-}
+import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
 export class RepositorioPacientes implements IRepositorioPacientes {
   async obtenerPacientes(limite?: number): Promise<IPaciente[]> {
