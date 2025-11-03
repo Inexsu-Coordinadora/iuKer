@@ -1,23 +1,25 @@
 import { z } from 'zod';
 
 export const CrearPacienteEsquema = z.object({
+  numeroDoc: z.string('El documento debe ser un string'),
+  tipoDoc: z.number('El tipo es 1, 2, 3 o 4'),
   nombre: z
     .string()
     .nonempty('El nombre del paciente es obligatorio')
     .min(3, 'El nombre debe tener al menos 2 caracteres.'),
 
-  apellidos: z
+  apellido: z
     .string()
-    .nonempty('Los apelidos del paciente son obligatorios (Al menos uno)')
+    .nonempty('Los apellidos del paciente son obligatorios (Al menos uno)')
     .min(2, 'Los apellidos deben tener al menos 2 caracteres.'),
 
-  fecha_nacimiento: z
+  fechaNacimiento: z
     .string()
-    .nonempty('La fecha de naciemiento del paciente es obligatoria')
+    .nonempty('La fecha de nacimiento del paciente es obligatoria')
     .pipe(z.coerce.date()),
 
   sexo: z.enum(['M', 'F'], {
-    message: "El sexo debe ser 'M', 'F' u 'Otro'.",
+    message: "El sexo debe ser 'M', 'F'.",
   }),
 
   email: z.email('Formato de email inválido.'),

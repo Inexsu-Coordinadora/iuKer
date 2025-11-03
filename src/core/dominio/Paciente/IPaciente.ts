@@ -1,8 +1,9 @@
 export interface IPaciente {
-  numeroDoc?: string;
+  numeroDoc: string;
+  tipoDoc: number;
   nombre: string;
-  apellidos: string;
-  fecha_nacimiento: Date;
+  apellido: string;
+  fechaNacimiento: Date;
   sexo: string;
   email: string;
   telefono: string;
