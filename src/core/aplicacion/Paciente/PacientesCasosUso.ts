@@ -20,9 +20,6 @@ export class PacientesCasosUso implements IPacientesCasosUso {
   async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
     const instanciaPaciente = new Paciente(nuevoPaciente);
 
-    //Hacer validaciones con la entidad
-    //Devolver la instancia-entidad al repositorio, ya procesada la información
-
     const idNuevoPaciente = await this.repositorioPacientes.crearPaciente(
       instanciaPaciente
     );
