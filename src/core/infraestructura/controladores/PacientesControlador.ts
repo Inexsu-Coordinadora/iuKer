@@ -77,13 +77,14 @@ export class PacientesControlador {
     } catch (err) {
       if (err instanceof ZodError) {
         return reply.code(400).send({
-          mensaje: 'Error crear al Paciente',
+          mensaje:
+            'Error al crear un Paciente, hay alguna invalidez en los datos enviados',
           error: err.issues[0]?.message || 'Error desconocido',
         });
       }
 
       return reply.code(500).send({
-        mensaje: 'Error al crear un paciente',
+        mensaje: 'Error al crear un Paciente',
         error: err instanceof Error ? err.message : String(err),
       });
     }
