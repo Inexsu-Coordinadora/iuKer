@@ -1,2 +1,2 @@
-import { startServer } from "./core/infraestructura/app.js";
+import { startServer } from './core/infraestructura/app.js';
 startServer();
