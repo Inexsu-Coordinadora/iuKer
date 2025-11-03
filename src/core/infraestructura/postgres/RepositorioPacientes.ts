@@ -7,15 +7,15 @@ import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 export class RepositorioPacientes implements IRepositorioPacientes {
   async obtenerPacientes(limite?: number): Promise<IPaciente[]> {
     let query = 'SELECT * FROM pacientes';
-    const valores: number[] = [];
+    const limiteParam: number[] = [];
 
     if (limite !== undefined) {
       query += ' LIMIT $1';
-      valores.push(limite);
+      limiteParam.push(limite);
     }
 
-    const result = await ejecutarConsulta(query, valores);
-    return result.rows.map((filaDB) => new Paciente(filaDB));
+    const result = await ejecutarConsulta(query, limiteParam);
+    return result.rows;
   }
 
   async obtenerPacientePorId(numeroDoc: string): Promise<IPaciente> {
@@ -38,7 +38,7 @@ export class RepositorioPacientes implements IRepositorioPacientes {
     const query = `
       INSERT INTO pacientes (${columnas.join(', ')})
       VALUES (${placeholders})
-      RETURNING
+      RETURNING *
     `;
 
     const result = await ejecutarConsulta(query, parametros);
