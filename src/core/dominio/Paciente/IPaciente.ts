@@ -1,5 +1,5 @@
 export interface IPaciente {
-  idPaciente?: string;
+  numeroDoc?: string;
   nombre: string;
   apellidos: string;
   fecha_nacimiento: Date;

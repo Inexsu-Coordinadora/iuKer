@@ -34,13 +34,13 @@ export class PacientesControlador {
   };
 
   obtenerPacientePorId = async (
-    request: FastifyRequest<{ Params: { idPaciente: string } }>,
+    request: FastifyRequest<{ Params: { numeroDoc: string } }>,
     reply: FastifyReply
   ) => {
     try {
-      const { idPaciente } = request.params;
+      const { numeroDoc } = request.params;
       const pacienteObtenido =
-        await this.pacientesCasosUso.obtenerPacientePorId(idPaciente);
+        await this.pacientesCasosUso.obtenerPacientePorId(numeroDoc);
 
       if (!pacienteObtenido) {
         return reply.code(404).send({
@@ -49,7 +49,7 @@ export class PacientesControlador {
       }
 
       return reply.code(200).send({
-        mensaje: 'Pciente encontrado',
+        mensaje: 'Paciente encontrado',
         paciente: pacienteObtenido,
       });
     } catch (err) {
@@ -91,18 +91,18 @@ export class PacientesControlador {
 
   actualizarPaciente = async (
     request: FastifyRequest<{
-      Params: { idPaciente: string };
+      Params: { numeroDoc: string };
       Body: IPaciente;
     }>,
     reply: FastifyReply
   ) => {
     try {
-      const { idPaciente } = request.params;
+      const { numeroDoc } = request.params;
       const nuevoPaciente = request.body;
 
       const pacienteActualizado =
         await this.pacientesCasosUso.actualizarPaciente(
-          idPaciente,
+          numeroDoc,
           nuevoPaciente
         );
 
@@ -125,16 +125,16 @@ export class PacientesControlador {
   };
 
   borrarPaciente = async (
-    request: FastifyRequest<{ Params: { idPaciente: string } }>,
+    request: FastifyRequest<{ Params: { numeroDoc: string } }>,
     reply: FastifyReply
   ) => {
     try {
-      const { idPaciente } = request.params;
-      await this.pacientesCasosUso.borrarPaciente(idPaciente);
+      const { numeroDoc } = request.params;
+      await this.pacientesCasosUso.borrarPaciente(numeroDoc);
 
       return reply.code(200).send({
         mensaje: 'Paciente borrado correctamente del sistema',
-        idPaciente: idPaciente,
+        numeroDoc: numeroDoc,
       });
     } catch (err) {
       return reply.code(500).send({

@@ -1,7 +1,7 @@
 import { IPaciente } from './IPaciente.js';
 
 export class Paciente implements IPaciente {
-  public idPaciente?: string;
+  public numeroDoc?: string;
   public nombre: string;
   public apellidos: string;
   public fecha_nacimiento: Date;

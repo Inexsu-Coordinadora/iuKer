@@ -9,10 +9,10 @@ function pacientesEnrutador(
   pacientesControlador: PacientesControlador
 ) {
   app.get('/pacientes', pacientesControlador.obtenerPacientes);
-  app.get('/pacientes/:idPaciente', pacientesControlador.obtenerPacientePorId);
+  app.get('/pacientes/:numeroDoc', pacientesControlador.obtenerPacientePorId);
   app.post('/pacientes', pacientesControlador.crearPaciente);
-  app.put('/pacientes/:idPaciente', pacientesControlador.actualizarPaciente);
-  app.delete('/pacientes/:idPaciente', pacientesControlador.borrarPaciente);
+  app.put('/pacientes/:numeroDoc', pacientesControlador.actualizarPaciente);
+  app.delete('/pacientes/:numeroDoc', pacientesControlador.borrarPaciente);
 }
 
 export async function construirPacientesEnrutador(app: FastifyInstance) {

@@ -10,9 +10,9 @@ export class PacientesCasosUso implements IPacientesCasosUso {
     return await this.repositorioPacientes.obtenerPacientes(limite);
   }
 
-  async obtenerPacientePorId(idPaciente: string): Promise<Paciente> {
+  async obtenerPacientePorId(numeroDoc: string): Promise<Paciente> {
     const pacienteObtenido =
-      await this.repositorioPacientes.obtenerPacientePorId(idPaciente);
+      await this.repositorioPacientes.obtenerPacientePorId(numeroDoc);
 
     return pacienteObtenido;
   }
@@ -31,15 +31,15 @@ export class PacientesCasosUso implements IPacientesCasosUso {
   }
 
   async actualizarPaciente(
-    idPaciente: string,
+    numeroDoc: string,
     paciente: Paciente
   ): Promise<IPaciente> {
     const pacienteActualizado =
-      await this.repositorioPacientes.actualizarPaciente(idPaciente, paciente);
+      await this.repositorioPacientes.actualizarPaciente(numeroDoc, paciente);
     return pacienteActualizado || null;
   }
 
-  async borrarPaciente(idPaciente: string): Promise<void> {
-    await this.repositorioPacientes.borrarPaciente(idPaciente);
+  async borrarPaciente(numeroDoc: string): Promise<void> {
+    await this.repositorioPacientes.borrarPaciente(numeroDoc);
   }
 }

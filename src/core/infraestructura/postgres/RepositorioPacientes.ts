@@ -25,9 +25,9 @@ export class RepositorioPacientes implements IRepositorioPacientes {
     return result.rows.map((filaDB) => new Paciente(filaDB));
   }
 
-  async obtenerPacientePorId(idPaciente: string): Promise<IPaciente> {
-    const query = 'SELECT * FROM pacientes WHERE idPaciente = $1';
-    const result = await ejecutarConsulta(query, [idPaciente]);
+  async obtenerPacientePorId(numeroDoc: string): Promise<IPaciente> {
+    const query = 'SELECT * FROM pacientes WHERE numero_doc = $1';
+    const result = await ejecutarConsulta(query, [numeroDoc]);
 
     const filaDB = result.rows[0] || null;
 
@@ -49,41 +49,40 @@ export class RepositorioPacientes implements IRepositorioPacientes {
     `;
 
     const result = await ejecutarConsulta(query, parametros);
-    return result.rows[0].idPaciente;
+    return result.rows[0].numeroDoc;
   }
 
   async actualizarPaciente(
-    idPaciente: string,
+    numeroDoc: string,
     datosPaciente: IPaciente
   ): Promise<IPaciente> {
-    // const dataBD = this.mapearFila(datosPaciente);
     const columnas: string[] = Object.keys(datosPaciente).map((key) =>
       camelCaseASnakeCase(key)
     );
     const parametros: Array<string | number | Date> =
       Object.values(datosPaciente);
     const clausulaSet = columnas.map((col, i) => `${col}=$${i + 1}`).join(', ');
-    parametros.push(idPaciente);
+    parametros.push(numeroDoc);
 
     const query = `
       UPDATE pacientes
       SET ${clausulaSet}
-      WHERE idPaciente=$${parametros.length}
+      WHERE numero_doc=$${parametros.length}
       RETURNING *;
     `;
 
     const result = await ejecutarConsulta(query, parametros);
 
     if (!result.rows[0]) {
-      throw new Error(`Error al actualizar el Paciente con ID ${idPaciente}.`);
+      throw new Error(`Error al actualizar el Paciente con ID ${numeroDoc}.`);
     }
 
     return new Paciente(result.rows[0]);
   }
 
-  async borrarPaciente(idPaciente: string): Promise<void> {
-    await ejecutarConsulta('DELETE FROM pacientes WHERE idPaciente = $1', [
-      idPaciente,
+  async borrarPaciente(numeroDoc: string): Promise<void> {
+    await ejecutarConsulta('DELETE FROM pacientes WHERE numero_doc = $1', [
+      numeroDoc,
     ]);
   }
 }
