@@ -6,7 +6,7 @@ export class Medico implements IMedico {
     numeroDoc : string;
     nombre : string;
     apellido : string;
-    fechaNacimiento : Date;
+    fechaNacimiento : string;
     sexo : string;
     especialidad : string;
     email : string;
