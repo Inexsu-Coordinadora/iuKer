@@ -5,7 +5,5 @@ export interface IRepositorioCitaMedica {
   obtenerCitaPorId(idCita: string): Promise<ICitaMedica | null>;
   agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica>;
   cambiarEstado(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica>;
-  //reprogramarCita(idCita: number, datosCitaMedica: ICitaMedica): Promise<ICitaMedica>;
-  // finalizarCita(idCita: number): Promise<ICitaMedica | null>;
-  // cancelarCita(idCita: number): Promise<ICitaMedica | null>;
+  eliminarCita(idCita: string): Promise<void>;
 }

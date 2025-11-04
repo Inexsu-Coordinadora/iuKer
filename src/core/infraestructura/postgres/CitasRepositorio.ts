@@ -1,11 +1,9 @@
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../dominio/CitaMedica/IRepositorioCitaMedica.js';
-import { citaMedicaDTO } from '../esquemas/citaMedicaEsquema.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 
 export class CitasRepositorio implements IRepositorioCitaMedica {
-  //Al obtener citas tambien debo clasificar si todas o solo las que estan con estado de 'Agendada'
   async obtenerCitas(limite?: number): Promise<ICitaMedica[]> {
     let query = 'SELECT * FROM citas_medicas';
     const valores: number[] = [];
@@ -22,6 +20,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
   async obtenerCitaPorId(idCita: string): Promise<ICitaMedica | null> {
     const query = 'SELECT * FROM citas_medicas WHERE id_cita = $1';
     const resultado = await ejecutarConsulta(query, [idCita]);
+
     return resultado.rows[0] || null;
   }
 
@@ -41,8 +40,8 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
   }
 
   async cambiarEstado(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
-    const columnas = Object.keys(datosCitaMedica).map((key) => camelCaseASnakeCase(key));
-    const parametros = Object.values(datosCitaMedica);
+    const columnas: string[] = Object.keys(datosCitaMedica).map((key) => camelCaseASnakeCase(key));
+    const parametros: Array<string | number | Date> = Object.values(datosCitaMedica);
     const setClause = columnas.map((columna, i) => `${columna}=$${i + 1}`).join(', ');
     parametros.push(idCita);
 
@@ -55,5 +54,9 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
 
     const resultado = await ejecutarConsulta(query, parametros);
     return resultado.rows[0];
+  }
+
+  async eliminarCita(idCita: string): Promise<void> {
+    await ejecutarConsulta('DELETE FROM citas_medicas WHERE id_cita = $1', [idCita]);
   }
 }

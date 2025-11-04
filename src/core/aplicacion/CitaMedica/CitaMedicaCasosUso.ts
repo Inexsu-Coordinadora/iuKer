@@ -1,7 +1,6 @@
 import { CitaMedica } from '../../dominio/CitaMedica/CitaMedica.js';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../dominio/CitaMedica/IRepositorioCitaMedica.js';
-import { citaMedicaDTO } from '../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { ICitaMedicaCasosUso } from './ICitaMedicaCasosUso.js';
 
 export class CitaMedicaCasosUso implements ICitaMedicaCasosUso {
@@ -15,48 +14,30 @@ export class CitaMedicaCasosUso implements ICitaMedicaCasosUso {
     return await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
   }
 
-  async agendarCita(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica> {
+  async agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
     const citaAgendada = new CitaMedica(datosCitaMedica);
     return await this.citasMedicasRepositorio.agendarCita(citaAgendada);
   }
 
-  async reprogramarCita(idCita: string, datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica | null> {
-    const citaAReprogramar = await this.obtenerCitaPorId(idCita);
+  async reprogramarCita(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica | null> {
+    const citaReprogramada = await this.citasMedicasRepositorio.cambiarEstado(idCita, datosCitaMedica);
 
-    if (!citaAReprogramar) return null;
-
-    const citaReprogramadaHistorial = new CitaMedica(citaAReprogramar);
-    citaReprogramadaHistorial.actualizarEstado(3, 'reprogramar');
-
-    await this.citasMedicasRepositorio.cambiarEstado(idCita, citaReprogramadaHistorial);
-
-    const nuevaCitaReprogramada = new CitaMedica({
-      ...datosCitaMedica,
-      idCitaAnterior: citaAReprogramar.idCita ?? null,
-    });
-
-    return await this.citasMedicasRepositorio.agendarCita(nuevaCitaReprogramada);
+    return citaReprogramada || null;
   }
 
-  async finalizarCita(idCita: string): Promise<ICitaMedica | null> {
-    const citasAFinalizar = await this.obtenerCitaPorId(idCita);
+  async finalizarCita(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica | null> {
+    const citaFinalizada = await this.citasMedicasRepositorio.cambiarEstado(idCita, datosCitaMedica);
 
-    if (!citasAFinalizar) return null;
-
-    const citaFinalizada = new CitaMedica(citasAFinalizar);
-    citaFinalizada.actualizarEstado(4, 'finalizar');
-
-    return await this.citasMedicasRepositorio.cambiarEstado(idCita, citaFinalizada);
+    return citaFinalizada || null;
   }
 
-  async cancelarCita(idCita: string): Promise<ICitaMedica | null> {
-    const citaACancelar = await this.obtenerCitaPorId(idCita);
+  async cancelarCita(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica | null> {
+    const citaCancelada = await this.citasMedicasRepositorio.cambiarEstado(idCita, datosCitaMedica);
 
-    if (!citaACancelar) return null;
+    return citaCancelada || null;
+  }
 
-    const citaCancelada = new CitaMedica(citaACancelar);
-    citaCancelada.actualizarEstado(5, 'cancelar');
-
-    return await this.citasMedicasRepositorio.cambiarEstado(idCita, citaCancelada);
+  async eliminarCita(idCita: string): Promise<void> {
+    await this.citasMedicasRepositorio.eliminarCita(idCita);
   }
 }

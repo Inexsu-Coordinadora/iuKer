@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { ICitaMedicaCasosUso } from '../../aplicacion/CitaMedica/ICitaMedicaCasosUso.js';
 import { citaMedicaDTO, crearCitaMedicaEsquema } from '../esquemas/citaMedicaEsquema.js';
 import { ZodError } from 'zod';
+import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 
 export class CitasControlador {
   constructor(private citasCasosUso: ICitaMedicaCasosUso) {}
@@ -72,7 +73,7 @@ export class CitasControlador {
   };
 
   reprogramarCita = async (
-    req: FastifyRequest<{ Params: { idCita: string }; Body: citaMedicaDTO }>,
+    req: FastifyRequest<{ Params: { idCita: string }; Body: ICitaMedica }>,
     res: FastifyReply
   ) => {
     try {
@@ -98,10 +99,7 @@ export class CitasControlador {
     }
   };
 
-  finalizarCita = async (
-    req: FastifyRequest<{ Params: { idCita: string }; Body: citaMedicaDTO }>,
-    res: FastifyReply
-  ) => {
+  finalizarCita = async (req: FastifyRequest<{ Params: { idCita: string }; Body: ICitaMedica }>, res: FastifyReply) => {
     try {
       const { idCita } = req.params;
       const infoCitaFinalizada = req.body;
@@ -125,10 +123,7 @@ export class CitasControlador {
     }
   };
 
-  cancelarCita = async (
-    req: FastifyRequest<{ Params: { idCita: string }; Body: citaMedicaDTO }>,
-    res: FastifyReply
-  ) => {
+  cancelarCita = async (req: FastifyRequest<{ Params: { idCita: string }; Body: ICitaMedica }>, res: FastifyReply) => {
     try {
       const { idCita } = req.params;
       const infoCitaCancelada = req.body;
@@ -147,6 +142,23 @@ export class CitasControlador {
     } catch (err) {
       return res.code(500).send({
         mensaje: 'Error al cancelar la cita',
+        error: err instanceof Error ? err.message : String(err),
+      });
+    }
+  };
+
+  eliminarCita = async (req: FastifyRequest<{ Params: { idCita: string } }>, res: FastifyReply) => {
+    try {
+      const { idCita } = req.params;
+      await this.citasCasosUso.eliminarCita(idCita);
+
+      return res.code(200).send({
+        mensaje: 'Cita eliminada correctamente',
+        idCita: idCita,
+      });
+    } catch (err) {
+      return res.code(500).send({
+        mensaje: 'Error al eliminar la cita',
         error: err instanceof Error ? err.message : String(err),
       });
     }
