@@ -36,7 +36,7 @@ export class ConsultorioRepositorio implements IRepositorioConsultorio {
     return resultado.rows[0] || null
   }
   async actualizarConsultorio(idConsultorio:string, datosConsultorio:IConsultorio): Promise<IConsultorio>{
-    const columnas = Object.keys(datosConsultorio).map((key) => key.toLowerCase());
+    const columnas = Object.keys(datosConsultorio).map((key) => camelToSnakeCase(key));
     const params: Array<string | number> = Object.values(datosConsultorio);
     const setClause = columnas.map((col,i) => `${col}=$${i + 1}`).join(", ");
     params.push(idConsultorio);
