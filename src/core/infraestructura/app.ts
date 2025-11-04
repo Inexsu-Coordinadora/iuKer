@@ -1,14 +1,13 @@
 import Fastify from "fastify";
 import { FastifyError } from "fastify";
 import { configuracion } from "../../common/configuracion.js";
-// Se debe agregar enrutador
+import { construirMedicosEnrutador } from "./rutas/medicosEnrutador.js";
 
 const app = Fastify({ logger: true });
 
 app.register(
   async (appInstance) => {
-    // Se debe inicializar el enrutador
-    // construirPlatosEnrutador(appInstance);
+    construirMedicosEnrutador(appInstance);
   },
   { prefix: "/api" }
 );
