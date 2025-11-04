@@ -1,5 +1,4 @@
 import { IConsultorio } from "./IConsultorio.js";
-// import { Pool } from "pg";
 
 export interface IRepositorioConsultorio {
   agregarConsultorio(datosConsultorio: IConsultorio): Promise<string>;
