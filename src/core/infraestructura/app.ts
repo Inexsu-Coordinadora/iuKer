@@ -1,6 +1,6 @@
 import Fastify from "fastify";
 import { FastifyError } from "fastify";
-import { configuracion } from "../../common/Configuracion.js";
+import { configuracion } from "../../common/configuracion.js";
 // Se debe agregar enrutador
 
 const app = Fastify({ logger: true });
