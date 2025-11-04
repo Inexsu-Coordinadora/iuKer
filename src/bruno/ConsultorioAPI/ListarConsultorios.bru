@@ -1,11 +1,11 @@
 meta {
-  name: Eliminar consultorio
+  name: Listar consultorios
   type: http
-  seq: 5
+  seq: 3
 }
 
-delete {
-  url: http://127.0.0.1:3008/api/consultorios/
+get {
+  url: http://127.0.0.1:3008/api/consultorios
   body: none
   auth: inherit
 }

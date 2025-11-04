@@ -1,13 +1,19 @@
 meta {
   name: Actualizar consultorio
   type: http
-  seq: 4
+  seq: 6
 }
 
 put {
-  url: http://127.0.0.1:3008/api/consultorios/
-  body: none
+  url: http://127.0.0.1:3008/api/consultorios/0
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "ubicacion": "Bloque 2"
+  }
 }
 
 settings {
