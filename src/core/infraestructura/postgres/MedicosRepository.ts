@@ -26,7 +26,7 @@ export class MedicoRepositorio implements IMedicoRepositorio {
         const valores : number[] = [];
 
         if(limite !== undefined){
-            query += 'LIMIT $1';
+            query += ' LIMIT $1';
             valores.push(limite); 
         }
 
@@ -53,7 +53,8 @@ export class MedicoRepositorio implements IMedicoRepositorio {
         const query =`
         UPDATE medicos
         SET ${setClause}
-        WHERE tarjeta_profesional = $${parametros.length};
+        WHERE tarjeta_profesional = $${parametros.length}
+        RETURNING *;
         `;
 
         return (await ejecutarConsulta(query,parametros)).rows[0];
