@@ -7,6 +7,6 @@ export class Consultorio implements IConsultorio{
   constructor(datosConsultorio: IConsultorio){
     this.idConsultorio = datosConsultorio.idConsultorio;
     this.ubicacion = datosConsultorio.ubicacion;
-    this.estado = 6;
+    this.estado = 7;
   }
 }
