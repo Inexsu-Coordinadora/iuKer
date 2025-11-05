@@ -4,11 +4,13 @@ import { configuracion } from '../../common/configuracion.js';
 import { construirCitasEnrutados } from './rutas/citasMedicasEnrutador.js';
 import { construirPacientesEnrutador } from './rutas/pacientesEnrutador.js';
 import { construirMedicosEnrutador } from './rutas/medicosEnrutador.js';
+import { construirConsultorioEnrutador } from './rutas/consultoriosEnrutador.js';
 
 const app = Fastify({ logger: true });
 
 app.register(
   async (appInstance) => {
+    construirConsultorioEnrutador(appInstance)
     construirCitasEnrutados(appInstance);
     construirMedicosEnrutador(appInstance);
     construirPacientesEnrutador(appInstance);
@@ -21,7 +23,7 @@ export const startServer = async (): Promise<void> => {
     await app.listen({ port: configuracion.httpPuerto });
     app.log.info('✅ El servidor esta corriendo...');
   } catch (err) {
-    app.log.error(`❌ Error al ejecutar el servidor\n ${err}`);
+    app.log.error(`Error al ejecutar el servidor\n ${err}`);
     const serverError: FastifyError = {
       code: 'FST_ERR_INIT_SERVER',
       name: 'ServidorError',
