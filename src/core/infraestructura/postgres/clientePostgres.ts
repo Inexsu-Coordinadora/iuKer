@@ -1,5 +1,5 @@
-import { Pool } from "pg";
-import { configuracion } from "../../../common/configuracion.js";
+import { Pool } from 'pg';
+import { configuracion } from '../../../common/configuracion.js';
 
 const pool = new Pool({
   host: configuracion.baseDatos.host,
@@ -11,7 +11,7 @@ const pool = new Pool({
 
 export async function ejecutarConsulta(
   consulta: string,
-  parametros?: Array<number | string | Date >
+  parametros?: Array<number | string | Date>
 ) {
   return await pool.query(consulta, parametros);
 }
