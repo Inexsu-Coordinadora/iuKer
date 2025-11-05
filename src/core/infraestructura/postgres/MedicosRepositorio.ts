@@ -1,7 +1,7 @@
 import { IMedicoRepositorio } from '../../dominio/Medico/IMedicoRepositorio.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 import { IMedico } from '../../dominio/Medico/IMedico.js';
-import { camelCaseASnakeCase } from '../../../common/cammelCaseASnakeCase.js';
+import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
 export class MedicoRepositorio implements IMedicoRepositorio {
     async crearMedico(datosMedico : IMedico) : Promise <string> {

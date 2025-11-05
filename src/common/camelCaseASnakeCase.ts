@@ -1,6 +1,7 @@
-export function camelCaseASnakeCase(nombre: string) {
-  const nombrePropiedad = nombre.split(/(?=[A-Z])/);
-  const snakeCaseString = nombrePropiedad.join('_').toLocaleLowerCase();
+export function camelCaseASnakeCase(keyAConvertir: string) {
+  let camelCaseString = keyAConvertir;
+  let miString = camelCaseString.split(/(?=[A-Z])/);
+  let snakeCaseString = miString.join('_').toLowerCase();
 
   return snakeCaseString;
 }

@@ -2,7 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { MedicosControlador } from '../controladores/MedicosControlador.js';
 import { IMedicoRepositorio } from '../../dominio/Medico/IMedicoRepositorio.js';
 import { MedicoCasosUso } from '../../aplicacion/Medico/MedicoCasosUso.js';
-import { MedicoRepositorio } from '../postgres/MedicosRepository.js';
+import { MedicoRepositorio } from '../postgres/MedicosRepositorio.js';
 
 function medicosEnrutador(
     app : FastifyInstance,

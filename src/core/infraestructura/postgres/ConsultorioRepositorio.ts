@@ -1,12 +1,12 @@
 import { IRepositorioConsultorio } from "../../dominio/Consultorio/IRepositorioConsultorio.js";
 import { ejecutarConsulta } from "./clientePostgres.js";
 import { IConsultorio } from "../../dominio/Consultorio/IConsultorio.js";
-import { camelToSnakeCase } from "../../../common/camelCaseASnakeCase.js";
+import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
 export class ConsultorioRepositorio implements IRepositorioConsultorio {
 
   async agregarConsultorio(datosConsultorio:IConsultorio): Promise<string> {
-    const columnas = Object.keys(datosConsultorio).map((key) => camelToSnakeCase(key));
+    const columnas = Object.keys(datosConsultorio).map((key) => camelCaseASnakeCase(key));
     const params: Array<string | number> = Object.values(datosConsultorio);
     const placeholders = columnas.map((_,i)=> `$${i + 1}`).join(", ");
 
@@ -36,7 +36,7 @@ export class ConsultorioRepositorio implements IRepositorioConsultorio {
     return resultado.rows[0] || null
   }
   async actualizarConsultorio(idConsultorio:string, datosConsultorio:IConsultorio): Promise<IConsultorio>{
-    const columnas = Object.keys(datosConsultorio).map((key) => camelToSnakeCase(key));
+    const columnas = Object.keys(datosConsultorio).map((key) => camelCaseASnakeCase(key));
     const params: Array<string | number> = Object.values(datosConsultorio);
     const setClause = columnas.map((col,i) => `${col}=$${i + 1}`).join(", ");
     params.push(idConsultorio);
