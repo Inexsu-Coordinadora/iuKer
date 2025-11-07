@@ -5,6 +5,19 @@ import { Paciente } from '../../dominio/Paciente/Paciente.js';
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
 export class RepositorioPacientes implements IRepositorioPacientes {
+  async existePacientePorDocumento(
+    numeroDoc: string,
+    tipoDoc: number
+  ): Promise<boolean> {
+    // Consulta optimizada: solo necesitamos saber si existe una fila que coincida.
+    const query =
+      'SELECT 1 FROM pacientes WHERE numero_doc = $1 AND tipo_doc = $2 LIMIT 1';
+    const result = await ejecutarConsulta(query, [numeroDoc, tipoDoc]);
+
+    // Si la consulta devuelve al menos una fila (length > 0), el paciente existe.
+    return result.rows.length > 0;
+  }
+
   async obtenerPacientes(limite?: number): Promise<IPaciente[]> {
     let query = 'SELECT * FROM pacientes';
     const limiteParam: number[] = [];
@@ -34,6 +47,14 @@ export class RepositorioPacientes implements IRepositorioPacientes {
     const parametros: Array<string | number | Date> =
       Object.values(nuevoPaciente);
     const placeholders = columnas.map((_, i) => `$${i + 1}`).join(', ');
+
+    /*
+    Si (!nuevoPaciente.idPaciente){
+      lógica del insert
+    }
+    
+    error
+    */
 
     const query = `
       INSERT INTO pacientes (${columnas.join(', ')})

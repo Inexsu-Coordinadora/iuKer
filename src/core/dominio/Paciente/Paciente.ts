@@ -21,5 +21,29 @@ export class Paciente implements IPaciente {
     this.email = data.email;
     this.telefono = data.telefono;
     this.direccion = data.direccion;
+
+    this.validarDatos();
+  }
+
+  private validarDatos(): void {
+    // Validación 2: Comprobación de Mayoría de Edad (Regla de Negocio)
+    if (!this.esMayorDeEdad(this.fechaNacimiento)) {
+      console.log('Dominio: El paciente debe tener acompañante para la cita');
+    }
+  }
+
+  private esMayorDeEdad(fechaNacimiento: Date): boolean {
+    const fechaActual = new Date();
+    const fechaNac = new Date(fechaNacimiento);
+
+    // Calcular la fecha hace 18 años
+    const mayoriaEdad = new Date(
+      fechaNac.getFullYear() + 18,
+      fechaNac.getMonth(),
+      fechaNac.getDate()
+    );
+
+    // Si la fecha actual es igual o posterior a la fecha de mayoría de edad, es True (Mayor de edad).
+    return fechaActual >= mayoriaEdad;
   }
 }
