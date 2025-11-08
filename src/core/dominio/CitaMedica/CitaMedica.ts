@@ -1,19 +1,16 @@
-import { da } from 'zod/v4/locales';
 import { ICitaMedica } from './ICitaMedica.js';
 
 export class CitaMedica implements ICitaMedica {
-  readonly idCita: string;
   readonly medico: string;
   readonly tipoDocPaciente: number;
   readonly numeroDocPaciente: string;
   readonly idConsultorio: string;
-  readonly fecha: string;
+  readonly fecha: Date;
   readonly horaInicio: string;
   readonly duracion: string;
-  public estado: number;
+  public estado: ICitaMedica['estado'];
 
-  constructor(datosCitaMedica: ICitaMedica) {
-    this.idCita = datosCitaMedica.idCita;
+  constructor(datosCitaMedica: Omit<ICitaMedica, 'estado'>) {
     this.medico = datosCitaMedica.medico;
     this.tipoDocPaciente = datosCitaMedica.tipoDocPaciente;
     this.numeroDocPaciente = datosCitaMedica.numeroDocPaciente;

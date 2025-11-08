@@ -44,9 +44,9 @@ VALUES
 ('C202', 'Piso 2 - Ala Sur', 6);
 
 -- CITAS MÉDICAS
-INSERT INTO citas_medicas (id_cita, medico, tipo_doc_paciente, numero_doc_paciente, id_consultorio, fecha, hora_inicio, duracion, estado)
+INSERT INTO citas_medicas (medico, tipo_doc_paciente, numero_doc_paciente, id_consultorio, fecha, hora_inicio, duracion, estado, id_cita_anterior)
 VALUES
-('A12546778931mc','MP001', 1, '100001', 'C101', '2025-11-30', '08:00', '30 minutos', 1),
-('B225dds5545','MP002', 3, '100002', 'C102', '2025-11-27', '09:00', '45 minutos', 1),
-('G654465646df16sdf','MP003', 2, '100003', 'C202', '2025-11-29', '10:30', '60 minutos', 1),
-('Hdf54sf1s31fs84ds5','MP004', 4, '100004', 'C201', '2025-11-01', '14:00', '90 minutos', 1);
+('MP001', 1, '100001', 'C101', '2025-11-30', '08:00', INTERVAL '30 minutes', 1, NULL),
+('MP002', 3, '100002', 'C102', '2025-11-27', '09:00', INTERVAL '30 minutes', 1, NULL),
+('MP003', 2, '100003', 'C202', '2025-11-29', '10:30', INTERVAL '30 minutes', 1, NULL),
+('MP004', 4, '100004', 'C201', '2025-11-01', '14:00', INTERVAL '30 minutes', 1, NULL);

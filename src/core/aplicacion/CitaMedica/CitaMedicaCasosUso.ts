@@ -1,6 +1,7 @@
 import { CitaMedica } from '../../dominio/CitaMedica/CitaMedica.js';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../dominio/CitaMedica/IRepositorioCitaMedica.js';
+import { citaMedicaDTO } from '../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { ICitaMedicaCasosUso } from './ICitaMedicaCasosUso.js';
 
 export class CitaMedicaCasosUso implements ICitaMedicaCasosUso {
@@ -14,11 +15,7 @@ export class CitaMedicaCasosUso implements ICitaMedicaCasosUso {
     return await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
   }
 
-  async agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
-    const validarExistencia = await this.obtenerCitaPorId(datosCitaMedica.idCita);
-
-    if (validarExistencia) throw new Error(`No puede crear la cita con ese id porque ya existe en el sistema`);
-
+  async agendarCita(datosCitaMedica: citaMedicaDTO): Promise<CitaMedica> {
     const citaAgendada = new CitaMedica(datosCitaMedica);
     return await this.citasMedicasRepositorio.agendarCita(citaAgendada);
   }
