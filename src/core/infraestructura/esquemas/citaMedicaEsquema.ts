@@ -30,11 +30,11 @@ export const crearCitaMedicaEsquema = z.object({
     .max(15, 'El documento de identidad del paciente debe tener máximo 15 carateres')
     .regex(/^[A-Za-z0-9]+$/, 'El ID del médico solo debe contener letras y números'),
 
-  idConsultorio: z
+  /* idConsultorio: z
     .string()
     .nonempty('Se sebe seleccionar el consultorio')
     .length(4, ' El id del consultorio debe ser de 4 carateres')
-    .regex(/^[A-Za-z0-9]+$/, 'El consultorio solo debe contener letras y números'),
+    .regex(/^[A-Za-z0-9]+$/, 'El consultorio solo debe contener letras y números'), */
 
   fecha: z.coerce.date().refine((fecha) => fecha > new Date(), {
     message: 'La fecha de la cita debe ser futura',
@@ -46,12 +46,12 @@ export const crearCitaMedicaEsquema = z.object({
     .regex(/^[0-9:]+$/, 'La hora debe estar en formato HH:MM (ej. 14:00)')
     .length(5, 'El formato de hora debe ser exactamente HH:MM (5 caracteres)'),
 
-  duracion: z
+  /* duracion: z
     .string()
     .nonempty('Debes especificar la duración como "X minutos"')
     .min(9, 'La duración debe tener mínimo 9 carateres')
     .max(11, 'La duración debe tener máximo 11 carateres')
-    .regex(/^[A-Za-z0-9\s]+$/, 'La duración debe contener letras y números'),
+    .regex(/^[A-Za-z0-9\s]+$/, 'La duración debe contener letras y números'), */
 
   /* estado: z
     .number()

@@ -15,9 +15,7 @@ INSERT INTO estados (id_estado, descripcion) VALUES
 (2, 'Actualizada'),
 (3, 'Reprogramada'),
 (4, 'Finalizada'),
-(5, 'Cancelada'),
-(6, 'Ocupado'),
-(7, 'Disponible');
+(5, 'Cancelada');
 
 -- PACIENTES
 INSERT INTO pacientes (tipo_doc, numero_doc, nombre, apellido, fecha_nacimiento, sexo, email, telefono, direccion)
@@ -36,17 +34,26 @@ VALUES
 ('MP004', 1, '900004', 'Valentina', 'Ruiz', '1990-02-17', 'F', 'Dermatología', 'valentina.ruiz@clinicaiuker.com', '3138889900');
 
 -- CONSULTORIOS
-INSERT INTO consultorios (id_consultorio, ubicacion, estado)
+INSERT INTO consultorios (id_consultorio, ubicacion)
 VALUES
-('C101', 'Piso 1 - Frente a Recepción', 5),
-('C102', 'Piso 1 - Ala Norte', 6),
-('C201', 'Piso 2 - Junto a Radiología', 5),
-('C202', 'Piso 2 - Ala Sur', 6);
+('C101', 'Edificio E, Piso 3'),
+('C102', 'Edificio A, Piso 5'),
+('C201', 'Edificio D, Piso 2'),
+('C202', 'Edificio B, Piso 6');
+
+
+INSERT INTO turnos_medicos (medico, dia_semana, inicio_turno, fin_turno, id_consultorio)
+VALUES
+('MP001', 2, '08:00', '12:00', 'C101'), -- Lunes mañana
+('MP001', 4, '14:00', '18:00', 'C101'), -- Miércoles tarde
+('MP002', 3, '09:00', '13:00', 'C102'), -- Martes mañana
+('MP003', 5, '10:00', '16:00', 'C202'), -- Jueves
+('MP004', 6, '14:00', '20:00', 'C201'); -- Viernes
 
 -- CITAS MÉDICAS
-INSERT INTO citas_medicas (medico, tipo_doc_paciente, numero_doc_paciente, id_consultorio, fecha, hora_inicio, duracion, estado, id_cita_anterior)
+INSERT INTO citas_medicas (medico, tipo_doc_paciente, numero_doc_paciente, fecha, hora_inicio, estado, id_cita_anterior)
 VALUES
-('MP001', 1, '100001', 'C101', '2025-11-30', '08:00', INTERVAL '30 minutes', 1, NULL),
-('MP002', 3, '100002', 'C102', '2025-11-27', '09:00', INTERVAL '30 minutes', 1, NULL),
-('MP003', 2, '100003', 'C202', '2025-11-29', '10:30', INTERVAL '30 minutes', 1, NULL),
-('MP004', 4, '100004', 'C201', '2025-11-01', '14:00', INTERVAL '30 minutes', 1, NULL);
+('MP001', 1, '100001', '2025-11-30', '08:00', 1, NULL),
+('MP002', 3, '100002', '2025-11-27', '09:00', 1, NULL),
+('MP003', 2, '100003', '2025-11-29', '10:30', 1, NULL),  
+('MP004', 4, '100004', '2025-11-01', '14:00', 1, NULL);

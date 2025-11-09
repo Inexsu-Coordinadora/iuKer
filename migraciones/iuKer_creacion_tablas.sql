@@ -43,8 +43,16 @@ CREATE TABLE IF NOT EXISTS medicos (
 
 CREATE TABLE IF NOT EXISTS consultorios (
   id_consultorio VARCHAR(5) PRIMARY KEY,
-  ubicacion VARCHAR(100) NOT NULL,
-  estado INT NOT NULL REFERENCES estados (id_estado)
+  ubicacion VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS turnos_medicos (
+  id_turno  SERIAL PRIMARY KEY,
+  medico VARCHAR(15) NOT NULL REFERENCES medicos (tarjeta_profesional),
+  dia_semana INT NOT NULL CHECK (dia_semana BETWEEN 1 AND 7),
+  inicio_turno TIME NOT NULL,
+  fin_turno TIME NOT NULL,
+  id_consultorio VARCHAR(5) NOT NULL REFERENCES consultorios (id_consultorio)
 );
 
 CREATE TABLE IF NOT EXISTS citas_medicas (
@@ -52,10 +60,10 @@ CREATE TABLE IF NOT EXISTS citas_medicas (
   medico VARCHAR(15) NOT NULL REFERENCES medicos (tarjeta_profesional),
   tipo_doc_paciente INT NOT NULL,
   numero_doc_paciente VARCHAR(15) NOT NULL,
-  id_consultorio VARCHAR(5) NOT NULL REFERENCES consultorios (id_consultorio),
   fecha DATE NOT NULL,
+  duracion INTERVAL NOT NULL DEFAULT INTERVAL '30 minutes',
   hora_inicio TIME NOT NULL,
-  duracion INTERVAL NOT NULL,
+  hora_fin TIME GENERATED ALWAYS AS (hora_inicio + duracion) STORED,
   estado INT NOT NULL REFERENCES estados(id_estado),
   id_cita_anterior UUID REFERENCES citas_medicas (id_cita),
   FOREIGN KEY (tipo_doc_paciente, numero_doc_paciente) REFERENCES pacientes(tipo_doc, numero_doc)
