@@ -3,9 +3,13 @@ import { ICitaMedicaCasosUso } from '../../aplicacion/CitaMedica/ICitaMedicaCaso
 import { citaMedicaDTO, crearCitaMedicaEsquema } from '../esquemas/citaMedicaEsquema.js';
 import { ZodError } from 'zod';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
+import { IAgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamientoCita/IAgendamientoCitaCasosUso.js';
 
 export class CitasControlador {
-  constructor(private citasCasosUso: ICitaMedicaCasosUso) {}
+  constructor(
+    private citasCasosUso: ICitaMedicaCasosUso,
+    private angendamientoCitaCasosUso: IAgendamientoCitaCasosUso
+  ) {}
 
   obtenerCitas = async (req: FastifyRequest<{ Querystring: { limite?: number } }>, res: FastifyReply) => {
     try {
@@ -51,7 +55,7 @@ export class CitasControlador {
   AgendarCita = async (req: FastifyRequest<{ Body: citaMedicaDTO }>, res: FastifyReply) => {
     try {
       const datosCita = crearCitaMedicaEsquema.parse(req.body);
-      const citaAgendada = await this.citasCasosUso.agendarCita(datosCita);
+      const citaAgendada = await this.angendamientoCitaCasosUso.ejecutar(datosCita);
 
       return res.code(201).send({
         mensaje: 'Cita agendada con éxito',

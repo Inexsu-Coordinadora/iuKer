@@ -4,7 +4,7 @@ import { citaMedicaDTO } from '../../infraestructura/esquemas/citaMedicaEsquema.
 export interface ICitaMedicaCasosUso {
   obtenerCitas(limite?: number): Promise<ICitaMedica[]>;
   obtenerCitaPorId(idCita: string): Promise<ICitaMedica | null>;
-  agendarCita(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica>;
+  /* agendarCita(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica>; */
   reprogramarCita(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica | null>;
   finalizarCita(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica | null>;
   cancelarCita(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica | null>;

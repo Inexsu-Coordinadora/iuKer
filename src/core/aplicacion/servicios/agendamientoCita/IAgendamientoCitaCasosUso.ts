@@ -1,12 +1,6 @@
 import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
+import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 
 export interface IAgendamientoCitaCasosUso {
-  ejecutar(
-    tipoDocPaciente: number,
-    numeroDocPaciente: string,
-    medico: string,
-    fecha: Date,
-    horaInicio: string,
-    idConsultorio: string
-  ): Promise<ICitaMedica>;
+  ejecutar(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica>;
 }
