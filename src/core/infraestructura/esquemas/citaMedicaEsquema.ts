@@ -22,9 +22,13 @@ export const crearCitaMedicaEsquema = z.object({
     .max(15, 'El documento de identidad del paciente debe tener máximo 15 carateres')
     .regex(/^[A-Za-z0-9]+$/, 'El ID del médico solo debe contener letras y números'),
 
-  fecha: z.coerce.date().refine((fecha) => fecha > new Date(), {
-    message: 'La fecha de la cita debe ser futura',
-  }),
+  fecha: z
+    .string()
+    .nonempty('La hora de inicio es obligatoria')
+    .regex(
+      /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
+      'La fecha debe estar en formato YYYY-MM-DD (ej. 2025-11-04)'
+    ),
 
   horaInicio: z
     .string()

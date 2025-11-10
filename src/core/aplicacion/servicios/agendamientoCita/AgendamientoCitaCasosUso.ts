@@ -1,7 +1,6 @@
 import { CitaMedica } from '../../../dominio/CitaMedica/CitaMedica.js';
 import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../../dominio/CitaMedica/IRepositorioCitaMedica.js';
-import { IRepositorioConsultorio } from '../../../dominio/Consultorio/IRepositorioConsultorio.js';
 import { IMedicoRepositorio } from '../../../dominio/Medico/IMedicoRepositorio.js';
 import { IRepositorioPacientes } from '../../../dominio/Paciente/IRepositorioPacientes.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
@@ -12,12 +11,11 @@ export class AgendamientoCitaCasosUso implements IAgendamientoCitaCasosUso {
     private citasMedicasRepositorio: IRepositorioCitaMedica,
     private medicosRepositorio: IMedicoRepositorio,
     private pacientesRepositorio: IRepositorioPacientes
-  ) //private consultoriosRepositorio: IRepositorioConsultorio
-  {}
+  ) {}
 
   async ejecutar(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica> {
     await this.validarPaciente(datosCitaMedica.numeroDocPaciente);
-    this.validarTurnoMedico(datosCitaMedica);
+    await this.validarTurnoMedico(datosCitaMedica);
     await this.validarMedico(datosCitaMedica.medico);
     await this.disponibilidadMedico(datosCitaMedica);
     await this.validarCitasPaciente(datosCitaMedica);
@@ -64,18 +62,4 @@ export class AgendamientoCitaCasosUso implements IAgendamientoCitaCasosUso {
         `No se puede agendar la cita porque el paciente ${datosCitaMedica.numeroDocPaciente} ya tiene una cita agendada en ese horario`
       );
   }
-
-  /* private async disponibilidadConsultorio(datosCitaMedica: citaMedicaDTO): Promise<void> {
-    const idConsultorio = await this.citasMedicasRepositorio.obtenerConsultorioDeTurno(datosCitaMedica);
-
-    if (!idConsultorio)
-      throw new Error(`El medico ${datosCitaMedica.medico} no va a trabajar el día que quieres agendar la cita`);
-
-    const validarDisponibilidadConsultorio = await this.citasMedicasRepositorio.disponibilidadConsultorio(
-      datosCitaMedica,
-      idConsultorio
-    );
-
-    if()
-  } */
 }

@@ -25,8 +25,6 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     return resultado.rows[0] || null;
   }
 
-  //---------------------------------------------------------------
-
   async disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
     const valores = [datosCitaMedica.medico, datosCitaMedica.fecha, datosCitaMedica.horaInicio];
 
@@ -65,47 +63,6 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     return resultado.rows[0].count > 0;
   }
 
-  // async obtenerConsultorioDeTurno(datosCitaMedica: citaMedicaDTO): Promise<string | null> {
-  //   const valores = [datosCitaMedica.medico, datosCitaMedica.fecha];
-
-  //   /* const query = `
-  //     SELECT id_consultorio
-  //     FROM turnos_medicos
-  //     WHERE medico = $1
-  //     AND fecha = $2
-  //     AND inicio_turno <= $3::time
-  //     AND fin_turno > $3::time + INTERVAL '30 minutes';
-  //   `; */
-
-  //   const query = `
-  //     SELECT id_consultorio
-  //     FROM turnos_medicos
-  //     WHERE medico = $1
-  //     AND fecha = $2;
-  //   `;
-
-  //   const resultado = await ejecutarConsulta(query, valores);
-
-  //   return resultado.rows[0]?.id_consultorio || null;
-  // }
-
-  // async disponibilidadConsultorio(datosCitaMedica: citaMedicaDTO, idConsultorio: string): Promise<boolean> {
-  //   const valores = [idConsultorio, datosCitaMedica.fecha, datosCitaMedica.horaInicio];
-
-  //   const query = `
-  //     SELECT COUNT(*) FROM citas_medicas cm
-  //     JOIN turnos_medicos tm ON cm.medico = tm.medico
-  //     WHERE tm.id_consultorio = $1
-  //     AND cm.fecha = $2
-  //     AND cm.hora_inicio < ($3::time + INTERVAL '30 minutes')
-  //     AND cm.hora_fin > $3::time;
-  //   `;
-
-  //   const resultado = await ejecutarConsulta(query, valores);
-
-  //   return resultado.rows[0].count > 0;
-  // }
-
   async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
     const valores = [datosCitaMedica.medico, datosCitaMedica.fecha, datosCitaMedica.horaInicio];
 
@@ -121,8 +78,6 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
 
     return resultado.rows[0].count > 0;
   }
-
-  //---------------------------------------------------------------
 
   async agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
     const columnas = Object.keys(datosCitaMedica).map((key) => camelCaseASnakeCase(key));
