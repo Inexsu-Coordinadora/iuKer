@@ -1,6 +1,7 @@
 import { CitaMedica } from '../../../dominio/CitaMedica/CitaMedica.js';
 import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../../dominio/CitaMedica/IRepositorioCitaMedica.js';
+import { IRepositorioConsultorio } from '../../../dominio/Consultorio/IRepositorioConsultorio.js';
 import { IMedicoRepositorio } from '../../../dominio/Medico/IMedicoRepositorio.js';
 import { IRepositorioPacientes } from '../../../dominio/Paciente/IRepositorioPacientes.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
@@ -9,13 +10,17 @@ import { IAgendamientoCitaCasosUso } from './IAgendamientoCitaCasosUso.js';
 export class AgendamientoCitaCasosUso implements IAgendamientoCitaCasosUso {
   constructor(
     private citasMedicasRepositorio: IRepositorioCitaMedica,
-    private medicoRepositorio: IMedicoRepositorio,
+    private medicosRepositorio: IMedicoRepositorio,
     private pacientesRepositorio: IRepositorioPacientes
-  ) {}
+  ) //private consultoriosRepositorio: IRepositorioConsultorio
+  {}
 
   async ejecutar(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica> {
     await this.validarPaciente(datosCitaMedica.numeroDocPaciente);
+    this.validarTurnoMedico(datosCitaMedica);
     await this.validarMedico(datosCitaMedica.medico);
+    await this.disponibilidadMedico(datosCitaMedica);
+    await this.validarCitasPaciente(datosCitaMedica);
 
     const citaAgendada = new CitaMedica(datosCitaMedica);
 
@@ -29,9 +34,48 @@ export class AgendamientoCitaCasosUso implements IAgendamientoCitaCasosUso {
   }
 
   private async validarMedico(idMedico: string): Promise<void> {
-    const medico = await this.medicoRepositorio.obtenerMedicoPorTarjetaProfesional(idMedico);
+    const medico = await this.medicosRepositorio.obtenerMedicoPorTarjetaProfesional(idMedico);
 
     if (!medico)
       throw new Error(`El medico con tajerta profesional ${idMedico} no hace parte de este sistema de salud`);
   }
+
+  private async disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<void> {
+    const medicoDisponible = await this.citasMedicasRepositorio.disponibilidadMedico(datosCitaMedica);
+
+    if (medicoDisponible)
+      throw new Error(`El medico ${datosCitaMedica.medico} ya tiene programada una cita para la hora indicada`);
+  }
+
+  private async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<void> {
+    const turnoExistente = await this.citasMedicasRepositorio.validarTurnoMedico(datosCitaMedica);
+
+    if (!turnoExistente)
+      throw new Error(
+        `El medico ${datosCitaMedica.medico} no se encuentra disponible ese día en el horario que usted desea`
+      );
+  }
+
+  private async validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<void> {
+    const validarCitas = await this.citasMedicasRepositorio.validarCitasPaciente(datosCitaMedica);
+
+    if (validarCitas)
+      throw new Error(
+        `No se puede agendar la cita porque el paciente ${datosCitaMedica.numeroDocPaciente} ya tiene una cita agendada en ese horario`
+      );
+  }
+
+  /* private async disponibilidadConsultorio(datosCitaMedica: citaMedicaDTO): Promise<void> {
+    const idConsultorio = await this.citasMedicasRepositorio.obtenerConsultorioDeTurno(datosCitaMedica);
+
+    if (!idConsultorio)
+      throw new Error(`El medico ${datosCitaMedica.medico} no va a trabajar el día que quieres agendar la cita`);
+
+    const validarDisponibilidadConsultorio = await this.citasMedicasRepositorio.disponibilidadConsultorio(
+      datosCitaMedica,
+      idConsultorio
+    );
+
+    if()
+  } */
 }

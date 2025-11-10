@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS consultorios (
 CREATE TABLE IF NOT EXISTS turnos_medicos (
   id_turno  SERIAL PRIMARY KEY,
   medico VARCHAR(15) NOT NULL REFERENCES medicos (tarjeta_profesional),
-  dia_semana INT NOT NULL CHECK (dia_semana BETWEEN 1 AND 7),
+  --dia_semana INT NOT NULL CHECK (dia_semana BETWEEN 1 AND 7),
+  fecha DATE NOT NULL,
   inicio_turno TIME NOT NULL,
   fin_turno TIME NOT NULL,
   id_consultorio VARCHAR(5) NOT NULL REFERENCES consultorios (id_consultorio)

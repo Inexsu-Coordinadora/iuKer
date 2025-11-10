@@ -42,13 +42,13 @@ VALUES
 ('C202', 'Edificio B, Piso 6');
 
 
-INSERT INTO turnos_medicos (medico, dia_semana, inicio_turno, fin_turno, id_consultorio)
+INSERT INTO turnos_medicos (medico, fecha, inicio_turno, fin_turno, id_consultorio)
 VALUES
-('MP001', 2, '08:00', '12:00', 'C101'), -- Lunes mañana
-('MP001', 4, '14:00', '18:00', 'C101'), -- Miércoles tarde
-('MP002', 3, '09:00', '13:00', 'C102'), -- Martes mañana
-('MP003', 5, '10:00', '16:00', 'C202'), -- Jueves
-('MP004', 6, '14:00', '20:00', 'C201'); -- Viernes
+('MP001', '2025-11-30', '08:00', '12:00', 'C101'),  
+('MP001', '2025-11-30', '14:00', '18:00', 'C101'),  
+('MP002', '2025-11-27', '09:00', '13:00', 'C102'),  
+('MP003', '2025-11-29', '10:00', '16:00', 'C202'), 
+('MP004', '2025-11-15', '14:00', '20:00', 'C201'); 
 
 -- CITAS MÉDICAS
 INSERT INTO citas_medicas (medico, tipo_doc_paciente, numero_doc_paciente, fecha, hora_inicio, estado, id_cita_anterior)
@@ -56,4 +56,4 @@ VALUES
 ('MP001', 1, '100001', '2025-11-30', '08:00', 1, NULL),
 ('MP002', 3, '100002', '2025-11-27', '09:00', 1, NULL),
 ('MP003', 2, '100003', '2025-11-29', '10:30', 1, NULL),  
-('MP004', 4, '100004', '2025-11-01', '14:00', 1, NULL);
+('MP004', 4, '100004', '2025-11-15', '14:00', 1, NULL);
