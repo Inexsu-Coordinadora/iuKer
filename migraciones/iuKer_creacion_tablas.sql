@@ -46,14 +46,14 @@ CREATE TABLE IF NOT EXISTS consultorios (
   ubicacion VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS turnos_medicos (
-  id_turno  SERIAL PRIMARY KEY,
-  medico VARCHAR(15) NOT NULL REFERENCES medicos (tarjeta_profesional),
-  --dia_semana INT NOT NULL CHECK (dia_semana BETWEEN 1 AND 7),
-  fecha DATE NOT NULL,
-  inicio_turno TIME NOT NULL,
-  fin_turno TIME NOT NULL,
-  id_consultorio VARCHAR(5) NOT NULL REFERENCES consultorios (id_consultorio)
+CREATE TABLE IF NOT EXISTS asignacion_medicos (
+  id_asignacion  SERIAL PRIMARY KEY,
+  tarjeta_profesional_medico VARCHAR(15) NOT NULL REFERENCES medicos (tarjeta_profesional),
+  id_consultorio VARCHAR(5) NOT NULL REFERENCES consultorios (id_consultorio),
+  dia_semana INT NOT NULL CHECK (dia_semana BETWEEN 1 AND 7),
+  inicio_jornada TIME NOT NULL,
+  fin_jornada TIME NOT NULL,
+  UNIQUE (tarjeta_profesional_medico, id_consultorio, dia_semana, inicio_jornada, fin_jornada)
 );
 
 CREATE TABLE IF NOT EXISTS citas_medicas (
