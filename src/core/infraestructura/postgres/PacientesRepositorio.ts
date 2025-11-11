@@ -48,14 +48,6 @@ export class RepositorioPacientes implements IRepositorioPacientes {
       Object.values(nuevoPaciente);
     const placeholders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
-    /*
-    Si (!nuevoPaciente.idPaciente){
-      lógica del insert
-    }
-    
-    error
-    */
-
     const query = `
       INSERT INTO pacientes (${columnas.join(', ')})
       VALUES (${placeholders})

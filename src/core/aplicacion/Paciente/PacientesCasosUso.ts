@@ -18,11 +18,8 @@ export class PacientesCasosUso implements IPacientesCasosUso {
   }
 
   async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
-    // Implementar validar reglas puras del Dominio (ej: formato de email, fecha de nacimiento)
-    // El constructor de Paciente lanzará un error si los datos son inválidos.
     const instanciaPaciente = new Paciente(nuevoPaciente);
 
-    // 2. VALIDACIÓN DE UNICIDAD (Regla de Negocio de Aplicación)
     const existePaciente =
       await this.repositorioPacientes.existePacientePorDocumento(
         nuevoPaciente.numeroDoc,
