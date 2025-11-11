@@ -5,7 +5,6 @@ import {
   AsignacionCreacionEsquema,
   IAsignacionCreacionDTO,
 } from '../esquemas/asignacionesEsquema.js';
-import { error } from 'console';
 
 export class AsignacionControlador {
   constructor(private asignacionCasosUso: IAsignacionCasosUso) {}
