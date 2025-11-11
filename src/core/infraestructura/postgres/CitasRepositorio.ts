@@ -64,14 +64,17 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
   }
 
   async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
-    const valores = [datosCitaMedica.medico, datosCitaMedica.fecha, datosCitaMedica.horaInicio];
+    const fecha = `${datosCitaMedica.fecha}T${datosCitaMedica.horaInicio}:00-05:00`;
+    const fechaColombia = new Date(fecha);
+    const diaSemana = fechaColombia.getDay();
+    const valores = [datosCitaMedica.medico, diaSemana, datosCitaMedica.horaInicio];
 
     const query = `
-      SELECT COUNT(*) FROM turnos_medicos
-      WHERE medico = $1
-      AND fecha = $2
-      AND inicio_turno <= $3::TIME
-      AND fin_turno >= ($3::TIME + INTERVAL '30 minutes');
+      SELECT COUNT(*) FROM asignacion_medicos
+      WHERE tarjeta_profesional_medico = $1
+      AND dia_semana = $2
+      AND inicio_jornada <= $3::TIME
+      AND fin_jornada >= ($3::TIME + INTERVAL '30 minutes');
     `;
 
     const resultado = await ejecutarConsulta(query, valores);
