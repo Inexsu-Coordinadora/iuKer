@@ -3,7 +3,6 @@ import { CitasControlador } from '../controladores/CitasControlador.js';
 import { CitasRepositorio } from '../postgres/CitasRepositorio.js';
 import { CitaMedicaCasosUso } from '../../aplicacion/CitaMedica/CitaMedicaCasosUso.js';
 import { AgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamientoCita/AgendamientoCitaCasosUso.js';
-import { IMedicoRepositorio } from '../../dominio/Medico/IMedicoRepositorio.js';
 import { MedicoRepositorio } from '../postgres/MedicosRepositorio.js';
 import { RepositorioPacientes } from '../postgres/PacientesRepositorio.js';
 
