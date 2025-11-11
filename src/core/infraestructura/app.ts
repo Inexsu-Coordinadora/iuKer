@@ -5,15 +5,18 @@ import { construirCitasEnrutados } from './rutas/citasMedicasEnrutador.js';
 import { construirPacientesEnrutador } from './rutas/pacientesEnrutador.js';
 import { construirMedicosEnrutador } from './rutas/medicosEnrutador.js';
 import { construirConsultorioEnrutador } from './rutas/consultoriosEnrutador.js';
+import { construirAsignacionEnrutador } from '../../servicios/asignacionMedicoConsultorio/infraestructura/rutas/asignacionEnrutador.js';
 
 const app = Fastify({ logger: true });
 
 app.register(
   async (appInstance) => {
-    construirConsultorioEnrutador(appInstance)
+    construirConsultorioEnrutador(appInstance);
     construirCitasEnrutados(appInstance);
     construirMedicosEnrutador(appInstance);
     construirPacientesEnrutador(appInstance);
+    //Servicios
+    construirAsignacionEnrutador(appInstance);
   },
   { prefix: '/api' }
 );
