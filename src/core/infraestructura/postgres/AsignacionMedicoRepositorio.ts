@@ -72,14 +72,4 @@ export class AsignacionMedicoRepositorio
     const result = await ejecutarConsulta(query, parametros);
     return result.rows[0].id_asignacion;
   }
-
-  ////Implementación de listarAsignaciones
-  // async listarAsignaciones(limite?: number): Promise<IAsignacionMedicoConsultorio[]> {
-  //   return [];
-  // }
-
-  ////Implementación de obtenerAsignacionesPorIdConsultorio
-  // async obtenerAsignacionesPorIdConsultorio(idConsultorio: string): Promise<IAsignacionMedicoConsultorio[]> {
-  //   return [];
-  // }
 }
