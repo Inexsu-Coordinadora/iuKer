@@ -1,14 +1,6 @@
 import { IAsignacionMedico } from './IAsignacionMedico.js';
 
 export interface IAsignacionMedicoRepositorio {
-  existeAsignacion(
-    tarjetaProfesionalMedico: string,
-    idConsultorio: string,
-    diaSemana: number,
-    inicioJornada: string,
-    finJornada: string
-  ): Promise<boolean>;
-
   crearAsignacion(nuevaAsignacion: IAsignacionMedico): Promise<string>;
 
   existeAsignacion(
