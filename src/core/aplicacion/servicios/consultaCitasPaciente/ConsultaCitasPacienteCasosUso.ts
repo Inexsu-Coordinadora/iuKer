@@ -12,7 +12,7 @@ export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso{
         const paciente = await this.repositorioPacientes.obtenerPacientePorId(numeroDocPaciente);
 
         if(!paciente){
-            throw new Error(`El paciente con documento ${numeroDocPaciente} no existe`);
+            throw new Error(`El paciente con documento '${numeroDocPaciente}' no existe`);
         }
 
         const citasPorPaciente = await this.repositorioCitaMedica.obtenerCitasPorPaciente(numeroDocPaciente, limite);

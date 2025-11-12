@@ -159,19 +159,20 @@ export class PacientesControlador {
             const citas = await this.consultaCitasPacienteCasosUso.ejecutarServicio?.(numeroDoc, limite);
 
             return reply.code(200).send({
-                mensaje: `Citas del paciente con documento ${numeroDoc}: `,
+                mensaje: `Citas del paciente con documento '${numeroDoc}': `,
                 citas: citas
             });
         } catch(er){
-
+          const { numeroDoc} = request.params;
             if(er){
+                
                 return reply.code(404).send({
-                    mensaje: `El paciente ingresado no existe en el sistema`,
+                    mensaje: `El paciente con documento '${numeroDoc}' no existe en el sistema`,
                     error: er instanceof Error? er.message : er
                 })
             }
             return reply.code(500).send({
-                mensaje: "Error al obtener las citas del paciente",
+                mensaje: `Error al obtener las citas del paciente con documento '${numeroDoc}'`,
                 error: er instanceof Error? er.message : er
             });
         }
