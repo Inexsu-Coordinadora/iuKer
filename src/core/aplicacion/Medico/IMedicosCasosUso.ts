@@ -1,7 +1,7 @@
 import { IMedico } from "../../dominio/Medico/IMedico.js";
 import { MedicoDTO, MedicoActualizarDTO } from "../../infraestructura/esquemas/medicoEsquema.js";
 
-export interface IMedicoCasosUso {
+export interface IMedicosCasosUso {
     crearMedico(datosMedico : MedicoDTO) : Promise <string>;
     listarMedicos(limite? : number) : Promise <IMedico[]>;
     obtenerMedicoPorTarjetaProfesional(tarjetaProfesional : string) : Promise <IMedico | null>; 

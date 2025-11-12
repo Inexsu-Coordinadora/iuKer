@@ -1,9 +1,9 @@
 import { IMedico } from "../../dominio/Medico/IMedico.js";
 import { IMedicoRepositorio } from "../../dominio/Medico/IMedicoRepositorio.js";
 import { MedicoDTO, MedicoActualizarDTO } from "../../infraestructura/esquemas/medicoEsquema.js";
-import { IMedicoCasosUso } from "./IMedicoCasosUso.js";
+import { IMedicosCasosUso } from "./IMedicosCasosUso.js";
 
-export class MedicoCasosUso implements IMedicoCasosUso{
+export class MedicoCasosUso implements IMedicosCasosUso{
     constructor (private medicoRepositorio : IMedicoRepositorio) {}
 
     async crearMedico(datosMedico : MedicoDTO) : Promise <string> {
