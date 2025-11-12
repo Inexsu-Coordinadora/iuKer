@@ -1,9 +1,9 @@
-import { IMedicoRepositorio } from '../../dominio/Medico/IMedicoRepositorio.js';
+import { IMedicosRepositorio } from '../../dominio/Medico/IMedicosRepositorio.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 import { IMedico } from '../../dominio/Medico/IMedico.js';
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
-export class MedicoRepositorio implements IMedicoRepositorio {
+export class MedicosRepositorio implements IMedicosRepositorio {
     async crearMedico(datosMedico : IMedico) : Promise <string> {
         const keys = Object.keys(datosMedico);
         const snakeColumn = keys.map((k) => camelCaseASnakeCase(k));

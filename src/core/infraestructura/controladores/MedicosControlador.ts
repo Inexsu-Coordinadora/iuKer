@@ -1,10 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { IMedicoCasosUso } from '../../aplicacion/Medico/IMedicoCasosUso.js';
+import { IMedicosCasosUso } from '../../aplicacion/Medico/IMedicosCasosUso.js';
 import { MedicoDTO, MedicoActualizarDTO, crearMedicoEsquema } from '../esquemas/medicoEsquema.js';
 import { ZodError } from 'zod';
 
 export class MedicosControlador{
-    constructor(private medicoCasosUso : IMedicoCasosUso) {}
+    constructor(private medicosCasosUso : IMedicosCasosUso) {}
 
     crearMedico = async(
         request : FastifyRequest <{Body : MedicoDTO}>,
@@ -12,7 +12,7 @@ export class MedicosControlador{
     ) => {
         try {
             const nuevoMedico = crearMedicoEsquema.parse(request.body);
-            const nuevaTarjetaProfesional = await this.medicoCasosUso.crearMedico(nuevoMedico);
+            const nuevaTarjetaProfesional = await this.medicosCasosUso.crearMedico(nuevoMedico);
 
             return reply.code(200).send({
                 mensaje: "El médico se creo correctamente",
@@ -38,7 +38,7 @@ export class MedicosControlador{
     ) => {
         try {
             const { limite } = request.query;
-            const medicosEncontrados = await this.medicoCasosUso.listarMedicos(limite);
+            const medicosEncontrados = await this.medicosCasosUso.listarMedicos(limite);
 
             return reply.code(200).send({
                 mensaje: "Médicos encontrados correctamente",
@@ -59,7 +59,7 @@ export class MedicosControlador{
     ) => {
         try{
             const { tarjetaProfesional } = request.params;
-            const medicoEncontrado = await this.medicoCasosUso.obtenerMedicoPorTarjetaProfesional(tarjetaProfesional);
+            const medicoEncontrado = await this.medicosCasosUso.obtenerMedicoPorTarjetaProfesional(tarjetaProfesional);
 
             if(!medicoEncontrado){
                 return reply.code(404).send({
@@ -86,7 +86,7 @@ export class MedicosControlador{
         try{
             const { tarjetaProfesional } = request.params;
             const nuevoMedico = request.body;
-            const medicoActualizado = await this.medicoCasosUso.actualizarMedico(tarjetaProfesional, nuevoMedico);
+            const medicoActualizado = await this.medicosCasosUso.actualizarMedico(tarjetaProfesional, nuevoMedico);
 
             if(!medicoActualizado){
                 return reply.code(404).send({
@@ -112,7 +112,7 @@ export class MedicosControlador{
     ) => {
         try{
             const { tarjetaProfesional } = request.params;
-            await this.medicoCasosUso.eliminarMedico(tarjetaProfesional);
+            await this.medicosCasosUso.eliminarMedico(tarjetaProfesional);
 
             return reply.code(200).send({
                 mensaje: "Médico eliminado correctamente",
