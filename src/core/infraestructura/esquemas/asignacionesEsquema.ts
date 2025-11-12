@@ -4,7 +4,6 @@ import { CrearConsultorioEsquema } from './consultorioEsquema.js';
 
 // Expresión regular (RegEx) para validar el formato de hora HH:MM. Ej: 08:00 o 23:59
 const HORA_REGEX = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-const FECHA_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 const TarjetaProfesionalSchema = crearMedicoEsquema.shape.tarjetaProfesional;
 const ConsultorioIdSchema = CrearConsultorioEsquema.shape.idConsultorio;
