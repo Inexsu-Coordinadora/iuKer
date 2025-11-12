@@ -1,6 +1,6 @@
 import { IPaciente } from './IPaciente.js';
 
-export interface IRepositorioPacientes {
+export interface IPacientesRepositorio {
   existePacientePorDocumento(
     numeroDoc: string,
     tipoDoc: number

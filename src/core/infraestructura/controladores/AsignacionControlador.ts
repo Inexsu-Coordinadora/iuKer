@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { ZodError } from 'zod';
-import { IAsignacionCasosUso } from '../../aplicacion/IAsignacionCasosUso.js';
+import { IAsignacionCasosUso } from '../../aplicacion/servicios/AsignacionMedico/IAsignacionCasosUso.js';
 import {
   AsignacionCreacionEsquema,
   IAsignacionCreacionDTO,

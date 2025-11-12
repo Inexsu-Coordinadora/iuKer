@@ -1,18 +1,19 @@
 import { IPacientesCasosUso } from './IPacientesCasosUso.js';
-import { IRepositorioPacientes } from '../../dominio/Paciente/IRepositorioPacientes.js';
+import { PacientesRepositorio } from '../../infraestructura/postgres/PacientesRepositorio.js';
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 import { Paciente } from '../../dominio/Paciente/Paciente.js';
+import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';
 
 export class PacientesCasosUso implements IPacientesCasosUso {
-  constructor(private repositorioPacientes: IRepositorioPacientes) {}
+  constructor(private pacientesRepositorio: IPacientesRepositorio) {}
 
   async obtenerPacientes(limite?: number): Promise<IPaciente[]> {
-    return await this.repositorioPacientes.obtenerPacientes(limite);
+    return await this.pacientesRepositorio.obtenerPacientes(limite);
   }
 
   async obtenerPacientePorId(numeroDoc: string): Promise<Paciente> {
     const pacienteObtenido =
-      await this.repositorioPacientes.obtenerPacientePorId(numeroDoc);
+      await this.pacientesRepositorio.obtenerPacientePorId(numeroDoc);
 
     return pacienteObtenido;
   }
@@ -21,7 +22,7 @@ export class PacientesCasosUso implements IPacientesCasosUso {
     const instanciaPaciente = new Paciente(nuevoPaciente);
 
     const existePaciente =
-      await this.repositorioPacientes.existePacientePorDocumento(
+      await this.pacientesRepositorio.existePacientePorDocumento(
         nuevoPaciente.numeroDoc,
         nuevoPaciente.tipoDoc
       );
@@ -32,7 +33,7 @@ export class PacientesCasosUso implements IPacientesCasosUso {
       );
     }
 
-    const idNuevoPaciente = await this.repositorioPacientes.crearPaciente(
+    const idNuevoPaciente = await this.pacientesRepositorio.crearPaciente(
       instanciaPaciente
     );
 
@@ -44,11 +45,11 @@ export class PacientesCasosUso implements IPacientesCasosUso {
     paciente: Paciente
   ): Promise<IPaciente> {
     const pacienteActualizado =
-      await this.repositorioPacientes.actualizarPaciente(numeroDoc, paciente);
+      await this.pacientesRepositorio.actualizarPaciente(numeroDoc, paciente);
     return pacienteActualizado || null;
   }
 
   async borrarPaciente(numeroDoc: string): Promise<void> {
-    await this.repositorioPacientes.borrarPaciente(numeroDoc);
+    await this.pacientesRepositorio.borrarPaciente(numeroDoc);
   }
 }

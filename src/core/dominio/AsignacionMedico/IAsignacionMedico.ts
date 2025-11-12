@@ -1,4 +1,4 @@
-export interface IAsignacionMedicoConsultorio {
+export interface IAsignacionMedico {
   tarjetaProfesionalMedico: string;
   idConsultorio: string;
   diaSemana: number;

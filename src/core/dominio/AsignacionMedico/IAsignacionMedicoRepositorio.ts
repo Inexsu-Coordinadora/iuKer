@@ -1,6 +1,6 @@
-import { IAsignacionMedicoConsultorio } from './IAsignacionMedicoConsultorio.js';
+import { IAsignacionMedico } from './IAsignacionMedico.js';
 
-export interface IRepositorioAsignacion {
+export interface IAsignacionMedicoRepositorio {
   existeAsignacion(
     tarjetaProfesionalMedico: string,
     idConsultorio: string,
@@ -9,9 +9,7 @@ export interface IRepositorioAsignacion {
     finJornada: string
   ): Promise<boolean>;
 
-  crearAsignacion(
-    nuevaAsignacion: IAsignacionMedicoConsultorio
-  ): Promise<string>;
+  crearAsignacion(nuevaAsignacion: IAsignacionMedico): Promise<string>;
 
   existeAsignacion(
     tarjetaProfesionalMedico: string,

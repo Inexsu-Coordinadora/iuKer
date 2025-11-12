@@ -1,9 +1,11 @@
-import { ejecutarConsulta } from '../../../../core/infraestructura/postgres/clientePostgres.js';
-import { IAsignacionMedicoConsultorio } from '../../dominio/IAsignacionMedicoConsultorio.js';
-import { IRepositorioAsignacion } from '../../dominio/IRepositorioAsignacion.js';
-import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
+import { ejecutarConsulta } from '../postgres/clientePostgres.js';
+import { IAsignacionMedico } from '../../dominio/AsignacionMedico/IAsignacionMedico.js';
+import { IAsignacionMedicoRepositorio } from '../../dominio/AsignacionMedico/IAsignacionMedicoRepositorio.js';
+import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
-export class AsignacionRepositorio implements IRepositorioAsignacion {
+export class AsignacionMedicoRepositorio
+  implements IAsignacionMedicoRepositorio
+{
   async existeAsignacion(
     tarjetaProfesionalMedico: string,
     idConsultorio: string,
@@ -12,7 +14,7 @@ export class AsignacionRepositorio implements IRepositorioAsignacion {
     finJornada: string
   ): Promise<boolean> {
     const query =
-      'SELECT 1 FROM asignacion_consultorio ' +
+      'SELECT 1 FROM asignacion_medicos ' +
       'WHERE tarjeta_profesional_medico = $1 ' +
       'AND id_consultorio = $2 ' +
       'AND dia_semana = $3 ' +
@@ -37,7 +39,7 @@ export class AsignacionRepositorio implements IRepositorioAsignacion {
     fin_jornada: string
   ): Promise<boolean> {
     const query =
-      'SELECT 1 FROM asignacion_consultorio ' +
+      'SELECT 1 FROM asignacion_medicos ' +
       'WHERE id_consultorio = $1 ' +
       'AND dia_semana = $2 ' +
       'AND inicio_jornada >= $3 ' +
@@ -53,9 +55,7 @@ export class AsignacionRepositorio implements IRepositorioAsignacion {
     return result.rows.length > 0;
   }
 
-  async crearAsignacion(
-    nuevaAsignacion: IAsignacionMedicoConsultorio
-  ): Promise<string> {
+  async crearAsignacion(nuevaAsignacion: IAsignacionMedico): Promise<string> {
     //Creación si pasa la comprobación
     const columnas: string[] = Object.keys(nuevaAsignacion).map((key) =>
       camelCaseASnakeCase(key)
@@ -64,7 +64,7 @@ export class AsignacionRepositorio implements IRepositorioAsignacion {
     const placeholders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
-      INSERT INTO asignacion_consultorio (${columnas.join(', ')})
+      INSERT INTO asignacion_medicos (${columnas.join(', ')})
       VALUES (${placeholders})
       RETURNING *
     `;

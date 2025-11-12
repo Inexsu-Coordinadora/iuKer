@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { crearMedicoEsquema } from '../../../../core/infraestructura/esquemas/medicoEsquema.js';
-import { CrearConsultorioEsquema } from '../../../../core/infraestructura/esquemas/consultorioEsquema.js';
+import { crearMedicoEsquema } from './medicoEsquema.js';
+import { CrearConsultorioEsquema } from './consultorioEsquema.js';
 
 // Expresión regular (RegEx) para validar el formato de hora HH:MM. Ej: 08:00 o 23:59
 const HORA_REGEX = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;

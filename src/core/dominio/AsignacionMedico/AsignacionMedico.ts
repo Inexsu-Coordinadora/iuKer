@@ -1,15 +1,13 @@
-import { IAsignacionMedicoConsultorio } from './IAsignacionMedicoConsultorio.js';
+import { IAsignacionMedico } from './IAsignacionMedico.js';
 
-export class AsignacionMedicoConsultorio
-  implements IAsignacionMedicoConsultorio
-{
+export class AsignacionMedico implements IAsignacionMedico {
   public tarjetaProfesionalMedico: string;
   public idConsultorio: string;
   public diaSemana: number;
   public inicioJornada: string;
   public finJornada: string;
 
-  constructor(data: IAsignacionMedicoConsultorio) {
+  constructor(data: IAsignacionMedico) {
     this.tarjetaProfesionalMedico = data.tarjetaProfesionalMedico;
     this.idConsultorio = data.idConsultorio;
     this.diaSemana = data.diaSemana;

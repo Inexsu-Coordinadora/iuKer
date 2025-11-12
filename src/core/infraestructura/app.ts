@@ -5,7 +5,7 @@ import { construirCitasEnrutados } from './rutas/citasMedicasEnrutador.js';
 import { construirPacientesEnrutador } from './rutas/pacientesEnrutador.js';
 import { construirMedicosEnrutador } from './rutas/medicosEnrutador.js';
 import { construirConsultorioEnrutador } from './rutas/consultoriosEnrutador.js';
-import { construirAsignacionEnrutador } from '../../servicios/asignacionMedicoConsultorio/infraestructura/rutas/asignacionEnrutador.js';
+import { construirAsignacionEnrutador } from '../infraestructura/rutas/asignacionEnrutador.js';
 
 const app = Fastify({ logger: true });
 
