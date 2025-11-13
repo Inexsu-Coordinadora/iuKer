@@ -10,10 +10,10 @@ function citasMedicasEnrutador(app: FastifyInstance, citasController: CitasContr
   app.get('/citas-medicas', citasController.obtenerCitas);
   app.get('/citas-medicas/:idCita', citasController.obetenerCitaPorId);
   app.post('/citas-medicas', citasController.AgendarCita);
-  app.put('/citas-medicas/reprogramar/:idCita', citasController.reprogramarCita);
-  app.put('/citas-medicas/finalizar/:idCita', citasController.finalizarCita);
-  app.put('/citas-medicas/cancelar/:idCita', citasController.cancelarCita);
-  app.delete('/citas-medicas/eliminar/:idCita', citasController.eliminarCita);
+  app.put('/citas-medicas/reprogramacion/:idCita', citasController.reprogramarCita);
+  app.put('/citas-medicas/finalizacion/:idCita', citasController.finalizarCita);
+  app.put('/citas-medicas/cancelacion/:idCita', citasController.cancelarCita);
+  app.delete('/citas-medicas/eliminacion/:idCita', citasController.eliminarCita);
 }
 
 export async function construirCitasEnrutados(app: FastifyInstance) {
