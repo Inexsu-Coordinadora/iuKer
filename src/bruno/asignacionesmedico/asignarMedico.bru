@@ -1,0 +1,21 @@
+meta {
+  name: asignarMedico
+  type: http
+  seq: 1
+}
+
+get {
+  url: localhost:3001/api/asignaciones
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "tarjetaProfesionalMedico": "MP001",
+    "idConsultorio": "C101",
+    "diaSemana": 6,
+    "inicioJornada": "12:00",
+    "finJornada": "16:00"
+  }
+}
