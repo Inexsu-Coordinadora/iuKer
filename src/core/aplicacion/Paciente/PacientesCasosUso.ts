@@ -1,5 +1,4 @@
 import { IPacientesCasosUso } from './IPacientesCasosUso.js';
-import { PacientesRepositorio } from '../../infraestructura/postgres/PacientesRepositorio.js';
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 import { Paciente } from '../../dominio/Paciente/Paciente.js';
 import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';
@@ -12,8 +11,7 @@ export class PacientesCasosUso implements IPacientesCasosUso {
   }
 
   async obtenerPacientePorId(numeroDoc: string): Promise<Paciente> {
-    const pacienteObtenido =
-      await this.pacientesRepositorio.obtenerPacientePorId(numeroDoc);
+    const pacienteObtenido = await this.pacientesRepositorio.obtenerPacientePorId(numeroDoc);
 
     return pacienteObtenido;
   }
@@ -21,11 +19,10 @@ export class PacientesCasosUso implements IPacientesCasosUso {
   async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
     const instanciaPaciente = new Paciente(nuevoPaciente);
 
-    const existePaciente =
-      await this.pacientesRepositorio.existePacientePorDocumento(
-        nuevoPaciente.numeroDoc,
-        nuevoPaciente.tipoDoc
-      );
+    const existePaciente = await this.pacientesRepositorio.existePacientePorDocumento(
+      nuevoPaciente.numeroDoc,
+      nuevoPaciente.tipoDoc
+    );
 
     if (existePaciente) {
       throw new Error(
@@ -33,19 +30,13 @@ export class PacientesCasosUso implements IPacientesCasosUso {
       );
     }
 
-    const idNuevoPaciente = await this.pacientesRepositorio.crearPaciente(
-      instanciaPaciente
-    );
+    const idNuevoPaciente = await this.pacientesRepositorio.crearPaciente(instanciaPaciente);
 
     return idNuevoPaciente;
   }
 
-  async actualizarPaciente(
-    numeroDoc: string,
-    paciente: Paciente
-  ): Promise<IPaciente> {
-    const pacienteActualizado =
-      await this.pacientesRepositorio.actualizarPaciente(numeroDoc, paciente);
+  async actualizarPaciente(numeroDoc: string, paciente: Paciente): Promise<IPaciente> {
+    const pacienteActualizado = await this.pacientesRepositorio.actualizarPaciente(numeroDoc, paciente);
     return pacienteActualizado || null;
   }
 

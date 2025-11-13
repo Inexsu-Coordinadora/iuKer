@@ -5,13 +5,9 @@ import { Paciente } from '../../dominio/Paciente/Paciente.js';
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
 export class PacientesRepositorio implements IPacientesRepositorio {
-  async existePacientePorDocumento(
-    numeroDoc: string,
-    tipoDoc: number
-  ): Promise<boolean> {
+  async existePacientePorDocumento(numeroDoc: string, tipoDoc: number): Promise<boolean> {
     // Consulta optimizada: solo necesitamos saber si existe una fila que coincida.
-    const query =
-      'SELECT 1 FROM pacientes WHERE numero_doc = $1 AND tipo_doc = $2 LIMIT 1';
+    const query = 'SELECT 1 FROM pacientes WHERE numero_doc = $1 AND tipo_doc = $2 LIMIT 1';
     const result = await ejecutarConsulta(query, [numeroDoc, tipoDoc]);
 
     // Si la consulta devuelve al menos una fila (length > 0), el paciente existe.
