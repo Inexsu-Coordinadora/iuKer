@@ -6,7 +6,7 @@ import {
 } from '../esquemas/esquemaPacientes.js';
 import { ZodError } from 'zod';
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
-import { IConsultaCitasPacienteCasosUso } from '../../aplicacion/servicios/ConsultaCitasPaciente/IConsultaCitasPacienteCasosUso.js';
+import { IConsultaCitasPacienteCasosUso } from '../../aplicacion/servicios/consultaCitasPaciente/IConsultaCitasPacienteCasosUso.js';
 
 export class PacientesControlador {
   constructor(private pacientesCasosUso: IPacientesCasosUso,

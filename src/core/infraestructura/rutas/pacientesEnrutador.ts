@@ -4,7 +4,7 @@ import { RepositorioPacientes } from '../postgres/PacientesRepositorio.js';
 import { PacientesCasosUso } from '../../aplicacion/Paciente/PacientesCasosUso.js';
 import { PacientesControlador } from '../controladores/PacientesControlador.js';
 import { CitasRepositorio } from '../postgres/CitasRepositorio.js';
-import { ConsultaPacienteCasosUso } from '../../aplicacion/servicios/ConsultaCitasPaciente/ConsultaCitasPacienteCasosUso.js';
+import { ConsultaPacienteCasosUso } from '../../aplicacion/servicios/consultaCitasPaciente/ConsultaCitasPacienteCasosUso.js';
 
 function pacientesEnrutador(
   app: FastifyInstance,
