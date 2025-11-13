@@ -1,4 +1,5 @@
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
+import { conversionAFechaColombia } from '../../../common/conversionAFechaColombia.js';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../dominio/CitaMedica/IRepositorioCitaMedica.js';
 import { citaMedicaDTO } from '../esquemas/citaMedicaEsquema.js';
@@ -64,8 +65,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
   }
 
   async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
-    const fecha = `${datosCitaMedica.fecha}T${datosCitaMedica.horaInicio}:00-05:00`;
-    const fechaColombia = new Date(fecha);
+    const fechaColombia = conversionAFechaColombia(datosCitaMedica.fecha, datosCitaMedica.horaInicio);
     const diaSemana = fechaColombia.getDay();
     const valores = [datosCitaMedica.medico, diaSemana, datosCitaMedica.horaInicio];
 
@@ -84,7 +84,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
 
   async agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
     const columnas = Object.keys(datosCitaMedica).map((key) => camelCaseASnakeCase(key));
-    const parametros: Array<string | number | Date> = Object.values(datosCitaMedica);
+    const parametros: Array<string | number> = Object.values(datosCitaMedica); //elimine date
     const placeHolders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
@@ -99,7 +99,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
 
   async cambiarEstado(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
     const columnas: string[] = Object.keys(datosCitaMedica).map((key) => camelCaseASnakeCase(key));
-    const parametros: Array<string | number | Date> = Object.values(datosCitaMedica);
+    const parametros: Array<string | number> = Object.values(datosCitaMedica); //elimine date
     const setClause = columnas.map((columna, i) => `${columna}=$${i + 1}`).join(', ');
     parametros.push(idCita);
 
