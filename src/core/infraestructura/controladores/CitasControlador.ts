@@ -4,6 +4,7 @@ import { citaMedicaDTO, crearCitaMedicaEsquema } from '../esquemas/citaMedicaEsq
 import { ZodError } from 'zod';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 import { IAgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamientoCita/IAgendamientoCitaCasosUso.js';
+import { EstadoHttp } from './estadoHttp.enum.js';
 
 export class CitasControlador {
   constructor(
@@ -16,12 +17,12 @@ export class CitasControlador {
       const { limite } = req.query;
       const citasEncontradas = await this.citasCasosUso.obtenerCitas(limite);
 
-      return res.code(200).send({
+      return res.code(EstadoHttp.OK).send({
         totalCitasEncontradas: citasEncontradas.length,
         citasMedicas: citasEncontradas,
       });
     } catch (err) {
-      return res.code(500).send({
+      return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error al obtener citas',
         error: err instanceof Error ? err.message : String(err),
       });
@@ -34,18 +35,18 @@ export class CitasControlador {
       const citaEncontrada = await this.citasCasosUso.obtenerCitaPorId(idCita);
 
       if (!citaEncontrada) {
-        return res.code(404).send({
+        return res.code(EstadoHttp.NO_ENCONTRADO).send({
           error: 'Cita no encontrada',
           mensaje: `No existe una cita con el ID '${idCita}'`,
         });
       }
 
-      return res.code(200).send({
+      return res.code(EstadoHttp.OK).send({
         mensaje: 'Cita encontrada',
         citaEncontrada,
       });
     } catch (err) {
-      return res.code(500).send({
+      return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error al obtener la cita',
         error: err instanceof Error ? err.message : String(err),
       });
@@ -57,19 +58,19 @@ export class CitasControlador {
       const datosCita = crearCitaMedicaEsquema.parse(req.body);
       const citaAgendada = await this.angendamientoCitaCasosUso.ejecutar(datosCita);
 
-      return res.code(201).send({
+      return res.code(EstadoHttp.CREADO).send({
         mensaje: 'Cita agendada correctamente',
         citaAgendada,
       });
     } catch (err) {
       if (err instanceof ZodError) {
-        return res.code(400).send({
+        return res.code(EstadoHttp.PETICION_INVALIDA).send({
           mensaje: 'Los datos proporcionados no son válidos',
           error: err.issues[0]?.message || 'Error desconocido',
         });
       }
 
-      return res.code(500).send({
+      return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error al agendar cita',
         error: err instanceof Error ? err.message : String(err),
       });
@@ -86,17 +87,17 @@ export class CitasControlador {
       const citaReprogramada = await this.citasCasosUso.reprogramarCita(idCita, nuevaInfoCita);
 
       if (!citaReprogramada) {
-        return res.code(404).send({
+        return res.code(EstadoHttp.NO_ENCONTRADO).send({
           mensaje: 'La cita no se pudo reprogramar porque no se econtró en el sistema de citas',
         });
       }
 
-      return res.code(200).send({
+      return res.code(EstadoHttp.OK).send({
         mensaje: 'Cita actualizada correctamente',
         citaReprogramada,
       });
     } catch (err) {
-      return res.code(500).send({
+      return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error al reprogramar la cita',
         error: err instanceof Error ? err.message : String(err),
       });
@@ -110,17 +111,17 @@ export class CitasControlador {
       const citafinalizada = await this.citasCasosUso.finalizarCita(idCita, datosCita);
 
       if (!citafinalizada) {
-        return res.code(404).send({
+        return res.code(EstadoHttp.NO_ENCONTRADO).send({
           mensaje: 'La cita no se encontró en el sistema',
         });
       }
 
-      return res.code(200).send({
+      return res.code(EstadoHttp.OK).send({
         mensaje: 'Cita finalizada correctamente',
         citafinalizada,
       });
     } catch (err) {
-      return res.code(500).send({
+      return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error al finalizar la cita',
         error: err instanceof Error ? err.message : String(err),
       });
@@ -134,17 +135,17 @@ export class CitasControlador {
       const citaCancelada = await this.citasCasosUso.cancelarCita(idCita, infoCitaCancelada);
 
       if (!citaCancelada) {
-        return res.code(404).send({
+        return res.code(EstadoHttp.NO_ENCONTRADO).send({
           mensaje: 'La cita no pudo ser cancelada porque no se encontró en sistema de citas ',
         });
       }
 
-      return res.code(200).send({
+      return res.code(EstadoHttp.OK).send({
         mensaje: 'Cita cancelada correctamente',
         citaCancelada,
       });
     } catch (err) {
-      return res.code(500).send({
+      return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error al cancelar la cita',
         error: err instanceof Error ? err.message : String(err),
       });
@@ -156,12 +157,12 @@ export class CitasControlador {
       const { idCita } = req.params;
       await this.citasCasosUso.eliminarCita(idCita);
 
-      return res.code(200).send({
+      return res.code(EstadoHttp.OK).send({
         mensaje: 'Cita eliminada correctamente',
         idCita,
       });
     } catch (err) {
-      return res.code(500).send({
+      return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error al eliminar la cita',
         error: err instanceof Error ? err.message : String(err),
       });
