@@ -1,8 +1,8 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 DROP SCHEMA IF EXISTS iuker CASCADE;
 CREATE SCHEMA iuker;
-ALTER DATABASE iukerdb SET search_path TO iuker, public;
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+SET search_path TO iuker;
 
 CREATE TABLE IF NOT EXISTS tipo_documentos(
   id_documento INT PRIMARY KEY,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS asignacion_medicos (
 );
 
 CREATE TABLE IF NOT EXISTS citas_medicas (
-  id_cita UUID PRIMARY KEY DEFAULT iuker.uuid_generate_v4(),
+  id_cita UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
   medico VARCHAR(15) NOT NULL REFERENCES medicos (tarjeta_profesional),
   tipo_doc_paciente INT NOT NULL,
   numero_doc_paciente VARCHAR(15) NOT NULL,
@@ -69,3 +69,5 @@ CREATE TABLE IF NOT EXISTS citas_medicas (
   id_cita_anterior UUID REFERENCES citas_medicas (id_cita),
   FOREIGN KEY (tipo_doc_paciente, numero_doc_paciente) REFERENCES pacientes(tipo_doc, numero_doc)
 );
+
+ALTER DATABASE iukerdb SET search_path TO iuker;
