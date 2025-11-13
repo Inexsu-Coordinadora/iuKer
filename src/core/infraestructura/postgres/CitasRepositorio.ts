@@ -1,6 +1,8 @@
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
+import { conversionAFechaColombia } from '../../../common/conversionAFechaColombia.js';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../dominio/CitaMedica/IRepositorioCitaMedica.js';
+import { citaMedicaDTO } from '../esquemas/citaMedicaEsquema.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 
 export class CitasRepositorio implements IRepositorioCitaMedica {
@@ -24,9 +26,65 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     return resultado.rows[0] || null;
   }
 
+  async disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
+    const valores = [datosCitaMedica.medico, datosCitaMedica.fecha, datosCitaMedica.horaInicio];
+
+    const query = `
+      SELECT COUNT(*) FROM citas_medicas
+      WHERE medico = $1
+      AND fecha = $2
+      AND hora_inicio < ($3::time + INTERVAL '30 minutes')
+      AND hora_fin > $3::time;
+    `;
+
+    const resultado = await ejecutarConsulta(query, valores);
+
+    return resultado.rows[0].count > 0;
+  }
+
+  async validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
+    const valores = [
+      datosCitaMedica.tipoDocPaciente,
+      datosCitaMedica.numeroDocPaciente,
+      datosCitaMedica.fecha,
+      datosCitaMedica.horaInicio,
+    ];
+
+    const query = `
+      SELECT COUNT(*) FROM citas_medicas
+      WHERE tipo_doc_paciente = $1
+      AND numero_doc_paciente = $2
+      AND fecha = $3
+      AND hora_inicio < ($4::time + INTERVAL '30 minutes')
+      AND hora_fin > $4::time;
+    `;
+
+    const resultado = await ejecutarConsulta(query, valores);
+
+    return resultado.rows[0].count > 0;
+  }
+
+  async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
+    const fechaColombia = conversionAFechaColombia(datosCitaMedica.fecha, datosCitaMedica.horaInicio);
+    const diaSemana = fechaColombia.getDay();
+    const valores = [datosCitaMedica.medico, diaSemana, datosCitaMedica.horaInicio];
+
+    const query = `
+      SELECT COUNT(*) FROM asignacion_medicos
+      WHERE tarjeta_profesional_medico = $1
+      AND dia_semana = $2
+      AND inicio_jornada <= $3::TIME
+      AND fin_jornada >= ($3::TIME + INTERVAL '30 minutes');
+    `;
+
+    const resultado = await ejecutarConsulta(query, valores);
+
+    return resultado.rows[0].count > 0;
+  }
+
   async agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
     const columnas = Object.keys(datosCitaMedica).map((key) => camelCaseASnakeCase(key));
-    const parametros: Array<string | number | Date> = Object.values(datosCitaMedica);
+    const parametros: Array<string | number> = Object.values(datosCitaMedica); //elimine date
     const placeHolders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
@@ -41,7 +99,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
 
   async cambiarEstado(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
     const columnas: string[] = Object.keys(datosCitaMedica).map((key) => camelCaseASnakeCase(key));
-    const parametros: Array<string | number | Date> = Object.values(datosCitaMedica);
+    const parametros: Array<string | number> = Object.values(datosCitaMedica); //elimine date
     const setClause = columnas.map((columna, i) => `${columna}=$${i + 1}`).join(', ');
     parametros.push(idCita);
 
