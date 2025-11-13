@@ -227,7 +227,6 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
       citaConflicto: citasResultado.rows[0] || undefined
     };
   }
-<<<<<<< HEAD
   // Reprograma una cita creando una nueva con referencia a la anterior
   async reprogramarCita(
       idCitaAnterior: string,
@@ -269,8 +268,6 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     const resultado = await ejecutarConsulta(query, [idCita]);
     return resultado.rows[0];
   }
-}
-=======
 
   async obtenerCitasPorPaciente(numeroDoc: string, limite?: number) : Promise <any[]> {
     const parametros: Array<string | number> = [numeroDoc];
@@ -291,4 +288,3 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     return (await ejecutarConsulta(query, parametros)).rows;
   }
 }
->>>>>>> feature/consulta-citas-paciente

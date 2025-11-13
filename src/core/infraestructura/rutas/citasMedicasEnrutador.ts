@@ -3,7 +3,7 @@ import { CitasControlador } from '../controladores/CitasControlador.js';
 import { CitasRepositorio } from '../postgres/CitasRepositorio.js';
 import { CitaMedicaCasosUso } from '../../aplicacion/CitaMedica/CitaMedicaCasosUso.js';
 import { AgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamientoCita/AgendamientoCitaCasosUso.js';
-import { MedicoRepositorio } from '../postgres/MedicosRepositorio.js';
+import { MedicosRepositorio } from '../postgres/MedicosRepositorio.js';
 import { PacientesRepositorio } from '../postgres/PacientesRepositorio.js';
 import { CancelacionReprogramacionCitaServicio } from
 '../../aplicacion/servicios/CancelacionReprogramacionCita/CancelacionReprogramacionCitaCasosUso.js';
@@ -21,7 +21,7 @@ function citasMedicasEnrutador(app: FastifyInstance, citasController: CitasContr
 export async function construirCitasEnrutados(app: FastifyInstance) {
   const citasRepositorio = new CitasRepositorio();
   const citasCasosUso = new CitaMedicaCasosUso(citasRepositorio);
-  const medicoRepositorio = new MedicoRepositorio();
+  const medicoRepositorio = new MedicosRepositorio();
   const pacienteRepositorio = new PacientesRepositorio();
   const agendamientoCitaCasosUso = new AgendamientoCitaCasosUso(
     citasRepositorio,

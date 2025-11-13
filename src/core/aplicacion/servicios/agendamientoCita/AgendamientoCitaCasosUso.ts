@@ -2,7 +2,7 @@ import { conversionAFechaColombia } from '../../../../common/conversionAFechaCol
 import { CitaMedica } from '../../../dominio/CitaMedica/CitaMedica.js';
 import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../../dominio/CitaMedica/IRepositorioCitaMedica.js';
-import { IMedicoRepositorio } from '../../../dominio/Medico/IMedicoRepositorio.js';
+import { IMedicosRepositorio } from '../../../dominio/Medico/IMedicosRepositorio.js';
 import { IPacientesRepositorio } from '../../../dominio/Paciente/IPacientesRepositorio.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { IAgendamientoCitaCasosUso } from './IAgendamientoCitaCasosUso.js';
@@ -10,7 +10,7 @@ import { IAgendamientoCitaCasosUso } from './IAgendamientoCitaCasosUso.js';
 export class AgendamientoCitaCasosUso implements IAgendamientoCitaCasosUso {
   constructor(
     private citasMedicasRepositorio: IRepositorioCitaMedica,
-    private medicosRepositorio: IMedicoRepositorio,
+    private medicosRepositorio: IMedicosRepositorio,
     private pacientesRepositorio: IPacientesRepositorio
   ) {}
 

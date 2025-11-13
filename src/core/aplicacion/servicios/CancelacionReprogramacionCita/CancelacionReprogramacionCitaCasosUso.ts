@@ -3,7 +3,7 @@ import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../../dominio/CitaMedica/IRepositorioCitaMedica.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { ICancelacionReprogramacionCitaServicio } from './ICancelacionReprogramacionCitaCasosUso.js';
-import { MedicoRepositorio } from '../../../infraestructura/postgres/MedicosRepositorio.js';
+import { MedicosRepositorio } from '../../../infraestructura/postgres/MedicosRepositorio.js';
 import { EstadoPersonalizado } from '../../../../common/EstadoPersonalizado.enum.js';
 export class CancelacionReprogramacionCitaServicio implements ICancelacionReprogramacionCitaServicio {
   constructor(private citasMedicasRepositorio: IRepositorioCitaMedica) {}
@@ -50,7 +50,7 @@ export class CancelacionReprogramacionCitaServicio implements ICancelacionReprog
       throw new Error('No puede reprogramar una cita finalizada');
     }
     // verificar que el medico si existe
-    const medicoRepositorio = new MedicoRepositorio();
+    const medicoRepositorio = new MedicosRepositorio();
     const medicoExiste = await medicoRepositorio.obtenerMedicoPorTarjetaProfesional(nuevosDatos.medico);
     if (!medicoExiste){
       throw new Error('El médico asignado no existe en el sistema');

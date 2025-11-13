@@ -1,10 +1,10 @@
 import { IConsultaCitasPacienteCasosUso } from './IConsultaCitasPacienteCasosUso.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
-import { IRepositorioPacientes } from '../../../dominio/Paciente/IRepositorioPacientes.js';
+import { IPacientesRepositorio } from '../../../dominio/Paciente/IPacientesRepositorio.js';
 import { CitasRepositorio } from '../../../infraestructura/postgres/CitasRepositorio.js';
 
 export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso{
-    constructor (private repositorioPacientes : IRepositorioPacientes,
+    constructor (private repositorioPacientes : IPacientesRepositorio,
         private repositorioCitaMedica : CitasRepositorio
     ) {}
 

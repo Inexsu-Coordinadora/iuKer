@@ -2,13 +2,13 @@ import { IAsignacionMedico } from '../../../dominio/AsignacionMedico/IAsignacion
 import { AsignacionMedico } from '../../../dominio/AsignacionMedico/AsignacionMedico.js';
 import { IAsignacionCasosUso } from '../AsignacionMedico/IAsignacionCasosUso.js';
 import { IAsignacionMedicoRepositorio } from '../../../dominio/AsignacionMedico/IAsignacionMedicoRepositorio.js';
-import { IMedicoRepositorio } from '../../../dominio/Medico/IMedicoRepositorio.js';
+import { IMedicosRepositorio } from '../../../dominio/Medico/IMedicosRepositorio.js';
 import { IRepositorioConsultorio } from '../../../dominio/Consultorio/IRepositorioConsultorio.js';
 
 export class AsignacionCasosUso implements IAsignacionCasosUso {
   constructor(
     private asignacionMedicoRepositorio: IAsignacionMedicoRepositorio,
-    private medicoRepositorio: IMedicoRepositorio,
+    private medicoRepositorio: IMedicosRepositorio,
     private consultorioRepositorio: IRepositorioConsultorio
   ) {}
 

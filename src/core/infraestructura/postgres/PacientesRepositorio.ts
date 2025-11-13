@@ -32,11 +32,6 @@ export class PacientesRepositorio implements IPacientesRepositorio {
     const result = await ejecutarConsulta(query, [numeroDoc]);
 
     return result.rows[0] || null;
-<<<<<<< HEAD
-=======
-    // const filaDB = result.rows[0] || null;
-    // return new Paciente(filaDB);
->>>>>>> feature/consulta-citas-paciente
   }
 
   async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
