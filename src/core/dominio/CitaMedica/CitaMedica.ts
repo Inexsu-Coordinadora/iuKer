@@ -1,26 +1,19 @@
-import { da } from 'zod/v4/locales';
 import { ICitaMedica } from './ICitaMedica.js';
-
+import { EstadoPersonalizado } from '../../../common/EstadoPersonalizado.enum.js';
 export class CitaMedica implements ICitaMedica {
-  readonly idCita: string;
   readonly medico: string;
   readonly tipoDocPaciente: number;
   readonly numeroDocPaciente: string;
-  readonly idConsultorio: string;
   readonly fecha: string;
   readonly horaInicio: string;
-  readonly duracion: string;
-  public estado: number;
+  public estado: ICitaMedica['estado'];
 
-  constructor(datosCitaMedica: ICitaMedica) {
-    this.idCita = datosCitaMedica.idCita;
+  constructor(datosCitaMedica: Omit<ICitaMedica, 'estado'>) {
     this.medico = datosCitaMedica.medico;
     this.tipoDocPaciente = datosCitaMedica.tipoDocPaciente;
     this.numeroDocPaciente = datosCitaMedica.numeroDocPaciente;
-    this.idConsultorio = datosCitaMedica.idConsultorio;
     this.fecha = datosCitaMedica.fecha;
     this.horaInicio = datosCitaMedica.horaInicio;
-    this.duracion = datosCitaMedica.duracion;
-    this.estado = 1;
+    this.estado = EstadoPersonalizado.ACTIVADA;
   }
 }
