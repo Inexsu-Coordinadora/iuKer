@@ -22,7 +22,11 @@ export class MedicosRepositorio implements IMedicosRepositorio {
     };
 
     async listarMedicos(limite? : number) : Promise <IMedico[]> {
-        let query = "SELECT * FROM medicos";
+        let query = 
+        `SELECT tarjeta_profesional, tipo_doc, numero_doc, nombre, 
+        apellido, fecha_nacimiento, sexo, especialidad, email, telefono
+        FROM medicos`;
+        
         const valores : number[] = [];
 
         if(limite !== undefined){
@@ -34,7 +38,12 @@ export class MedicosRepositorio implements IMedicosRepositorio {
     };
     
     async obtenerMedicoPorTarjetaProfesional(tarjetaProfesional: string) : Promise <IMedico | null> {
-        const query = "SELECT * FROM medicos WHERE tarjeta_profesional = $1";
+        const query = `
+        SELECT tarjeta_profesional, tipo_doc, numero_doc, nombre, 
+        apellido, fecha_nacimiento, sexo, especialidad, email, telefono
+        FROM medicos 
+        WHERE tarjeta_profesional = $1
+        `;
         return (await ejecutarConsulta(query,[tarjetaProfesional])).rows[0] || null;
     }; 
     
