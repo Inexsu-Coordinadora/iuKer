@@ -5,7 +5,7 @@ export const crearCitaMedicaEsquema = z.object({
     .string()
     .nonempty('El médico debe tener identificador profesional')
     .min(5, 'El documento profesional del médico debe tener mínimo 6 carateres')
-    .max(15, 'El documento profesional del médico debe tener máximo 15 caráteres')
+    .max(15, 'El documento profesional del médico debe tener máximo 15 carateres')
     .regex(/^[A-Za-z0-9]+$/, 'El ID del médico solo debe contener letras y números'),
 
   tipoDocPaciente: z
