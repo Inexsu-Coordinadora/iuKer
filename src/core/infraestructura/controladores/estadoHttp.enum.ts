@@ -1,0 +1,10 @@
+export enum EstadoHttp {
+  OK = 200,
+  CREADO = 201,
+
+  PETICION_INVALIDA = 400,
+  NO_ENCONTRADO = 404,
+  CONFLICTO = 409,
+
+  ERROR_INTERNO_SERVIDOR = 500,
+}

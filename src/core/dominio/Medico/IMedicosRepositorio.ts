@@ -1,6 +1,6 @@
 import { IMedico } from './IMedico.js'
 
-export interface IMedicoRepositorio {
+export interface IMedicosRepositorio {
     crearMedico(datosMedico : IMedico) : Promise <string>;
     listarMedicos(limite? : number) : Promise <IMedico[]>;
     obtenerMedicoPorTarjetaProfesional(tarjetaProfesional : string) : Promise <IMedico | null>; 
