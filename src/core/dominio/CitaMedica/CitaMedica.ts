@@ -1,5 +1,5 @@
 import { ICitaMedica } from './ICitaMedica.js';
-
+import { EstadoPersonalizado } from '../../../common/EstadoPersonalizado.enum.js';
 export class CitaMedica implements ICitaMedica {
   readonly medico: string;
   readonly tipoDocPaciente: number;
