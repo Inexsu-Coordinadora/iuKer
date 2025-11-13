@@ -227,6 +227,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
       citaConflicto: citasResultado.rows[0] || undefined
     };
   }
+<<<<<<< HEAD
   // Reprograma una cita creando una nueva con referencia a la anterior
   async reprogramarCita(
       idCitaAnterior: string,
@@ -269,3 +270,25 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     return resultado.rows[0];
   }
 }
+=======
+
+  async obtenerCitasPorPaciente(numeroDoc: string, limite?: number) : Promise <any[]> {
+    const parametros: Array<string | number> = [numeroDoc];
+    let query = `
+    SELECT c.fecha, c.hora_inicio, c.estado, (m.nombre || ' ' || COALESCE (m.apellido, '')) AS nombre_medico, co.ubicacion
+    FROM citas_medicas c
+    LEFT JOIN medicos m ON m.tarjeta_profesional = c.medico
+    LEFT JOIN asignacion_medicos am ON am.tarjeta_profesional_medico = m.tarjeta_profesional
+    LEFT JOIN consultorios co ON co.id_consultorio = am.id_consultorio
+    WHERE c.numero_doc_paciente = $1
+    ORDER BY c.fecha ASC
+    `
+    if(limite !== undefined){
+      query += ' LIMIT $2';
+      parametros.push(limite);
+    }
+
+    return (await ejecutarConsulta(query, parametros)).rows;
+  }
+}
+>>>>>>> feature/consulta-citas-paciente
