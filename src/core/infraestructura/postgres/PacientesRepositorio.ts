@@ -1,10 +1,10 @@
-import { IRepositorioPacientes } from '../../dominio/Paciente/IRepositorioPacientes.js';
+import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 import { Paciente } from '../../dominio/Paciente/Paciente.js';
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
-export class RepositorioPacientes implements IRepositorioPacientes {
+export class RepositorioPacientes implements IPacientesRepositorio {
   async obtenerPacientes(limite?: number): Promise<IPaciente[]> {
     let query = 'SELECT * FROM pacientes';
     const limiteParam: number[] = [];

@@ -1,13 +1,10 @@
 import { FastifyInstance } from 'fastify';
-import { IRepositorioPacientes } from '../../dominio/Paciente/IRepositorioPacientes.js';
+import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';
 import { RepositorioPacientes } from '../postgres/PacientesRepositorio.js';
 import { PacientesCasosUso } from '../../aplicacion/Paciente/PacientesCasosUso.js';
 import { PacientesControlador } from '../controladores/PacientesControlador.js';
 
-function pacientesEnrutador(
-  app: FastifyInstance,
-  pacientesControlador: PacientesControlador
-) {
+function pacientesEnrutador(app: FastifyInstance, pacientesControlador: PacientesControlador) {
   app.get('/pacientes', pacientesControlador.obtenerPacientes);
   app.get('/pacientes/:numeroDoc', pacientesControlador.obtenerPacientePorId);
   app.post('/pacientes', pacientesControlador.crearPaciente);
@@ -16,8 +13,7 @@ function pacientesEnrutador(
 }
 
 export async function construirPacientesEnrutador(app: FastifyInstance) {
-  const repositorioPacientes: IRepositorioPacientes =
-    new RepositorioPacientes();
+  const repositorioPacientes: IPacientesRepositorio = new RepositorioPacientes();
   const pacientesCasosUso = new PacientesCasosUso(repositorioPacientes);
   const pacientesControlador = new PacientesControlador(pacientesCasosUso);
 
