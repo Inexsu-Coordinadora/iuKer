@@ -17,13 +17,12 @@ export class CitasControlador {
       const citasEncontradas = await this.citasCasosUso.obtenerCitas(limite);
 
       return res.code(200).send({
-        mensaje: 'Citas encontradas exitosamente',
-        citasMedicas: citasEncontradas,
         totalCitasEncontradas: citasEncontradas.length,
+        citasMedicas: citasEncontradas,
       });
     } catch (err) {
       return res.code(500).send({
-        mensaje: 'Error al consultar las citas médicas',
+        mensaje: 'Error al obtener citas',
         error: err instanceof Error ? err.message : String(err),
       });
     }
@@ -36,17 +35,18 @@ export class CitasControlador {
 
       if (!citaEncontrada) {
         return res.code(404).send({
-          mensaje: 'Cita no encontrada',
+          error: 'Cita no encontrada',
+          mensaje: `No existe una cita con el ID '${idCita}'`,
         });
       }
 
       return res.code(200).send({
-        mensaje: 'Cita encontrada con éxito',
+        mensaje: 'Cita encontrada',
         citaEncontrada,
       });
     } catch (err) {
       return res.code(500).send({
-        mensaje: 'Error al consultar la cita médica',
+        mensaje: 'Error al obtener la cita',
         error: err instanceof Error ? err.message : String(err),
       });
     }
@@ -58,19 +58,19 @@ export class CitasControlador {
       const citaAgendada = await this.angendamientoCitaCasosUso.ejecutar(datosCita);
 
       return res.code(201).send({
-        mensaje: 'Cita agendada con éxito',
+        mensaje: 'Cita agendada correctamente',
         citaAgendada,
       });
     } catch (err) {
       if (err instanceof ZodError) {
         return res.code(400).send({
-          mensaje: 'Información inválida para agendar la cita',
+          mensaje: 'Los datos proporcionados no son válidos',
           error: err.issues[0]?.message || 'Error desconocido',
         });
       }
 
       return res.code(500).send({
-        mensaje: 'Error al intentar crear la cita',
+        mensaje: 'Error al agendar cita',
         error: err instanceof Error ? err.message : String(err),
       });
     }
@@ -106,12 +106,12 @@ export class CitasControlador {
   finalizarCita = async (req: FastifyRequest<{ Params: { idCita: string }; Body: ICitaMedica }>, res: FastifyReply) => {
     try {
       const { idCita } = req.params;
-      const infoCitaFinalizada = req.body;
-      const citafinalizada = await this.citasCasosUso.finalizarCita(idCita, infoCitaFinalizada);
+      const datosCita = req.body;
+      const citafinalizada = await this.citasCasosUso.finalizarCita(idCita, datosCita);
 
       if (!citafinalizada) {
         return res.code(404).send({
-          mensaje: 'La cita no pudo ser finalizada porque no se encontró en sistema de citas ',
+          mensaje: 'La cita no se encontró en el sistema',
         });
       }
 
@@ -158,7 +158,7 @@ export class CitasControlador {
 
       return res.code(200).send({
         mensaje: 'Cita eliminada correctamente',
-        idCita: idCita,
+        idCita,
       });
     } catch (err) {
       return res.code(500).send({
