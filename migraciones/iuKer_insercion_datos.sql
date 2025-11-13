@@ -1,52 +1,73 @@
--- ==============================================================
--- INSERCIÓN DE DATOS
--- ==============================================================
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- TIPOS DE DOCUMENTO
-INSERT INTO tipo_documentos (id_documento, descripcion) VALUES
-(1, 'Cédula'),
-(2, 'Tarjeta Identidad'),
-(3, 'Cédula Extranjería'),
-(4, 'Pasaporte');
+DROP SCHEMA IF EXISTS iuker CASCADE;
+CREATE SCHEMA iuker;
+SET search_path TO iuker;
 
--- ESTADOS GENERALES
-INSERT INTO estados (id_estado, descripcion) VALUES
-(1, 'Activa'),
-(2, 'Actualizada'),
-(3, 'Reprogramada'),
-(4, 'Finalizada'),
-(5, 'Cancelada'),
-(6, 'Ocupado'),
-(7, 'Disponible');
+CREATE TABLE IF NOT EXISTS tipo_documentos(
+  id_documento INT PRIMARY KEY,
+  descripcion VARCHAR(20) NOT NULL
+);
 
--- PACIENTES
-INSERT INTO pacientes (tipo_doc, numero_doc, nombre, apellido, fecha_nacimiento, sexo, email, telefono, direccion)
-VALUES
-(1, '100001', 'Juan', 'Pérez', '1995-06-15', 'M', 'juan.perez@mail.com', '3001112233', 'Cra 45 #12-30'),
-(3, '100002', 'Laura', 'Gómez', '1992-04-20', 'F', 'laura.gomez@mail.com', '3012223344', 'Cll 80 #45-10'),
-(2, '100003', 'Andrés', 'Ramírez', '1988-10-05', 'M', 'andres.ramirez@mail.com', '3023334455', 'Av 30 #9-22'),
-(4, '100004', 'María', 'López', '2000-01-12', 'F', 'maria.lopez@mail.com', '3044445566', 'Cll 10 #50-60');
+CREATE TABLE IF NOT EXISTS estados(
+	id_estado INT PRIMARY KEY,
+	descripcion VARCHAR(20) NOT NULL
+);
 
--- MÉDICOS
-INSERT INTO medicos (tarjeta_profesional, tipo_doc, numero_doc, nombre, apellido, fecha_nacimiento, sexo, especialidad, email, telefono)
-VALUES
-('MP001', 1, '900001', 'Carlos', 'Rodríguez', '1980-03-12', 'M', 'Medicina General', 'carlos.rodriguez@clinicaiuker.com', '3105556677'),
-('MP002', 1, '900002', 'Sofía', 'Martínez', '1985-11-23', 'F', 'Pediatría', 'sofia.martinez@clinicaiuker.com', '3116667788'),
-('MP003', 1, '900003', 'Julián', 'García', '1978-09-08', 'M', 'Cardiología', 'julian.garcia@clinicaiuker.com', '3127778899'),
-('MP004', 1, '900004', 'Valentina', 'Ruiz', '1990-02-17', 'F', 'Dermatología', 'valentina.ruiz@clinicaiuker.com', '3138889900');
+CREATE TABLE IF NOT EXISTS pacientes (
+  tipo_doc INT NOT NULL REFERENCES tipo_documentos (id_documento),
+  numero_doc VARCHAR(15) NOT NULL,
+  nombre VARCHAR(50) NOT NULL,
+  apellido VARCHAR(50) NOT NULL,
+  fecha_nacimiento DATE NOT NULL,
+  sexo CHAR(1) NOT NULL,
+  email VARCHAR(200) NOT NULL,
+  telefono VARCHAR(20) NOT NULL,
+  direccion VARCHAR(100) NOT NULL,
 
--- CONSULTORIOS
-INSERT INTO consultorios (id_consultorio, ubicacion, estado)
-VALUES
-('C101', 'Piso 1 - Frente a Recepción', 5),
-('C102', 'Piso 1 - Ala Norte', 6),
-('C201', 'Piso 2 - Junto a Radiología', 5),
-('C202', 'Piso 2 - Ala Sur', 6);
+  PRIMARY KEY (tipo_doc, numero_doc)
+);
 
--- CITAS MÉDICAS
-INSERT INTO citas_medicas (id_cita, medico, tipo_doc_paciente, numero_doc_paciente, id_consultorio, fecha, hora_inicio, duracion, estado)
-VALUES
-('A12546778931mc','MP001', 1, '100001', 'C101', '2025-11-30', '08:00', '30 minutos', 1),
-('B225dds5545','MP002', 3, '100002', 'C102', '2025-11-27', '09:00', '45 minutos', 1),
-('G654465646df16sdf','MP003', 2, '100003', 'C202', '2025-11-29', '10:30', '60 minutos', 1),
-('Hdf54sf1s31fs84ds5','MP004', 4, '100004', 'C201', '2025-11-01', '14:00', '90 minutos', 1);
+CREATE TABLE IF NOT EXISTS medicos (
+  tarjeta_profesional VARCHAR(15) PRIMARY KEY,
+  tipo_doc INT NOT NULL REFERENCES tipo_documentos (id_documento),
+  numero_doc VARCHAR(15) NOT NULL,
+  nombre VARCHAR(50) NOT NULL,
+  apellido VARCHAR(50) NOT NULL,
+  fecha_nacimiento DATE NOT NULL,
+  sexo CHAR(1) NOT NULL,
+  especialidad VARCHAR(50) NOT NULL,
+  email VARCHAR(200) NOT NULL,
+  telefono VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS consultorios (
+  id_consultorio VARCHAR(5) PRIMARY KEY,
+  ubicacion VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS asignacion_medicos (
+  id_asignacion  SERIAL PRIMARY KEY,
+  tarjeta_profesional_medico VARCHAR(15) NOT NULL REFERENCES medicos (tarjeta_profesional),
+  id_consultorio VARCHAR(5) NOT NULL REFERENCES consultorios (id_consultorio),
+  dia_semana INT NOT NULL CHECK (dia_semana BETWEEN 1 AND 7),
+  inicio_jornada TIME NOT NULL,
+  fin_jornada TIME NOT NULL,
+  UNIQUE (tarjeta_profesional_medico, id_consultorio, dia_semana, inicio_jornada, fin_jornada)
+);
+
+CREATE TABLE IF NOT EXISTS citas_medicas (
+  id_cita UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+  medico VARCHAR(15) NOT NULL REFERENCES medicos (tarjeta_profesional),
+  tipo_doc_paciente INT NOT NULL,
+  numero_doc_paciente VARCHAR(15) NOT NULL,
+  fecha DATE NOT NULL,
+  duracion INTERVAL NOT NULL DEFAULT INTERVAL '30 minutes',
+  hora_inicio TIME NOT NULL,
+  hora_fin TIME GENERATED ALWAYS AS (hora_inicio + duracion) STORED,
+  estado INT NOT NULL REFERENCES estados(id_estado),
+  id_cita_anterior UUID REFERENCES citas_medicas (id_cita),
+  FOREIGN KEY (tipo_doc_paciente, numero_doc_paciente) REFERENCES pacientes(tipo_doc, numero_doc)
+);
+
+ALTER DATABASE iukerdb SET search_path TO iuker;
