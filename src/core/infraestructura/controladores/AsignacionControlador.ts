@@ -5,6 +5,7 @@ import {
   AsignacionCreacionEsquema,
   IAsignacionCreacionDTO,
 } from '../esquemas/asignacionesEsquema.js';
+import { EstadoHttp } from './estadoHttp.enum.js';
 
 export class AsignacionControlador {
   constructor(private asignacionCasosUso: IAsignacionCasosUso) {}
@@ -21,13 +22,13 @@ export class AsignacionControlador {
         nuevaAsignacionValidada
       );
 
-      return reply.code(201).send({
+      return reply.code(EstadoHttp.CREADO).send({
         mensaje: 'Asignación creada exitosamente',
         idNuevaAsignacion: idNuevaAsignacion,
       });
     } catch (err) {
       if (err instanceof ZodError) {
-        return reply.code(400).send({
+        return reply.code(EstadoHttp.PETICION_INVALIDA).send({
           mensaje:
             'Error al crear la asignación, hay alguna invalidez en los datos enviados.',
           error: err.issues[0]?.message || 'Error de validación desconocido.',
@@ -39,14 +40,35 @@ export class AsignacionControlador {
       }
 
       if (err instanceof Error) {
-        return reply.code(409).send({
+        return reply.code(EstadoHttp.CONFLICTO).send({
           mensaje: 'Fallo en las Condiciones de Uso',
           error: err.message,
         });
       }
 
-      return reply.code(500).send({
+      return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error interno del servidor al crear la asignación',
+        error: (err as any).message || 'Error desconocido.',
+      });
+    }
+  };
+
+  eliminarAsignación = async (
+    request: FastifyRequest<{ Params: { tarjetaProfesionalMedico: string } }>,
+    reply: FastifyReply
+  ) => {
+    try {
+      const { tarjetaProfesionalMedico } = request.params;
+      await this.asignacionCasosUso.eliminarAsignacion(
+        tarjetaProfesionalMedico
+      );
+
+      return reply.code(EstadoHttp.OK).send({
+        mensaje: `Eliminado el medico con id '${tarjetaProfesionalMedico}'`,
+      });
+    } catch (err) {
+      return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
+        mensaje: 'Error interno del servidor al eliminar las asignaciónes',
         error: (err as any).message || 'Error desconocido.',
       });
     }

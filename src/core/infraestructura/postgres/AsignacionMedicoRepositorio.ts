@@ -72,4 +72,13 @@ export class AsignacionMedicoRepositorio
     const result = await ejecutarConsulta(query, parametros);
     return result.rows[0].id_asignacion;
   }
+
+  async eliminarAsignacion(tarjetaProfesionalMedico: string): Promise<void> {
+    const parametros = tarjetaProfesionalMedico;
+    const query =
+      'DELETE FROM asignacion_medicos ' +
+      'WHERE tarjeta_profesional_medico = $1';
+
+    await ejecutarConsulta(query, [parametros]);
+  }
 }

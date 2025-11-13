@@ -2,4 +2,6 @@ import { IAsignacionMedico } from '../../../dominio/AsignacionMedico/IAsignacion
 
 export interface IAsignacionCasosUso {
   crearAsignacion(nuevaAsignacion: IAsignacionMedico): Promise<string>;
+
+  eliminarAsignacion(tarjetaProfesionalMedico: string): Promise<void>;
 }

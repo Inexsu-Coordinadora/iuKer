@@ -13,6 +13,10 @@ function asignacionEnrutador(
   asignacionControlador: AsignacionControlador
 ) {
   app.post('/asignaciones', asignacionControlador.crearAsignacion);
+  app.delete(
+    '/asignaciones/:tarjetaProfesionalMedico',
+    asignacionControlador.eliminarAsignación
+  );
 }
 
 export async function construirAsignacionEnrutador(app: FastifyInstance) {

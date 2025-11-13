@@ -17,4 +17,6 @@ export interface IAsignacionMedicoRepositorio {
     inicio_jornada: string,
     fin_jornada: string
   ): Promise<boolean>;
+
+  eliminarAsignacion(tarjetaProfesionalMedico: string): Promise<void>;
 }

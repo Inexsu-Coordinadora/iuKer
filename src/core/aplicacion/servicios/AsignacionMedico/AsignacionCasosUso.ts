@@ -69,4 +69,10 @@ export class AsignacionCasosUso implements IAsignacionCasosUso {
 
     return idNuevaAsignacion;
   }
+
+  async eliminarAsignacion(tarjetaProfesionalMedico: string): Promise<void> {
+    await this.asignacionMedicoRepositorio.eliminarAsignacion(
+      tarjetaProfesionalMedico
+    );
+  }
 }
