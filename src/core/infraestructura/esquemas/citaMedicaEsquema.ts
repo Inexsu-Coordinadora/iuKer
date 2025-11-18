@@ -1,5 +1,5 @@
 import { z } from 'zod';
-
+const estadosValidos = [1, 2, 3, 4, 5] as const;
 export const crearCitaMedicaEsquema = z.object({
   medico: z
     .string()

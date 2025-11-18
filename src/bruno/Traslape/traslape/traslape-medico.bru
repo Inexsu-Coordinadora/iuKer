@@ -1,0 +1,21 @@
+meta {
+  name: 3.1 Error - Traslape del Médico
+  type: http
+  seq: 10
+}
+
+post {
+  url: http://127.0.0.1:3008/api/citas-medicas
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "medico": "MP001",
+    "tipoDocPaciente": 1,
+    "numeroDocPaciente": "100001",
+    "fecha": "2025-12-01",
+    "horaInicio": "08:30"
+  }
+}

@@ -1,5 +1,4 @@
 import { IPacientesCasosUso } from './IPacientesCasosUso.js';
-import { PacientesRepositorio } from '../../infraestructura/postgres/PacientesRepositorio.js';
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 import { Paciente } from '../../dominio/Paciente/Paciente.js';
 import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';

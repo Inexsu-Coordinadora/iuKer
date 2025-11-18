@@ -1,5 +1,4 @@
 import { FastifyInstance } from 'fastify';
-import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';
 import { PacientesRepositorio } from '../postgres/PacientesRepositorio.js';
 import { PacientesCasosUso } from '../../aplicacion/Paciente/PacientesCasosUso.js';
 import { PacientesControlador } from '../controladores/PacientesControlador.js';
@@ -19,7 +18,7 @@ function pacientesEnrutador(
 }
 
 export async function construirPacientesEnrutador(app: FastifyInstance) {
-  const repositorioPacientes: IRepositorioPacientes = new RepositorioPacientes();
+  const repositorioPacientes = new PacientesRepositorio();
   const citasRepositorio = new CitasRepositorio();
   const pacientesCasosUso = new PacientesCasosUso(repositorioPacientes);
   const consultarCitasPacienteCasosUso = new ConsultaPacienteCasosUso(repositorioPacientes, citasRepositorio);
