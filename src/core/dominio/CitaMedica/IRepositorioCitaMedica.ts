@@ -11,4 +11,5 @@ export interface IRepositorioCitaMedica {
   disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
   validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
   validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
+  obtenerCitasPorPaciente(numeroDoc: string, limite?: number) : Promise <any[]>;
 }

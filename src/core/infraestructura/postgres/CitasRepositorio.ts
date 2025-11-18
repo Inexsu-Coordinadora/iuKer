@@ -117,4 +117,23 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
   async eliminarCita(idCita: string): Promise<void> {
     await ejecutarConsulta('DELETE FROM citas_medicas WHERE id_cita = $1', [idCita]);
   }
+
+  async obtenerCitasPorPaciente(numeroDoc: string, limite?: number) : Promise <any[]> {
+    const parametros: Array<string | number> = [numeroDoc];
+    let query = `
+    SELECT c.fecha, c.hora_inicio, c.estado, (m.nombre || ' ' || COALESCE (m.apellido, '')) AS nombre_medico, co.ubicacion
+    FROM citas_medicas c
+    LEFT JOIN medicos m ON m.tarjeta_profesional = c.medico
+    LEFT JOIN asignacion_medicos am ON am.tarjeta_profesional_medico = m.tarjeta_profesional
+    LEFT JOIN consultorios co ON co.id_consultorio = am.id_consultorio
+    WHERE c.numero_doc_paciente = $1
+    ORDER BY c.fecha ASC
+    `
+    if(limite !== undefined){
+      query += ' LIMIT $2';
+      parametros.push(limite);
+    }
+
+    return (await ejecutarConsulta(query, parametros)).rows;
+  }
 }

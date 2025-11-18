@@ -1,10 +1,11 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { IMedicoCasosUso } from '../../aplicacion/Medico/IMedicoCasosUso.js';
+import { IMedicosCasosUso } from '../../aplicacion/Medico/IMedicosCasosUso.js';
 import { MedicoDTO, MedicoActualizarDTO, crearMedicoEsquema } from '../esquemas/medicoEsquema.js';
 import { ZodError } from 'zod';
+import { EstadoHttp } from './estadoHttp.enum.js';
 
 export class MedicosControlador{
-    constructor(private medicoCasosUso : IMedicoCasosUso) {}
+    constructor(private medicosCasosUso : IMedicosCasosUso) {}
 
     crearMedico = async(
         request : FastifyRequest <{Body : MedicoDTO}>,
@@ -12,20 +13,20 @@ export class MedicosControlador{
     ) => {
         try {
             const nuevoMedico = crearMedicoEsquema.parse(request.body);
-            const nuevaTarjetaProfesional = await this.medicoCasosUso.crearMedico(nuevoMedico);
+            const nuevaTarjetaProfesional = await this.medicosCasosUso.crearMedico(nuevoMedico);
 
-            return reply.code(200).send({
+            return reply.code(EstadoHttp.CREADO).send({
                 mensaje: "El médico se creo correctamente",
                 TarjetaProfesional: nuevaTarjetaProfesional
             });
         }catch (er) {
             if (er instanceof ZodError){
-                return reply.code(400).send({
+                return reply.code(EstadoHttp.PETICION_INVALIDA).send({
                     mensaje: "Error al crear un nuevo médico",
                     error: er.issues[0]?.message || "Error desconocido"
                 });
             }
-            return reply.code(500).send({
+            return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
                 mensaje: "Error al crear un nuevo médico",
                 error: er instanceof Error ? er.message : String(er)
             });
@@ -38,15 +39,15 @@ export class MedicosControlador{
     ) => {
         try {
             const { limite } = request.query;
-            const medicosEncontrados = await this.medicoCasosUso.listarMedicos(limite);
+            const medicosEncontrados = await this.medicosCasosUso.listarMedicos(limite);
 
-            return reply.code(200).send({
+            return reply.code(EstadoHttp.OK).send({
                 mensaje: "Médicos encontrados correctamente",
                 medicos: medicosEncontrados,
                 cantidad : medicosEncontrados.length
             });
         }catch (er){
-            return reply.code(500).send({
+            return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
                 mensaje: "Error al obtener los médicos",
                 error: er instanceof Error? er.message : er
             });
@@ -59,20 +60,20 @@ export class MedicosControlador{
     ) => {
         try{
             const { tarjetaProfesional } = request.params;
-            const medicoEncontrado = await this.medicoCasosUso.obtenerMedicoPorTarjetaProfesional(tarjetaProfesional);
+            const medicoEncontrado = await this.medicosCasosUso.obtenerMedicoPorTarjetaProfesional(tarjetaProfesional);
 
             if(!medicoEncontrado){
-                return reply.code(404).send({
+                return reply.code(EstadoHttp.NO_ENCONTRADO).send({
                     mensaje: "Médico no encontrado"
                 });
             }
 
-            return reply.code(200).send({
+            return reply.code(EstadoHttp.OK).send({
                 mensaje: "Médico encontrado correctamente",
                 medico: medicoEncontrado
             })
         }catch(er){
-            return reply.code(500).send({
+            return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
                 mensaje: "Error al obtener el médico",
                 error: er instanceof Error? er.message : er
             });
@@ -86,20 +87,20 @@ export class MedicosControlador{
         try{
             const { tarjetaProfesional } = request.params;
             const nuevoMedico = request.body;
-            const medicoActualizado = await this.medicoCasosUso.actualizarMedico(tarjetaProfesional, nuevoMedico);
+            const medicoActualizado = await this.medicosCasosUso.actualizarMedico(tarjetaProfesional, nuevoMedico);
 
             if(!medicoActualizado){
-                return reply.code(404).send({
+                return reply.code(EstadoHttp.NO_ENCONTRADO).send({
                     mensaje: "Médico no encontrado"
                 });
             }
 
-            return reply.code(200).send({
+            return reply.code(EstadoHttp.OK).send({
                 mensaje: "Médico actualizado correctamente",
                 medico: medicoActualizado
             });
         }catch(er){
-            return reply.code(500).send({
+            return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
                 mensaje: "Error al actualizar el médico",
                 error: er instanceof Error? er.message : er
             });
@@ -112,14 +113,14 @@ export class MedicosControlador{
     ) => {
         try{
             const { tarjetaProfesional } = request.params;
-            await this.medicoCasosUso.eliminarMedico(tarjetaProfesional);
+            await this.medicosCasosUso.eliminarMedico(tarjetaProfesional);
 
-            return reply.code(200).send({
+            return reply.code(EstadoHttp.OK).send({
                 mensaje: "Médico eliminado correctamente",
                 tarjetaProfesional: tarjetaProfesional
             });
         }catch(er){
-            return reply.code(500).send({
+            return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
                 mensaje: "Error al eliminar el médico",
                 error: er instanceof Error? er.message : er
             });
