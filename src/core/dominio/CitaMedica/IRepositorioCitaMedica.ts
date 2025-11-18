@@ -6,4 +6,5 @@ export interface IRepositorioCitaMedica {
   agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica>;
   cambiarEstado(idCita: string, datosCitaMedica: ICitaMedica): Promise<ICitaMedica>;
   eliminarCita(idCita: string): Promise<void>;
+  obtenerCitasPorPaciente(numeroDoc: string, limite?: number) : Promise <any[]>;
 }

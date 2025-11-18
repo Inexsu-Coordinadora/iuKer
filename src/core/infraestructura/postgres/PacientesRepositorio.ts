@@ -35,9 +35,9 @@ export class PacientesRepositorio implements IPacientesRepositorio {
     const query = 'SELECT * FROM pacientes WHERE numero_doc = $1';
     const result = await ejecutarConsulta(query, [numeroDoc]);
 
-    const filaDB = result.rows[0] || null;
-
-    return new Paciente(filaDB);
+    return result.rows[0] || null;
+    // const filaDB = result.rows[0] || null;
+    // return new Paciente(filaDB);
   }
 
   async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
