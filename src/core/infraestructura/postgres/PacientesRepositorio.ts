@@ -36,16 +36,11 @@ export class PacientesRepositorio implements IPacientesRepositorio {
     const result = await ejecutarConsulta(query, [numeroDoc]);
 
     return result.rows[0] || null;
-    // const filaDB = result.rows[0] || null;
-    // return new Paciente(filaDB);
   }
 
   async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
-    const columnas: string[] = Object.keys(nuevoPaciente).map((key) =>
-      camelCaseASnakeCase(key)
-    );
-    const parametros: Array<string | number | Date> =
-      Object.values(nuevoPaciente);
+    const columnas: string[] = Object.keys(nuevoPaciente).map((key) => camelCaseASnakeCase(key));
+    const parametros: Array<string | number | Date> = Object.values(nuevoPaciente);
     const placeholders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
@@ -58,15 +53,9 @@ export class PacientesRepositorio implements IPacientesRepositorio {
     return result.rows[0].numeroDoc;
   }
 
-  async actualizarPaciente(
-    numeroDoc: string,
-    datosPaciente: IPaciente
-  ): Promise<IPaciente> {
-    const columnas: string[] = Object.keys(datosPaciente).map((key) =>
-      camelCaseASnakeCase(key)
-    );
-    const parametros: Array<string | number | Date> =
-      Object.values(datosPaciente);
+  async actualizarPaciente(numeroDoc: string, datosPaciente: IPaciente): Promise<IPaciente> {
+    const columnas: string[] = Object.keys(datosPaciente).map((key) => camelCaseASnakeCase(key));
+    const parametros: Array<string | number | Date> = Object.values(datosPaciente);
     const clausulaSet = columnas.map((col, i) => `${col}=$${i + 1}`).join(', ');
     parametros.push(numeroDoc);
 
@@ -87,8 +76,6 @@ export class PacientesRepositorio implements IPacientesRepositorio {
   }
 
   async borrarPaciente(numeroDoc: string): Promise<void> {
-    await ejecutarConsulta('DELETE FROM pacientes WHERE numero_doc = $1', [
-      numeroDoc,
-    ]);
+    await ejecutarConsulta('DELETE FROM pacientes WHERE numero_doc = $1', [numeroDoc]);
   }
 }
