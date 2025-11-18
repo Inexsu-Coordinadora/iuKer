@@ -29,4 +29,9 @@ export interface IRepositorioCitaMedica {
   reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<ICitaMedica>;
   cancelarCita(idCita: string): Promise<ICitaMedica>;
   finalizarCita(idCita: string): Promise<ICitaMedica>;
+
+  disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
+  validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
+  validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
+  obtenerCitasPorPaciente(numeroDoc: string, limite?: number) : Promise <any[]>;
 }

@@ -4,6 +4,9 @@ import { CitasRepositorio } from '../postgres/CitasRepositorio.js';
 import { CitaMedicaCasosUso } from '../../aplicacion/CitaMedica/CitaMedicaCasosUso.js';
 import { CancelacionReprogramacionCitaServicio } from
 '../../aplicacion/servicios/CancelacionReprogramacionCita/CancelacionReprogramacionCitaCasosUso.js';
+import { AgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamientoCita/AgendamientoCitaCasosUso.js';
+import { MedicosRepositorio } from '../postgres/MedicosRepositorio.js';
+import { PacientesRepositorio } from '../postgres/PacientesRepositorio.js';
 
 function citasMedicasEnrutador(app: FastifyInstance, citasController: CitasControlador) {
   app.get('/citas-medicas', citasController.obtenerCitas);
@@ -19,6 +22,21 @@ export async function construirCitasEnrutados(app: FastifyInstance) {
   const citasRepositorio = new CitasRepositorio();
   const citasCasosUso = new CitaMedicaCasosUso(citasRepositorio);
   const cancelacionReprogramacionServicio = new CancelacionReprogramacionCitaServicio(citasRepositorio);
-  const citasController = new CitasControlador(citasCasosUso, cancelacionReprogramacionServicio);
+
+  const medicoRepositorio = new MedicosRepositorio();
+  const pacienteRepositorio = new PacientesRepositorio();
+
+  const agendamientoCitaCasosUso = new AgendamientoCitaCasosUso(
+    citasRepositorio,
+    medicoRepositorio,
+    pacienteRepositorio
+  );
+  
+  const citasController = new CitasControlador(
+    citasCasosUso,
+    cancelacionReprogramacionServicio,
+    agendamientoCitaCasosUso
+
+  );
   citasMedicasEnrutador(app, citasController);
 }

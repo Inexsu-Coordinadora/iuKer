@@ -1,9 +1,9 @@
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
+import { conversionAFechaColombia } from '../../../common/conversionAFechaColombia.js';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../dominio/CitaMedica/IRepositorioCitaMedica.js';
-import { ejecutarConsulta } from './clientePostgres.js';
-import { conversionAFechaColombia } from '../../../common/conversionAFechaColombia.js';
 import { citaMedicaDTO } from '../esquemas/citaMedicaEsquema.js';
+import { ejecutarConsulta } from './clientePostgres.js';
 
 export class CitasRepositorio implements IRepositorioCitaMedica {
   async obtenerCitas(limite?: number): Promise<ICitaMedica[]> {
@@ -24,6 +24,62 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     const resultado = await ejecutarConsulta(query, [idCita]);
 
     return resultado.rows[0] || null;
+  }
+
+  async disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
+    const valores = [datosCitaMedica.medico, datosCitaMedica.fecha, datosCitaMedica.horaInicio];
+
+    const query = `
+      SELECT COUNT(*) FROM citas_medicas
+      WHERE medico = $1
+      AND fecha = $2
+      AND hora_inicio < ($3::time + INTERVAL '30 minutes')
+      AND hora_fin > $3::time;
+    `;
+
+    const resultado = await ejecutarConsulta(query, valores);
+
+    return resultado.rows[0].count > 0;
+  }
+
+  async validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
+    const valores = [
+      datosCitaMedica.tipoDocPaciente,
+      datosCitaMedica.numeroDocPaciente,
+      datosCitaMedica.fecha,
+      datosCitaMedica.horaInicio,
+    ];
+
+    const query = `
+      SELECT COUNT(*) FROM citas_medicas
+      WHERE tipo_doc_paciente = $1
+      AND numero_doc_paciente = $2
+      AND fecha = $3
+      AND hora_inicio < ($4::time + INTERVAL '30 minutes')
+      AND hora_fin > $4::time;
+    `;
+
+    const resultado = await ejecutarConsulta(query, valores);
+
+    return resultado.rows[0].count > 0;
+  }
+
+  async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
+    const fechaColombia = conversionAFechaColombia(datosCitaMedica.fecha, datosCitaMedica.horaInicio);
+    const diaSemana = fechaColombia.getDay();
+    const valores = [datosCitaMedica.medico, diaSemana, datosCitaMedica.horaInicio];
+
+    const query = `
+      SELECT COUNT(*) FROM asignacion_medicos
+      WHERE tarjeta_profesional_medico = $1
+      AND dia_semana = $2
+      AND inicio_jornada <= $3::TIME
+      AND fin_jornada >= ($3::TIME + INTERVAL '30 minutes');
+    `;
+
+    const resultado = await ejecutarConsulta(query, valores);
+
+    return resultado.rows[0].count > 0;
   }
 
   async agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
@@ -118,24 +174,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
       citaConflicto: resultado.rows[0] || undefined
     };
   }
-  //  Verifica si el medico tiene un turno asignado para la fecha y hora pedida
-  async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
-    const fechaColombia = conversionAFechaColombia(datosCitaMedica.fecha, datosCitaMedica.horaInicio);
-    const diaSemana = fechaColombia.getDay();
-    const valores = [datosCitaMedica.medico, diaSemana, datosCitaMedica.horaInicio];
 
-    const query = `
-      SELECT COUNT(*) FROM asignacion_medicos
-      WHERE tarjeta_profesional_medico = $1
-      AND dia_semana = $2
-      AND inicio_jornada <= $3::TIME
-      AND fin_jornada >= ($3::TIME + INTERVAL '30 minutes');
-    `;
-
-    const resultado = await ejecutarConsulta(query, valores);
-
-    return resultado.rows[0].count > 0;
-  }
   async verificarTraslapeConsultorio(
     medico: string,
     fecha: string,
@@ -227,5 +266,24 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
 
     const resultado = await ejecutarConsulta(query, [idCita]);
     return resultado.rows[0];
+  }
+
+  async obtenerCitasPorPaciente(numeroDoc: string, limite?: number) : Promise <any[]> {
+    const parametros: Array<string | number> = [numeroDoc];
+    let query = `
+    SELECT c.fecha, c.hora_inicio, c.estado, (m.nombre || ' ' || COALESCE (m.apellido, '')) AS nombre_medico, co.ubicacion
+    FROM citas_medicas c
+    LEFT JOIN medicos m ON m.tarjeta_profesional = c.medico
+    LEFT JOIN asignacion_medicos am ON am.tarjeta_profesional_medico = m.tarjeta_profesional
+    LEFT JOIN consultorios co ON co.id_consultorio = am.id_consultorio
+    WHERE c.numero_doc_paciente = $1
+    ORDER BY c.fecha ASC
+    `
+    if(limite !== undefined){
+      query += ' LIMIT $2';
+      parametros.push(limite);
+    }
+
+    return (await ejecutarConsulta(query, parametros)).rows;
   }
 }

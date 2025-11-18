@@ -1,10 +1,23 @@
-import { IRepositorioPacientes } from '../../dominio/Paciente/IRepositorioPacientes.js';
+import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';
 import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 import { Paciente } from '../../dominio/Paciente/Paciente.js';
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
-export class RepositorioPacientes implements IRepositorioPacientes {
+export class PacientesRepositorio implements IPacientesRepositorio {
+  async existePacientePorDocumento(
+    numeroDoc: string,
+    tipoDoc: number
+  ): Promise<boolean> {
+    // Consulta optimizada: solo necesitamos saber si existe una fila que coincida.
+    const query =
+      'SELECT 1 FROM pacientes WHERE numero_doc = $1 AND tipo_doc = $2 LIMIT 1';
+    const result = await ejecutarConsulta(query, [numeroDoc, tipoDoc]);
+
+    // Si la consulta devuelve al menos una fila (length > 0), el paciente existe.
+    return result.rows.length > 0;
+  }
+
   async obtenerPacientes(limite?: number): Promise<IPaciente[]> {
     let query = 'SELECT * FROM pacientes';
     const limiteParam: number[] = [];
@@ -22,17 +35,12 @@ export class RepositorioPacientes implements IRepositorioPacientes {
     const query = 'SELECT * FROM pacientes WHERE numero_doc = $1';
     const result = await ejecutarConsulta(query, [numeroDoc]);
 
-    const filaDB = result.rows[0] || null;
-
-    return new Paciente(filaDB);
+    return result.rows[0] || null;
   }
 
   async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
-    const columnas: string[] = Object.keys(nuevoPaciente).map((key) =>
-      camelCaseASnakeCase(key)
-    );
-    const parametros: Array<string | number | Date> =
-      Object.values(nuevoPaciente);
+    const columnas: string[] = Object.keys(nuevoPaciente).map((key) => camelCaseASnakeCase(key));
+    const parametros: Array<string | number | Date> = Object.values(nuevoPaciente);
     const placeholders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
@@ -45,15 +53,9 @@ export class RepositorioPacientes implements IRepositorioPacientes {
     return result.rows[0].numeroDoc;
   }
 
-  async actualizarPaciente(
-    numeroDoc: string,
-    datosPaciente: IPaciente
-  ): Promise<IPaciente> {
-    const columnas: string[] = Object.keys(datosPaciente).map((key) =>
-      camelCaseASnakeCase(key)
-    );
-    const parametros: Array<string | number | Date> =
-      Object.values(datosPaciente);
+  async actualizarPaciente(numeroDoc: string, datosPaciente: IPaciente): Promise<IPaciente> {
+    const columnas: string[] = Object.keys(datosPaciente).map((key) => camelCaseASnakeCase(key));
+    const parametros: Array<string | number | Date> = Object.values(datosPaciente);
     const clausulaSet = columnas.map((col, i) => `${col}=$${i + 1}`).join(', ');
     parametros.push(numeroDoc);
 
@@ -74,8 +76,6 @@ export class RepositorioPacientes implements IRepositorioPacientes {
   }
 
   async borrarPaciente(numeroDoc: string): Promise<void> {
-    await ejecutarConsulta('DELETE FROM pacientes WHERE numero_doc = $1', [
-      numeroDoc,
-    ]);
+    await ejecutarConsulta('DELETE FROM pacientes WHERE numero_doc = $1', [numeroDoc]);
   }
 }

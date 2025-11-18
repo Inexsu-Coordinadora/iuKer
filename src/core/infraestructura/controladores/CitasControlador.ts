@@ -5,12 +5,14 @@ import { ZodError } from 'zod';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 import { ICancelacionReprogramacionCitaServicio } from
 '../../aplicacion/servicios/CancelacionReprogramacionCita/ICancelacionReprogramacionCitaCasosUso.js';
+import { IAgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamientoCita/IAgendamientoCitaCasosUso.js';
 import { EstadoHttp } from './estadoHttp.enum.js';
 
 export class CitasControlador {
   constructor(
     private citasCasosUso: ICitaMedicaCasosUso,
-    private cancelacionReprogramacionServicio: ICancelacionReprogramacionCitaServicio
+    private cancelacionReprogramacionServicio: ICancelacionReprogramacionCitaServicio,
+    private angendamientoCitaCasosUso: IAgendamientoCitaCasosUso
   ) {}
 
   obtenerCitas = async (
@@ -54,8 +56,8 @@ export class CitasControlador {
 
     } catch (err) {
       return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
-        error: "Error al obtener la cita",
-        mensaje: err instanceof Error ? err.message : String(err),
+        mensaje: 'Error al obtener la cita',
+        error: err instanceof Error ? err.message : String(err),
       });
     }
   };
@@ -66,21 +68,21 @@ export class CitasControlador {
   ) => {
     try {
       const datosCita = crearCitaMedicaEsquema.parse(req.body);
-      const citaAgendada = await this.citasCasosUso.agendarCita(datosCita);
+      const citaAgendada = await this.angendamientoCitaCasosUso.ejecutar(datosCita);
 
       return res.code(EstadoHttp.CREADO).send({
         mensaje: 'Cita agendada correctamente',
-        cita: citaAgendada
+        citaAgendada,
       });
     } catch (err) {
       if (err instanceof ZodError) {
         return res.code(EstadoHttp.PETICION_INVALIDA).send({
           mensaje: 'Los datos proporcionados no son válidos',
-          detalles: err.issues[0]?.message || 'Error desconocido'
+          error: err.issues[0]?.message || 'Error desconocido',
         });
       }
 
-      return res.code(EstadoHttp.PETICION_INVALIDA).send({
+      return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error al agendar cita',
         error: err instanceof Error ? err.message : String(err),
       });
