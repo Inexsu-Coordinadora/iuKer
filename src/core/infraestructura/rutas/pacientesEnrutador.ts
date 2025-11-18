@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { IRepositorioPacientes } from '../../dominio/Paciente/IRepositorioPacientes.js';
-import { RepositorioPacientes } from '../postgres/PacientesRepositorio.js';
+import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';
+import { PacientesRepositorio } from '../postgres/PacientesRepositorio.js';
 import { PacientesCasosUso } from '../../aplicacion/Paciente/PacientesCasosUso.js';
 import { PacientesControlador } from '../controladores/PacientesControlador.js';
 import { CitasRepositorio } from '../postgres/CitasRepositorio.js';
