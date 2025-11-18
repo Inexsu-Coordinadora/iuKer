@@ -4,7 +4,7 @@ import { IRepositorioCitaMedica } from '../../../dominio/CitaMedica/IRepositorio
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { ICancelacionReprogramacionCitaServicio } from './ICancelacionReprogramacionCitaCasosUso.js';
 import { MedicosRepositorio } from '../../../infraestructura/postgres/MedicosRepositorio.js';
-import { EstadoPersonalizado } from '../../../../common/EstadoPersonalizado.enum.js';
+import { estadoCita } from '../../../../common/estadoCita.enum.js';
 export class CancelacionReprogramacionCitaServicio implements ICancelacionReprogramacionCitaServicio {
   constructor(private citasMedicasRepositorio: IRepositorioCitaMedica) {}
 
@@ -19,11 +19,11 @@ export class CancelacionReprogramacionCitaServicio implements ICancelacionReprog
     }
 
     // Verificar que la cita no esté ya cancelada o finalizada
-    if (citaExistente.estado === EstadoPersonalizado.CANCELADA) {
+    if (citaExistente.estado === estadoCita.CANCELADA) {
       throw new Error(`La cita con id '${idCita}' ya está cancelada`);
     }
 
-    if (citaExistente.estado === EstadoPersonalizado.FINALIZADA) {
+    if (citaExistente.estado === estadoCita.FINALIZADA) {
       throw new Error(`No puede cancelar la cita con id '${idCita}' porque ya fue finalizada`);
     }
 
@@ -42,11 +42,11 @@ export class CancelacionReprogramacionCitaServicio implements ICancelacionReprog
       );
     }
 
-    if (citaExistente.estado === EstadoPersonalizado.CANCELADA) {
+    if (citaExistente.estado === estadoCita.CANCELADA) {
       throw new Error('No puede reprogramar una cita cancelada');
     }
 
-    if (citaExistente.estado === EstadoPersonalizado.FINALIZADA) {
+    if (citaExistente.estado === estadoCita.FINALIZADA) {
       throw new Error('No puede reprogramar una cita finalizada');
     }
     // verificar que el medico si existe
@@ -111,13 +111,13 @@ export class CancelacionReprogramacionCitaServicio implements ICancelacionReprog
     if (!cita){
       throw new Error('La cita no existe en el sistema');
     }
-    if (cita.estado === EstadoPersonalizado.REPROGRAMADA){
+    if (cita.estado === estadoCita.REPROGRAMADA){
       throw new Error('No se puede finalizar una cita no vigente');
     }
-    if (cita?.estado === EstadoPersonalizado.CANCELADA){
+    if (cita?.estado === estadoCita.CANCELADA){
       throw new Error('No se puede finalizar una cita cancelada');
     }
-    if (cita?.estado === EstadoPersonalizado.FINALIZADA){
+    if (cita?.estado === estadoCita.FINALIZADA){
       throw new Error('La cita ya fue finalizada anteriormente');
     }
     return await this.citasMedicasRepositorio.finalizarCita(idCita);

@@ -1,4 +1,4 @@
-export enum EstadoPersonalizado {
+export enum estadoCita {
   ACTIVADA = 1,
   ACTUALIZADA = 2,
   REPROGRAMADA = 3,

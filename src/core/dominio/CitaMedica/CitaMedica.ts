@@ -1,5 +1,5 @@
 import { ICitaMedica } from './ICitaMedica.js';
-import { EstadoPersonalizado } from '../../../common/EstadoPersonalizado.enum.js';
+import { estadoCita } from '../../../common/estadoCita.enum.js';
 export class CitaMedica implements ICitaMedica {
   readonly medico: string;
   readonly tipoDocPaciente: number;
@@ -14,6 +14,6 @@ export class CitaMedica implements ICitaMedica {
     this.numeroDocPaciente = datosCitaMedica.numeroDocPaciente;
     this.fecha = datosCitaMedica.fecha;
     this.horaInicio = datosCitaMedica.horaInicio;
-    this.estado = EstadoPersonalizado.ACTIVADA;
+    this.estado = estadoCita.ACTIVADA;
   }
 }
