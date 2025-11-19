@@ -44,7 +44,7 @@ export class AsignacionCasosUso implements IAsignacionCasosUso {
       );
     if (existeAsignacion) {
       throw new Error(
-        'La asignación Medico-Consulltorio que intentas crear ya existe de manera identica'
+        'La asignación Medico-Consultorio que intentas crear ya existe de manera identica'
       );
     }
     //Comprobacion de consultorio ocupado

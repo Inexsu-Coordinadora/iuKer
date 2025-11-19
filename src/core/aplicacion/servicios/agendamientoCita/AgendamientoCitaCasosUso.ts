@@ -36,7 +36,7 @@ export class AgendamientoCitaCasosUso implements IAgendamientoCitaCasosUso {
   private async validarMedico(idMedico: string): Promise<void> {
     const medico = await this.medicosRepositorio.obtenerMedicoPorTarjetaProfesional(idMedico);
 
-    if (!medico) throw new Error(`El medico con tajerta profesional '${idMedico}' no existe en el sistema`);
+    if (!medico) throw new Error(`El medico con tarjeta profesional '${idMedico}' no existe en el sistema`);
   }
 
   private validarFechaVigente(datosCitaMedica: citaMedicaDTO): void {
@@ -56,7 +56,7 @@ export class AgendamientoCitaCasosUso implements IAgendamientoCitaCasosUso {
 
     if (!turnoExistente)
       throw new Error(
-        `El medico con tajerta profesional '${datosCitaMedica.medico}' no se encuentra disponible en ese horario`
+        `El medico con tarjeta profesional '${datosCitaMedica.medico}' no se encuentra disponible en ese horario`
       );
   }
 
