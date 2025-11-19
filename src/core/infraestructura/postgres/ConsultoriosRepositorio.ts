@@ -1,9 +1,9 @@
-import { IRepositorioConsultorio } from "../../dominio/Consultorio/IRepositorioConsultorio.js";
+import { IConsultoriosRepositorio } from "../../dominio/Consultorio/IConsultoriosRepositorio.js";
 import { ejecutarConsulta } from "./clientePostgres.js";
 import { IConsultorio } from "../../dominio/Consultorio/IConsultorio.js";
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 
-export class ConsultorioRepositorio implements IRepositorioConsultorio {
+export class ConsultorioRepositorio implements IConsultoriosRepositorio {
 
   async agregarConsultorio(datosConsultorio:IConsultorio): Promise<string> {
     const columnas = Object.keys(datosConsultorio).map((key) => camelCaseASnakeCase(key));

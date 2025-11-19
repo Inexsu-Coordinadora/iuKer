@@ -3,14 +3,14 @@ import { ICitaMedicaCasosUso } from '../../aplicacion/CitaMedica/ICitaMedicaCaso
 import { citaMedicaDTO, crearCitaMedicaEsquema } from '../esquemas/citaMedicaEsquema.js';
 import { ZodError } from 'zod';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
-import { ICancelacionReprogramacionCitaCasosUso } from '../../aplicacion/servicios/CancelacionReprogramacionCita/ICancelacionReprogramacionCitaCasosUso.js';
+import { ICancelacionesReprogramacionesCitasCasosUso } from '../../aplicacion/servicios/CancelacionReprogramacionCita/ICancelacionesReprogramacionesCitasCasosUso.js';
 import { IAgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamientoCita/IAgendamientoCitaCasosUso.js';
 import { EstadoHttp } from './estadoHttp.enum.js';
 
 export class CitasControlador {
   constructor(
     private citasCasosUso: ICitaMedicaCasosUso,
-    private cancelacionReprogramacionCasosUso: ICancelacionReprogramacionCitaCasosUso,
+    private cancelacionReprogramacionCasosUso: ICancelacionesReprogramacionesCitasCasosUso,
     private angendamientoCitaCasosUso: IAgendamientoCitaCasosUso
   ) {}
 

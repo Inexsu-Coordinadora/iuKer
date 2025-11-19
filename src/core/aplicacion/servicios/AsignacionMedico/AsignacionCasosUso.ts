@@ -3,13 +3,13 @@ import { AsignacionMedico } from '../../../dominio/AsignacionMedico/AsignacionMe
 import { IAsignacionCasosUso } from '../AsignacionMedico/IAsignacionCasosUso.js';
 import { IAsignacionMedicoRepositorio } from '../../../dominio/AsignacionMedico/IAsignacionMedicoRepositorio.js';
 import { IMedicosRepositorio } from '../../../dominio/Medico/IMedicosRepositorio.js';
-import { IRepositorioConsultorio } from '../../../dominio/Consultorio/IRepositorioConsultorio.js';
+import { IConsultoriosRepositorio } from '../../../dominio/Consultorio/IConsultoriosRepositorio.js';
 
 export class AsignacionCasosUso implements IAsignacionCasosUso {
   constructor(
     private asignacionMedicoRepositorio: IAsignacionMedicoRepositorio,
     private medicoRepositorio: IMedicosRepositorio,
-    private consultorioRepositorio: IRepositorioConsultorio
+    private consultorioRepositorio: IConsultoriosRepositorio
   ) {}
 
   async crearAsignacion(nuevaAsignacion: IAsignacionMedico): Promise<string> {

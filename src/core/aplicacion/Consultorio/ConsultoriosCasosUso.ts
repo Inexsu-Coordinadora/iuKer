@@ -1,8 +1,8 @@
 import { IConsultorio } from "../../dominio/Consultorio/IConsultorio.js";
-import { IRepositorioConsultorio } from "../../dominio/Consultorio/IRepositorioConsultorio.js";
+import { IConsultoriosRepositorio } from "../../dominio/Consultorio/IConsultoriosRepositorio.js";
 
 export class ConsultorioCasosUso {
-  constructor(private consultorioRepositorio: IRepositorioConsultorio) {}
+  constructor(private consultorioRepositorio: IConsultoriosRepositorio) {}
 
   async agregarConsultorio(datosConsultorio: IConsultorio): Promise<string> {
     const idNuevoConsultorio = await this.consultorioRepositorio.agregarConsultorio(datosConsultorio);

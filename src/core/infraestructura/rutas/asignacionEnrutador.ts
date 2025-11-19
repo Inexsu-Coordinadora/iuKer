@@ -4,9 +4,9 @@ import { AsignacionControlador } from '../controladores/AsignacionControlador.js
 import { AsignacionMedicoRepositorio } from '../postgres/AsignacionMedicoRepositorio.js';
 import { AsignacionCasosUso } from '../../aplicacion/servicios/AsignacionMedico/AsignacionCasosUso.js';
 import { IMedicosRepositorio } from '../../dominio/Medico/IMedicosRepositorio.js';
-import { IRepositorioConsultorio } from '../../dominio/Consultorio/IRepositorioConsultorio.js';
+import { IConsultoriosRepositorio } from '../../dominio/Consultorio/IConsultoriosRepositorio.js';
 import { MedicosRepositorio } from '../../infraestructura/postgres/MedicosRepositorio.js';
-import { ConsultorioRepositorio } from '../../infraestructura/postgres/ConsultorioRepositorio.js';
+import { ConsultorioRepositorio } from '../postgres/ConsultoriosRepositorio.js';
 
 function asignacionEnrutador(
   app: FastifyInstance,
@@ -23,7 +23,7 @@ export async function construirAsignacionEnrutador(app: FastifyInstance) {
   const asignacionRepositorio: IAsignacionMedicoRepositorio =
     new AsignacionMedicoRepositorio();
   const medicoRepositorio: IMedicosRepositorio = new MedicosRepositorio();
-  const consultorioRepositorio: IRepositorioConsultorio =
+  const consultorioRepositorio: IConsultoriosRepositorio =
     new ConsultorioRepositorio();
 
   const asignacionCasosUso = new AsignacionCasosUso(
