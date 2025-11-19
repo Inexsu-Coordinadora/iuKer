@@ -7,7 +7,7 @@ import {
 } from '../esquemas/asignacionesEsquema.js';
 import { EstadoHttp } from './estadoHttp.enum.js';
 
-export class AsignacionControlador {
+export class AsignacionesControlador {
   constructor(private asignacionCasosUso: IAsignacionCasosUso) {}
 
   crearAsignacion = async (

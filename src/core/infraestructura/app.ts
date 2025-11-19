@@ -5,7 +5,7 @@ import { construirCitasEnrutados } from './rutas/citasMedicasEnrutador.js';
 import { construirPacientesEnrutador } from './rutas/pacientesEnrutador.js';
 import { construirMedicosEnrutador } from './rutas/medicosEnrutador.js';
 import { construirConsultorioEnrutador } from './rutas/consultoriosEnrutador.js';
-import { construirAsignacionEnrutador } from '../infraestructura/rutas/asignacionEnrutador.js';
+import { construirAsignacionesEnrutador } from '../infraestructura/rutas/asignacionesEnrutador.js';
 
 const app = Fastify({ logger: true });
 
@@ -16,7 +16,7 @@ app.register(
     construirMedicosEnrutador(appInstance);
     construirPacientesEnrutador(appInstance);
     //Servicios
-    construirAsignacionEnrutador(appInstance);
+    construirAsignacionesEnrutador(appInstance);
   },
   { prefix: '/api' }
 );

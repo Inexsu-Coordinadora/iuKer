@@ -3,25 +3,37 @@ import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsque
 import { IPacientesRepositorio } from '../../../dominio/Paciente/IPacientesRepositorio.js';
 import { CitasRepositorio } from '../../../infraestructura/postgres/CitasRepositorio.js';
 
-export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso{
-    constructor (private repositorioPacientes : IPacientesRepositorio,
-        private repositorioCitaMedica : CitasRepositorio
-    ) {}
+export class ConsultaPacienteCasosUso
+  implements IConsultaCitasPacienteCasosUso
+{
+  constructor(
+    private pacientesRepositorio: IPacientesRepositorio,
+    private repositorioCitaMedica: CitasRepositorio
+  ) {}
 
-    async ejecutarServicio(numeroDocPaciente : string, limite? : number) : Promise <citaMedicaDTO[]>{
-        const paciente = await this.repositorioPacientes.obtenerPacientePorId(numeroDocPaciente);
+  async ejecutarServicio(
+    numeroDocPaciente: string,
+    limite?: number
+  ): Promise<citaMedicaDTO[]> {
+    const paciente = await this.pacientesRepositorio.obtenerPacientePorId(
+      numeroDocPaciente
+    );
 
-        if(!paciente){
-            throw new Error(`El paciente con documento '${numeroDocPaciente}' no existe`);
-        }
-
-        const citasPorPaciente = await this.repositorioCitaMedica.obtenerCitasPorPaciente(numeroDocPaciente, limite);
-        
-        if(limite){
-            return citasPorPaciente.slice(0,limite);
-        }
-        return citasPorPaciente;
-
+    if (!paciente) {
+      throw new Error(
+        `El paciente con documento '${numeroDocPaciente}' no existe`
+      );
     }
-    
+
+    const citasPorPaciente =
+      await this.repositorioCitaMedica.obtenerCitasPorPaciente(
+        numeroDocPaciente,
+        limite
+      );
+
+    if (limite) {
+      return citasPorPaciente.slice(0, limite);
+    }
+    return citasPorPaciente;
+  }
 }

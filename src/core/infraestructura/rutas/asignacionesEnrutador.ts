@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { IAsignacionMedicoRepositorio } from '../../dominio/AsignacionMedico/IAsignacionMedicoRepositorio.js';
-import { AsignacionControlador } from '../controladores/AsignacionControlador.js';
+import { AsignacionesControlador } from '../controladores/AsignacionesControlador.js';
 import { AsignacionMedicoRepositorio } from '../postgres/AsignacionMedicoRepositorio.js';
 import { AsignacionCasosUso } from '../../aplicacion/servicios/AsignacionMedico/AsignacionCasosUso.js';
 import { IMedicosRepositorio } from '../../dominio/Medico/IMedicosRepositorio.js';
@@ -8,18 +8,18 @@ import { IConsultoriosRepositorio } from '../../dominio/Consultorio/IConsultorio
 import { MedicosRepositorio } from '../../infraestructura/postgres/MedicosRepositorio.js';
 import { ConsultorioRepositorio } from '../postgres/ConsultoriosRepositorio.js';
 
-function asignacionEnrutador(
+function asignacionesEnrutador(
   app: FastifyInstance,
-  asignacionControlador: AsignacionControlador
+  asignacionesControlador: AsignacionesControlador
 ) {
-  app.post('/asignaciones', asignacionControlador.crearAsignacion);
+  app.post('/asignaciones', asignacionesControlador.crearAsignacion);
   app.delete(
     '/asignaciones/:tarjetaProfesionalMedico',
-    asignacionControlador.eliminarAsignación
+    asignacionesControlador.eliminarAsignación
   );
 }
 
-export async function construirAsignacionEnrutador(app: FastifyInstance) {
+export async function construirAsignacionesEnrutador(app: FastifyInstance) {
   const asignacionRepositorio: IAsignacionMedicoRepositorio =
     new AsignacionMedicoRepositorio();
   const medicoRepositorio: IMedicosRepositorio = new MedicosRepositorio();
@@ -31,7 +31,9 @@ export async function construirAsignacionEnrutador(app: FastifyInstance) {
     medicoRepositorio,
     consultorioRepositorio
   );
-  const asignacionControlador = new AsignacionControlador(asignacionCasosUso);
+  const asignacionesControlador = new AsignacionesControlador(
+    asignacionCasosUso
+  );
 
-  asignacionEnrutador(app, asignacionControlador);
+  asignacionesEnrutador(app, asignacionesControlador);
 }

@@ -11,18 +11,27 @@ function pacientesEnrutador(
 ) {
   app.get('/pacientes', pacientesControlador.obtenerPacientes);
   app.get('/pacientes/:numeroDoc', pacientesControlador.obtenerPacientePorId);
-  app.get('/pacientes/:numeroDoc/cita', pacientesControlador.obtenerCitasPorPaciente);
+  app.get(
+    '/pacientes/:numeroDoc/cita',
+    pacientesControlador.obtenerCitasPorPaciente
+  );
   app.post('/pacientes', pacientesControlador.crearPaciente);
   app.put('/pacientes/:numeroDoc', pacientesControlador.actualizarPaciente);
   app.delete('/pacientes/:numeroDoc', pacientesControlador.borrarPaciente);
 }
 
 export async function construirPacientesEnrutador(app: FastifyInstance) {
-  const repositorioPacientes = new PacientesRepositorio();
+  const pacientesRepositorio = new PacientesRepositorio();
   const citasRepositorio = new CitasRepositorio();
-  const pacientesCasosUso = new PacientesCasosUso(repositorioPacientes);
-  const consultarCitasPacienteCasosUso = new ConsultaPacienteCasosUso(repositorioPacientes, citasRepositorio);
+  const pacientesCasosUso = new PacientesCasosUso(pacientesRepositorio);
+  const consultarCitasPacienteCasosUso = new ConsultaPacienteCasosUso(
+    pacientesRepositorio,
+    citasRepositorio
+  );
 
-  const pacientesControlador = new PacientesControlador(pacientesCasosUso, consultarCitasPacienteCasosUso);
+  const pacientesControlador = new PacientesControlador(
+    pacientesCasosUso,
+    consultarCitasPacienteCasosUso
+  );
   pacientesEnrutador(app, pacientesControlador);
 }
