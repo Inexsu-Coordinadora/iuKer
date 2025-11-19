@@ -1,12 +1,17 @@
 import { conversionAFechaColombia } from '../../../../common/conversionAFechaColombia.js';
 import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../../dominio/CitaMedica/IRepositorioCitaMedica.js';
+import { IMedicosRepositorio } from '../../../dominio/Medico/IMedicosRepositorio.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { ICancelacionesReprogramacionesCitasCasosUso } from './ICancelacionesReprogramacionesCitasCasosUso.js';
 import { MedicosRepositorio } from '../../../infraestructura/postgres/MedicosRepositorio.js';
 import { estadoCita } from '../../../../common/estadoCita.enum.js';
+
 export class CancelacionesReprogramacionesCitasCasosUso implements ICancelacionesReprogramacionesCitasCasosUso {
-  constructor(private citasMedicasRepositorio: IRepositorioCitaMedica) {}
+  constructor(
+    private citasMedicasRepositorio: IRepositorioCitaMedica,
+    private medicosRepositorio: IMedicosRepositorio
+  ) {}
 
   async cancelarCita(idCita: string): Promise<ICitaMedica> {
     // Verificar que la cita existe
