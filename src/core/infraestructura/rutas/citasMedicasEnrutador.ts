@@ -7,35 +7,44 @@ import { AgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamient
 import { MedicosRepositorio } from '../postgres/MedicosRepositorio.js';
 import { PacientesRepositorio } from '../postgres/PacientesRepositorio.js';
 
-function citasMedicasEnrutador(app: FastifyInstance, citasController: CitasControlador) {
+function citasMedicasEnrutador(
+  app: FastifyInstance,
+  citasController: CitasControlador
+) {
   app.get('/citas-medicas', citasController.obtenerCitas);
   app.get('/citas-medicas/:idCita', citasController.obtenerCitaPorId);
   app.post('/citas-medicas', citasController.agendarCita);
-  app.put('/citas-medicas/reprogramacion/:idCita', citasController.reprogramarCita);
+  app.put(
+    '/citas-medicas/reprogramacion/:idCita',
+    citasController.reprogramarCita
+  );
   app.put('/citas-medicas/finalizacion/:idCita', citasController.finalizarCita);
   app.put('/citas-medicas/cancelacion/:idCita', citasController.cancelarCita);
-  app.delete('/citas-medicas/eliminacion/:idCita', citasController.eliminarCita);
+  app.delete(
+    '/citas-medicas/eliminacion/:idCita',
+    citasController.eliminarCita
+  );
 }
 
 export async function construirCitasEnrutados(app: FastifyInstance) {
   const citasRepositorio = new CitasRepositorio();
   const citasCasosUso = new CitaMedicaCasosUso(citasRepositorio);
-  const cancelacionReprogramacionCasosUso = new CancelacionesReprogramacionesCitasCasosUso(citasRepositorio);
+  const cancelacionReprogramacionCasosUso =
+    new CancelacionesReprogramacionesCitasCasosUso(citasRepositorio);
 
   const medicoRepositorio = new MedicosRepositorio();
-  const pacienteRepositorio = new PacientesRepositorio();
+  const pacientesRepositorio = new PacientesRepositorio();
 
   const agendamientoCitaCasosUso = new AgendamientoCitaCasosUso(
     citasRepositorio,
     medicoRepositorio,
-    pacienteRepositorio
+    pacientesRepositorio
   );
 
   const citasController = new CitasControlador(
     citasCasosUso,
     cancelacionReprogramacionCasosUso,
     agendamientoCitaCasosUso
-
   );
   citasMedicasEnrutador(app, citasController);
 }

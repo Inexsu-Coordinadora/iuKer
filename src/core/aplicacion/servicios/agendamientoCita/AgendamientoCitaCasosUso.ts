@@ -28,31 +28,54 @@ export class AgendamientoCitaCasosUso implements IAgendamientoCitaCasosUso {
   }
 
   private async validarPaciente(idPaciente: string): Promise<void> {
-    const paciente = await this.pacientesRepositorio.obtenerPacientePorId(idPaciente);
+    const paciente = await this.pacientesRepositorio.obtenerPacientePorId(
+      idPaciente
+    );
 
-    if (!paciente) throw new Error(`El paciente con ID '${idPaciente}' no existe en el sistema`);
+    if (!paciente)
+      throw new Error(
+        `El paciente con ID '${idPaciente}' no existe en el sistema`
+      );
   }
 
   private async validarMedico(idMedico: string): Promise<void> {
-    const medico = await this.medicosRepositorio.obtenerMedicoPorTarjetaProfesional(idMedico);
+    const medico =
+      await this.medicosRepositorio.obtenerMedicoPorTarjetaProfesional(
+        idMedico
+      );
 
-    if (!medico) throw new Error(`El medico con tarjeta profesional '${idMedico}' no existe en el sistema`);
+    if (!medico)
+      throw new Error(
+        `El medico con tarjeta profesional '${idMedico}' no existe en el sistema`
+      );
   }
 
   private validarFechaVigente(datosCitaMedica: citaMedicaDTO): void {
-    const fechaCita = conversionAFechaColombia(datosCitaMedica.fecha, datosCitaMedica.horaInicio);
-    if (fechaCita < new Date()) throw new Error('No se puede agendar una cita en el pasado');
+    const fechaCita = conversionAFechaColombia(
+      datosCitaMedica.fecha,
+      datosCitaMedica.horaInicio
+    );
+    if (fechaCita < new Date())
+      throw new Error('No se puede agendar una cita en el pasado');
   }
 
-  private async disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<void> {
-    const medicoDisponible = await this.citasMedicasRepositorio.disponibilidadMedico(datosCitaMedica);
+  private async disponibilidadMedico(
+    datosCitaMedica: citaMedicaDTO
+  ): Promise<void> {
+    const medicoDisponible =
+      await this.citasMedicasRepositorio.disponibilidadMedico(datosCitaMedica);
 
     if (medicoDisponible)
-      throw new Error(`El medico '${datosCitaMedica.medico}' ya tiene programada una cita para la hora indicada`);
+      throw new Error(
+        `El medico '${datosCitaMedica.medico}' ya tiene programada una cita para la hora indicada`
+      );
   }
 
-  private async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<void> {
-    const turnoExistente = await this.citasMedicasRepositorio.validarTurnoMedico(datosCitaMedica);
+  private async validarTurnoMedico(
+    datosCitaMedica: citaMedicaDTO
+  ): Promise<void> {
+    const turnoExistente =
+      await this.citasMedicasRepositorio.validarTurnoMedico(datosCitaMedica);
 
     if (!turnoExistente)
       throw new Error(
@@ -60,8 +83,11 @@ export class AgendamientoCitaCasosUso implements IAgendamientoCitaCasosUso {
       );
   }
 
-  private async validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<void> {
-    const validarCitas = await this.citasMedicasRepositorio.validarCitasPaciente(datosCitaMedica);
+  private async validarCitasPaciente(
+    datosCitaMedica: citaMedicaDTO
+  ): Promise<void> {
+    const validarCitas =
+      await this.citasMedicasRepositorio.validarCitasPaciente(datosCitaMedica);
 
     if (validarCitas)
       throw new Error(
