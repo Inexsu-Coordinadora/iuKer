@@ -1,29 +1,26 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { ICitaMedicaCasosUso } from '../../aplicacion/CitaMedica/ICitaMedicaCasosUso.js';
+import { ICitasMedicasCasosUso } from '../../aplicacion/CitaMedica/ICitasMedicasCasosUso.js';
 import { citaMedicaDTO, crearCitaMedicaEsquema } from '../esquemas/citaMedicaEsquema.js';
 import { ZodError } from 'zod';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
 import { ICancelacionesReprogramacionesCitasCasosUso } from '../../aplicacion/servicios/CancelacionReprogramacionCita/ICancelacionesReprogramacionesCitasCasosUso.js';
-import { IAgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamientoCita/IAgendamientoCitaCasosUso.js';
+import { IAgendamientoCitasCasosUso } from '../../aplicacion/servicios/agendamientoCitasMedicas/IAgendamientoCitasCasosUso.js';
 import { EstadoHttp } from './estadoHttp.enum.js';
 
-export class CitasControlador {
+export class CitasMedicasControlador {
   constructor(
-    private citasCasosUso: ICitaMedicaCasosUso,
+    private citasMedicasCasosUso: ICitasMedicasCasosUso,
     private cancelacionReprogramacionCasosUso: ICancelacionesReprogramacionesCitasCasosUso,
-    private angendamientoCitaCasosUso: IAgendamientoCitaCasosUso
+    private agendamientoCitasCasosUso: IAgendamientoCitasCasosUso
   ) {}
 
-  obtenerCitas = async (
-    req: FastifyRequest<{ Querystring: { limite?: number } }>,
-    res: FastifyReply
-  ) => {
+  obtenerCitas = async (req: FastifyRequest<{ Querystring: { limite?: number } }>, res: FastifyReply) => {
     try {
       const { limite } = req.query;
-      const citasEncontradas = await this.citasCasosUso.obtenerCitas(limite);
+      const citasEncontradas = await this.citasMedicasCasosUso.obtenerCitas(limite);
       return res.code(EstadoHttp.OK).send({
         cantidadCitas: citasEncontradas.length,
-        citasEncontradas
+        citasEncontradas,
       });
     } catch (err) {
       return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
@@ -33,13 +30,10 @@ export class CitasControlador {
     }
   };
 
-  obtenerCitaPorId = async (
-    req: FastifyRequest<{ Params: { idCita: string } }>,
-    res: FastifyReply
-  ) => {
+  obtenerCitaPorId = async (req: FastifyRequest<{ Params: { idCita: string } }>, res: FastifyReply) => {
     try {
       const { idCita } = req.params;
-      const citaEncontrada = await this.citasCasosUso.obtenerCitaPorId(idCita);
+      const citaEncontrada = await this.citasMedicasCasosUso.obtenerCitaPorId(idCita);
 
       if (!citaEncontrada) {
         return res.code(EstadoHttp.NO_ENCONTRADO).send({
@@ -49,10 +43,9 @@ export class CitasControlador {
       }
 
       return res.code(EstadoHttp.OK).send({
-        mensaje:"Cita encontrada",
-        citaEncontrada
+        mensaje: 'Cita encontrada',
+        citaEncontrada,
       });
-
     } catch (err) {
       return res.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error al obtener la cita',
@@ -61,13 +54,10 @@ export class CitasControlador {
     }
   };
 
-  agendarCita = async (
-    req: FastifyRequest<{ Body: citaMedicaDTO }>,
-    res: FastifyReply
-  ) => {
+  agendarCita = async (req: FastifyRequest<{ Body: citaMedicaDTO }>, res: FastifyReply) => {
     try {
       const datosCita = crearCitaMedicaEsquema.parse(req.body);
-      const citaAgendada = await this.angendamientoCitaCasosUso.ejecutar(datosCita);
+      const citaAgendada = await this.agendamientoCitasCasosUso.ejecutar(datosCita);
 
       return res.code(EstadoHttp.CREADO).send({
         mensaje: 'Cita agendada correctamente',
@@ -88,16 +78,11 @@ export class CitasControlador {
     }
   };
 
-  finalizarCita = async (
-    req: FastifyRequest<{ Params: { idCita: string }; Body: ICitaMedica }>,
-    res: FastifyReply
-  ) => {
+  finalizarCita = async (req: FastifyRequest<{ Params: { idCita: string }; Body: ICitaMedica }>, res: FastifyReply) => {
     try {
       const { idCita } = req.params;
       const datosCita = req.body;
-      const citaFinalizada = await this.cancelacionReprogramacionCasosUso.finalizarCita(
-        idCita
-      );
+      const citaFinalizada = await this.cancelacionReprogramacionCasosUso.finalizarCita(idCita);
 
       return res.code(EstadoHttp.OK).send({
         mensaje: 'Cita finalizada correctamente',
@@ -111,13 +96,10 @@ export class CitasControlador {
     }
   };
 
-  eliminarCita = async (
-    req: FastifyRequest<{ Params: { idCita: string } }>,
-    res: FastifyReply
-  ) => {
+  eliminarCita = async (req: FastifyRequest<{ Params: { idCita: string } }>, res: FastifyReply) => {
     try {
       const { idCita } = req.params;
-      await this.citasCasosUso.eliminarCita(idCita);
+      await this.citasMedicasCasosUso.eliminarCita(idCita);
 
       return res.code(EstadoHttp.OK).send({
         mensaje: 'Cita eliminada correctamente',
@@ -139,10 +121,7 @@ export class CitasControlador {
       const { idCita } = req.params;
       const nuevosDatos = crearCitaMedicaEsquema.parse(req.body);
 
-      const citaReprogramada = await this.cancelacionReprogramacionCasosUso.reprogramarCita(
-        idCita,
-        nuevosDatos
-      );
+      const citaReprogramada = await this.cancelacionReprogramacionCasosUso.reprogramarCita(idCita, nuevosDatos);
 
       return res.code(EstadoHttp.OK).send({
         mensaje: 'Cita reprogramada correctamente',
@@ -163,10 +142,7 @@ export class CitasControlador {
     }
   };
 
-  cancelarCita = async (
-    req: FastifyRequest<{ Params: { idCita: string } }>,
-    res: FastifyReply
-  ) => {
+  cancelarCita = async (req: FastifyRequest<{ Params: { idCita: string } }>, res: FastifyReply) => {
     try {
       const { idCita } = req.params;
       const citaCancelada = await this.cancelacionReprogramacionCasosUso.cancelarCita(idCita);

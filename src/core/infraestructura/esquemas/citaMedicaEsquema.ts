@@ -24,7 +24,7 @@ export const crearCitaMedicaEsquema = z.object({
 
   fecha: z
     .string()
-    .nonempty('La hora de inicio es obligatoria')
+    .nonempty('La fecha es obligatoria')
     .regex(
       /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
       'La fecha debe estar en formato YYYY-MM-DD (ej. 2025-11-04)'

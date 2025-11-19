@@ -1,13 +1,13 @@
 import { citaMedicaDTO } from '../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { ICitaMedica } from './ICitaMedica.js';
 
-export interface IRepositorioCitaMedica {
+export interface ICitasMedicasRepositorio {
   obtenerCitas(limite?: number): Promise<ICitaMedica[]>;
   obtenerCitaPorId(idCita: string): Promise<ICitaMedica | null>;
   agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica>;
   eliminarCita(idCita: string): Promise<void>;
 
- // Métodos para validaciones de traslape
+  // Métodos para validaciones de traslape
   verificarTraslapeMedico(
     medico: string,
     fecha: string,
@@ -23,15 +23,14 @@ export interface IRepositorioCitaMedica {
     idCitaExcluir?: string
   ): Promise<{ hayTraslape: boolean; citaConflicto?: ICitaMedica }>;
 
-  validarTurnoMedico(datosCitaMedica:citaMedicaDTO): Promise<boolean>;
+  validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
 
   // Métodos para reprogramación y cancelación
   reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<ICitaMedica>;
   cancelarCita(idCita: string): Promise<ICitaMedica>;
   finalizarCita(idCita: string): Promise<ICitaMedica>;
 
-  disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
+  validarDisponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
   validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
-  validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
-  obtenerCitasPorPaciente(numeroDoc: string, limite?: number) : Promise <any[]>;
+  obtenerCitasPorPaciente(numeroDoc: string, limite?: number): Promise<any[]>;
 }

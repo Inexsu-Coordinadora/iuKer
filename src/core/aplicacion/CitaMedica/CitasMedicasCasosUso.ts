@@ -1,10 +1,9 @@
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
-import { IRepositorioCitaMedica } from '../../dominio/CitaMedica/IRepositorioCitaMedica.js';
-import { citaMedicaDTO } from '../../infraestructura/esquemas/citaMedicaEsquema.js';
-import { ICitaMedicaCasosUso } from './ICitaMedicaCasosUso.js';
+import { ICitasMedicasRepositorio } from '../../dominio/CitaMedica/ICitasMedicasRepositorio.js';
+import { ICitasMedicasCasosUso } from './ICitasMedicasCasosUso.js';
 
-export class CitaMedicaCasosUso implements ICitaMedicaCasosUso {
-  constructor(private citasMedicasRepositorio: IRepositorioCitaMedica) {}
+export class CitasMedicasCasosUso implements ICitasMedicasCasosUso {
+  constructor(private citasMedicasRepositorio: ICitasMedicasRepositorio) {}
 
   async obtenerCitas(limite?: number): Promise<ICitaMedica[]> {
     return await this.citasMedicasRepositorio.obtenerCitas(limite);

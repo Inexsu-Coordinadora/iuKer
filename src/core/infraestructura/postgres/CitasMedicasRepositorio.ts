@@ -1,11 +1,11 @@
 import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
 import { conversionAFechaColombia } from '../../../common/conversionAFechaColombia.js';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
-import { IRepositorioCitaMedica } from '../../dominio/CitaMedica/IRepositorioCitaMedica.js';
+import { ICitasMedicasRepositorio } from '../../dominio/CitaMedica/ICitasMedicasRepositorio.js';
 import { citaMedicaDTO } from '../esquemas/citaMedicaEsquema.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 
-export class CitasRepositorio implements IRepositorioCitaMedica {
+export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
   async obtenerCitas(limite?: number): Promise<ICitaMedica[]> {
     let query = 'SELECT * FROM citas_medicas';
     const valores: number[] = [];
@@ -26,7 +26,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     return resultado.rows[0] || null;
   }
 
-  async disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
+  async validarDisponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
     const valores = [datosCitaMedica.medico, datosCitaMedica.fecha, datosCitaMedica.horaInicio];
 
     const query = `
@@ -99,15 +99,9 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
 
   async eliminarCita(idCita: string): Promise<void> {
     // Primero eliminar las citas que dependen de esta
-    await ejecutarConsulta(
-      'DELETE FROM citas_medicas WHERE id_cita_anterior = $1',
-      [idCita]
-    );
+    await ejecutarConsulta('DELETE FROM citas_medicas WHERE id_cita_anterior = $1', [idCita]);
     // Luego eliminar la cita original
-    await ejecutarConsulta(
-      'DELETE FROM citas_medicas WHERE id_cita = $1',
-      [idCita]
-    );
+    await ejecutarConsulta('DELETE FROM citas_medicas WHERE id_cita = $1', [idCita]);
   }
   // Verifica si existe Traslape para un medico en una fecha y hora especifica
   // Excluye citas canceladas y, si se desea, una cita especifica
@@ -116,7 +110,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     fecha: string,
     horaInicio: string,
     idCitaAExcluir?: string
-  ): Promise<{hayTraslape: boolean, citaConflicto?:ICitaMedica}>{
+  ): Promise<{ hayTraslape: boolean; citaConflicto?: ICitaMedica }> {
     const fechaColombia = conversionAFechaColombia(fecha, horaInicio);
 
     let query = `
@@ -131,7 +125,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
 
     const params: any[] = [medico, fechaColombia, horaInicio];
     // Usado para excluir la cita a la hora de reprogramar, para evitar traslape
-    if (idCitaAExcluir){
+    if (idCitaAExcluir) {
       query += ` AND id_cita != $4`;
       params.push(idCitaAExcluir);
     }
@@ -139,7 +133,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     const resultado = await ejecutarConsulta(query, params);
     return {
       hayTraslape: resultado.rows.length > 0,
-      citaConflicto: resultado.rows[0] || undefined
+      citaConflicto: resultado.rows[0] || undefined,
     };
   }
   // Verifica si existe traslape para un paciente en una fecha y hora especifica
@@ -149,7 +143,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     fecha: string,
     horaInicio: string,
     idCitaAExcluir?: string
-  ): Promise<{hayTraslape: boolean; citaConflicto?: ICitaMedica}>{
+  ): Promise<{ hayTraslape: boolean; citaConflicto?: ICitaMedica }> {
     const fechaColombia = conversionAFechaColombia(fecha, horaInicio);
     let query = `
       SELECT * FROM citas_medicas
@@ -162,16 +156,16 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
       )
     `;
 
-    const params: any[] = [tipoDocPaciente,numeroDocPaciente,fechaColombia,horaInicio];
-    if (idCitaAExcluir){
+    const params: any[] = [tipoDocPaciente, numeroDocPaciente, fechaColombia, horaInicio];
+    if (idCitaAExcluir) {
       query += ` AND id_cita != $5`;
       params.push(idCitaAExcluir);
     }
 
-    const resultado = await ejecutarConsulta(query,params);
+    const resultado = await ejecutarConsulta(query, params);
     return {
       hayTraslape: resultado.rows.length > 0,
-      citaConflicto: resultado.rows[0] || undefined
+      citaConflicto: resultado.rows[0] || undefined,
     };
   }
 
@@ -180,7 +174,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     fecha: string,
     horaInicio: string,
     idCitaAExcluir?: string
-  ): Promise<{ hayTraslape: boolean; citaConflicto?: ICitaMedica}> {
+  ): Promise<{ hayTraslape: boolean; citaConflicto?: ICitaMedica }> {
     const fechaColombia = conversionAFechaColombia(fecha, horaInicio);
     const diaSemana = fechaColombia.getDay();
 
@@ -192,12 +186,10 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
       AND fin_jornada >= ($3::TIME + '30 minutes'::INTERVAL)
       LIMIT 1
     `;
-    const turnoResultado = await ejecutarConsulta(
-      queryTurno, [medico, diaSemana, horaInicio]
-    )
+    const turnoResultado = await ejecutarConsulta(queryTurno, [medico, diaSemana, horaInicio]);
 
-    if (turnoResultado.rows.length === 0){
-      return {hayTraslape: false};
+    if (turnoResultado.rows.length === 0) {
+      return { hayTraslape: false };
     }
     const consultorio = turnoResultado.rows[0].id_consultorio;
 
@@ -215,7 +207,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
 
     const params: any[] = [consultorio, fecha, horaInicio];
 
-    if (idCitaAExcluir){
+    if (idCitaAExcluir) {
       queryCitas += ` AND cm.id_cita != $4`;
       params.push(idCitaAExcluir);
     }
@@ -223,26 +215,20 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     const citasResultado = await ejecutarConsulta(queryCitas, params);
     return {
       hayTraslape: citasResultado.rows.length > 0,
-      citaConflicto: citasResultado.rows[0] || undefined
+      citaConflicto: citasResultado.rows[0] || undefined,
     };
   }
   // Reprograma una cita creando una nueva con referencia a la anterior
-  async reprogramarCita(
-      idCitaAnterior: string,
-      nuevasCitas: ICitaMedica
-    ): Promise<ICitaMedica> {
-      await ejecutarConsulta(
-        'UPDATE citas_medicas SET estado = 3 WHERE id_cita = $1::UUID',
-        [idCitaAnterior]
-      );
-      // Crear la nueva cita con referencia a la anterior
-      const citaConReferencia: ICitaMedica = {
-        ...nuevasCitas,
-        idCitaAnterior: idCitaAnterior,
-        estado: 1 // Nueva cita con estado Activa
-      };
+  async reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<ICitaMedica> {
+    await ejecutarConsulta('UPDATE citas_medicas SET estado = 3 WHERE id_cita = $1::UUID', [idCitaAnterior]);
+    // Crear la nueva cita con referencia a la anterior
+    const citaConReferencia: ICitaMedica = {
+      ...nuevasCitas,
+      idCitaAnterior: idCitaAnterior,
+      estado: 1, // Nueva cita con estado Activa
+    };
 
-      return await this.agendarCita(citaConReferencia);
+    return await this.agendarCita(citaConReferencia);
   }
   // Cancela una cita cambiando su estado
   async cancelarCita(idCita: string): Promise<ICitaMedica> {
@@ -268,7 +254,7 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     return resultado.rows[0];
   }
 
-  async obtenerCitasPorPaciente(numeroDoc: string, limite?: number) : Promise <any[]> {
+  async obtenerCitasPorPaciente(numeroDoc: string, limite?: number): Promise<any[]> {
     const parametros: Array<string | number> = [numeroDoc];
     let query = `
     SELECT c.fecha, c.hora_inicio, c.estado, (m.nombre || ' ' || COALESCE (m.apellido, '')) AS nombre_medico, co.ubicacion
@@ -278,8 +264,8 @@ export class CitasRepositorio implements IRepositorioCitaMedica {
     LEFT JOIN consultorios co ON co.id_consultorio = am.id_consultorio
     WHERE c.numero_doc_paciente = $1
     ORDER BY c.fecha ASC
-    `
-    if(limite !== undefined){
+    `;
+    if (limite !== undefined) {
       query += ' LIMIT $2';
       parametros.push(limite);
     }
