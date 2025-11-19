@@ -257,7 +257,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
   async obtenerCitasPorPaciente(numeroDoc: string, limite?: number): Promise<any[]> {
     const parametros: Array<string | number> = [numeroDoc];
     let query = `
-    SELECT c.fecha, c.hora_inicio, c.estado, (m.nombre || ' ' || COALESCE (m.apellido, '')) AS nombre_medico, co.ubicacion
+    SELECT DISTINCT c.fecha, c.hora_inicio, c.estado, (m.nombre || ' ' || COALESCE (m.apellido, '')) AS nombre_medico, co.ubicacion
     FROM citas_medicas c
     LEFT JOIN medicos m ON m.tarjeta_profesional = c.medico
     LEFT JOIN asignacion_medicos am ON am.tarjeta_profesional_medico = m.tarjeta_profesional
