@@ -2,9 +2,9 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { ZodError } from 'zod';
 import { IAsignacionCasosUso } from '../../aplicacion/servicios/AsignacionMedico/IAsignacionCasosUso.js';
 import {
-  AsignacionCreacionEsquema,
+  asignacionEsquema,
   IAsignacionCreacionDTO,
-} from '../esquemas/asignacionesEsquema.js';
+} from '../esquemas/asignacioneEsquema.js';
 import { EstadoHttp } from './estadoHttp.enum.js';
 
 export class AsignacionesControlador {
@@ -15,9 +15,7 @@ export class AsignacionesControlador {
     reply: FastifyReply
   ) => {
     try {
-      const nuevaAsignacionValidada = AsignacionCreacionEsquema.parse(
-        request.body
-      );
+      const nuevaAsignacionValidada = asignacionEsquema.parse(request.body);
       const idNuevaAsignacion = await this.asignacionCasosUso.crearAsignacion(
         nuevaAsignacionValidada
       );

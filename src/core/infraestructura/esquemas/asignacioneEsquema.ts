@@ -8,7 +8,7 @@ const HORA_REGEX = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 const TarjetaProfesionalSchema = crearMedicoEsquema.shape.tarjetaProfesional;
 const ConsultorioIdSchema = CrearConsultorioEsquema.shape.idConsultorio;
 
-export const AsignacionCreacionEsquema = z
+export const asignacionEsquema = z
   .object({
     tarjetaProfesionalMedico: TarjetaProfesionalSchema.max(50),
 
@@ -45,4 +45,4 @@ export const AsignacionCreacionEsquema = z
     path: ['inicioJornada'],
   });
 
-export type IAsignacionCreacionDTO = z.infer<typeof AsignacionCreacionEsquema>;
+export type IAsignacionCreacionDTO = z.infer<typeof asignacionEsquema>;

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CrearPacienteEsquema = z.object({
+export const pacienteEsquema = z.object({
   numeroDoc: z.string('El documento debe ser un string'),
   tipoDoc: z.number('El tipo es 1, 2, 3 o 4'),
   nombre: z
@@ -35,4 +35,4 @@ export const CrearPacienteEsquema = z.object({
     .nonempty('La dirección del paciente es obligatoria'),
 });
 
-export type PacienteDTO = z.infer<typeof CrearPacienteEsquema>;
+export type PacienteDTO = z.infer<typeof pacienteEsquema>;
