@@ -104,7 +104,7 @@ export class MedicosControlador{
                 mensaje: "Error al actualizar el médico",
                 error: er instanceof Error? er.message : er
             });
-        }   
+        }
     };
 
     eliminarMedico = async(

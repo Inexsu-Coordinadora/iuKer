@@ -24,3 +24,4 @@ export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso 
     return citasPorPaciente;
   }
 }
+
