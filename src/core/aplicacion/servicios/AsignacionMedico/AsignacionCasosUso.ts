@@ -1,9 +1,9 @@
-import { IAsignacionMedico } from '../../../dominio/AsignacionMedico/IAsignacionMedico.js';
-import { AsignacionMedico } from '../../../dominio/AsignacionMedico/AsignacionMedico.js';
+import { IAsignacionMedico } from '../../../dominio/asignacionMedico/IAsignacionMedico.js';
+import { AsignacionMedico } from '../../../dominio/asignacionMedico/AsignacionMedico.js';
 import { IAsignacionCasosUso } from './IAsignacionCasosUso.js';
-import { IAsignacionMedicoRepositorio } from '../../../dominio/AsignacionMedico/IAsignacionMedicoRepositorio.js';
-import { IMedicosRepositorio } from '../../../dominio/Medico/IMedicosRepositorio.js';
-import { IConsultoriosRepositorio } from '../../../dominio/Consultorio/IConsultoriosRepositorio.js';
+import { IAsignacionMedicoRepositorio } from '../../../dominio/asignacionMedico/IAsignacionMedicoRepositorio.js';
+import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio.js';
+import { IConsultoriosRepositorio } from '../../../dominio/consultorio/IConsultoriosRepositorio.js';
 
 export class AsignacionCasosUso implements IAsignacionCasosUso {
   constructor(

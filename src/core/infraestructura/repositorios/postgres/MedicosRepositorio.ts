@@ -1,7 +1,7 @@
-import { IMedicosRepositorio } from '../../dominio/Medico/IMedicosRepositorio.js';
+import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio.js';
 import { ejecutarConsulta } from './clientePostgres.js';
-import { IMedico } from '../../dominio/Medico/IMedico.js';
-import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
+import { IMedico } from '../../../dominio/medico/IMedico.js';
+import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
 
 export class MedicosRepositorio implements IMedicosRepositorio {
     async crearMedico(datosMedico : IMedico) : Promise <string> {

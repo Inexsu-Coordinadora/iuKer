@@ -1,8 +1,8 @@
-import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
-import { conversionAFechaColombia } from '../../../common/conversionAFechaColombia.js';
-import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
-import { ICitasMedicasRepositorio } from '../../dominio/CitaMedica/ICitasMedicasRepositorio.js';
-import { citaMedicaDTO } from '../esquemas/citaMedicaEsquema.js';
+import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
+import { conversionAFechaColombia } from '../../../../common/conversionAFechaColombia.js';
+import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
+import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
+import { citaMedicaDTO } from '../../esquemas/citaMedicaEsquema.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 
 export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {

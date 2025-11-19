@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { ConsultoriosControlador } from "../../infraestructura/controladores/ConsultoriosControlador.js";
-import { IConsultoriosRepositorio } from "../../dominio/Consultorio/IConsultoriosRepositorio.js";
-import { ConsultorioRepositorio } from "../postgres/ConsultoriosRepositorio.js"
-import { ConsultorioCasosUso } from "../../aplicacion/Consultorio/ConsultoriosCasosUso.js";
+import { IConsultoriosRepositorio } from "../../dominio/consultorio/IConsultoriosRepositorio.js";
+import { ConsultorioRepositorio } from "../repositorios/postgres/ConsultoriosRepositorio.js"
+import { ConsultorioCasosUso } from "../../aplicacion/consultorio/ConsultoriosCasosUso.js";
 
 function consultorioEnrutador(
   app: FastifyInstance,

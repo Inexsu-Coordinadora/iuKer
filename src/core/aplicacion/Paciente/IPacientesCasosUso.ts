@@ -1,4 +1,4 @@
-import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
+import { IPaciente } from '../../dominio/paciente/IPaciente.js';
 
 export interface IPacientesCasosUso {
   obtenerPacientes(limite?: number): Promise<IPaciente[]>;

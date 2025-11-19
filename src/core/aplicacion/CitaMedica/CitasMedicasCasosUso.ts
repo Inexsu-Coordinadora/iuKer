@@ -1,5 +1,5 @@
-import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
-import { ICitasMedicasRepositorio } from '../../dominio/CitaMedica/ICitasMedicasRepositorio.js';
+import { ICitaMedica } from '../../dominio/citaMedica/ICitaMedica.js';
+import { ICitasMedicasRepositorio } from '../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 import { ICitasMedicasCasosUso } from './ICitasMedicasCasosUso.js';
 
 export class CitasMedicasCasosUso implements ICitasMedicasCasosUso {

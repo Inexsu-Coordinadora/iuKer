@@ -1,7 +1,7 @@
-import { ejecutarConsulta } from '../postgres/clientePostgres.js';
-import { IAsignacionMedico } from '../../dominio/AsignacionMedico/IAsignacionMedico.js';
-import { IAsignacionMedicoRepositorio } from '../../dominio/AsignacionMedico/IAsignacionMedicoRepositorio.js';
-import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
+import { ejecutarConsulta } from './clientePostgres.js';
+import { IAsignacionMedico } from '../../../dominio/asignacionMedico/IAsignacionMedico.js';
+import { IAsignacionMedicoRepositorio } from '../../../dominio/asignacionMedico/IAsignacionMedicoRepositorio.js';
+import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
 
 export class AsignacionMedicoRepositorio
   implements IAsignacionMedicoRepositorio

@@ -1,8 +1,8 @@
 import { FastifyInstance } from 'fastify';
-import { PacientesRepositorio } from '../postgres/PacientesRepositorio.js';
-import { PacientesCasosUso } from '../../aplicacion/Paciente/PacientesCasosUso.js';
+import { PacientesRepositorio } from '../repositorios/postgres/PacientesRepositorio.js';
+import { PacientesCasosUso } from '../../aplicacion/paciente/PacientesCasosUso.js';
 import { PacientesControlador } from '../controladores/PacientesControlador.js';
-import { CitasMedicasRepositorio } from '../postgres/CitasMedicasRepositorio.js';
+import { CitasMedicasRepositorio } from '../repositorios/postgres/CitasMedicasRepositorio.js';
 import { ConsultaPacienteCasosUso } from '../../aplicacion/servicios/consultaCitasPaciente/ConsultaCitasPacienteCasosUso.js';
 
 function pacientesEnrutador(app: FastifyInstance, pacientesControlador: PacientesControlador) {

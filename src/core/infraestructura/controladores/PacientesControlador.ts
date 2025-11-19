@@ -1,8 +1,8 @@
-import { IPacientesCasosUso } from '../../aplicacion/Paciente/IPacientesCasosUso.js';
+import { IPacientesCasosUso } from '../../aplicacion/paciente/IPacientesCasosUso.js';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { PacienteDTO, pacienteEsquema } from '../esquemas/pacienteEsquema.js';
 import { ZodError } from 'zod';
-import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
+import { IPaciente } from '../../dominio/paciente/IPaciente.js';
 import { IConsultaCitasPacienteCasosUso } from '../../aplicacion/servicios/consultaCitasPaciente/IConsultaCitasPacienteCasosUso.js';
 import { EstadoHttp } from './estadoHttp.enum.js';
 

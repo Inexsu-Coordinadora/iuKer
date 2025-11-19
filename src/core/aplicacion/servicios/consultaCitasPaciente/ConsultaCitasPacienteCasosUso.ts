@@ -1,7 +1,7 @@
 import { IConsultaCitasPacienteCasosUso } from './IConsultaCitasPacienteCasosUso.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
-import { IPacientesRepositorio } from '../../../dominio/Paciente/IPacientesRepositorio.js';
-import { ICitasMedicasRepositorio } from '../../../dominio/CitaMedica/ICitasMedicasRepositorio.js';
+import { IPacientesRepositorio } from '../../../dominio/paciente/IPacientesRepositorio.js';
+import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 
 export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso {
   constructor(

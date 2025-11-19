@@ -1,5 +1,5 @@
-import { IMedico } from "../../dominio/Medico/IMedico.js";
-import { IMedicosRepositorio } from "../../dominio/Medico/IMedicosRepositorio.js";
+import { IMedico } from "../../dominio/medico/IMedico.js";
+import { IMedicosRepositorio } from "../../dominio/medico/IMedicosRepositorio.js";
 import { MedicoDTO, MedicoActualizarDTO } from "../../infraestructura/esquemas/medicoEsquema.js";
 import { IMedicosCasosUso } from "./IMedicosCasosUso.js";
 

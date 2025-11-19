@@ -1,9 +1,9 @@
 import { conversionAFechaColombia } from '../../../../common/conversionAFechaColombia.js';
-import { CitaMedica } from '../../../dominio/CitaMedica/CitaMedica.js';
-import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
-import { ICitasMedicasRepositorio } from '../../../dominio/CitaMedica/ICitasMedicasRepositorio.js';
-import { IMedicosRepositorio } from '../../../dominio/Medico/IMedicosRepositorio.js';
-import { IPacientesRepositorio } from '../../../dominio/Paciente/IPacientesRepositorio.js';
+import { CitaMedica } from '../../../dominio/citaMedica/CitaMedica.js';
+import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
+import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
+import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio.js';
+import { IPacientesRepositorio } from '../../../dominio/paciente/IPacientesRepositorio.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { IAgendamientoCitasCasosUso } from './IAgendamientoCitasCasosUso.js';
 

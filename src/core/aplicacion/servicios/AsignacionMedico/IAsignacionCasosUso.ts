@@ -1,4 +1,4 @@
-import { IAsignacionMedico } from '../../../dominio/AsignacionMedico/IAsignacionMedico.js';
+import { IAsignacionMedico } from '../../../dominio/asignacionMedico/IAsignacionMedico.js';
 
 export interface IAsignacionCasosUso {
   crearAsignacion(nuevaAsignacion: IAsignacionMedico): Promise<string>;

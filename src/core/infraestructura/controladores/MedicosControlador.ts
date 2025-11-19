@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { IMedicosCasosUso } from '../../aplicacion/Medico/IMedicosCasosUso.js';
+import { IMedicosCasosUso } from '../../aplicacion/medico/IMedicosCasosUso.js';
 import { MedicoDTO, MedicoActualizarDTO, crearMedicoEsquema } from '../esquemas/medicoEsquema.js';
 import { ZodError } from 'zod';
 import { EstadoHttp } from './estadoHttp.enum.js';

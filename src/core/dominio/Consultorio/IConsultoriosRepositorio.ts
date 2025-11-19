@@ -1,4 +1,4 @@
-import { IConsultorio } from "./IConsultorio.js";
+import { IConsultorio } from './IConsultorio.js';
 
 export interface IConsultoriosRepositorio {
   agregarConsultorio(datosConsultorio: IConsultorio): Promise<string>;

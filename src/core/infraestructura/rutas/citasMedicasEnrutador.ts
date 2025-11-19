@@ -1,11 +1,11 @@
 import { FastifyInstance } from 'fastify';
 import { CitasMedicasControlador } from '../controladores/CitasMedicasControlador.js';
-import { CitasMedicasRepositorio } from '../postgres/CitasMedicasRepositorio.js';
-import { CitasMedicasCasosUso } from '../../aplicacion/CitaMedica/CitasMedicasCasosUso.js';
-import { CancelacionesReprogramacionesCitasCasosUso } from '../../aplicacion/servicios/CancelacionReprogramacionCita/CancelacionesReprogramacionesCitasCasosUso.js';
+import { CitasMedicasRepositorio } from '../repositorios/postgres/CitasMedicasRepositorio.js';
+import { CitasMedicasCasosUso } from '../../aplicacion/citaMedica/CitasMedicasCasosUso.js';
+import { CancelacionReprogramacionCitasCasosUso } from '../../aplicacion/servicios/cancelacionReprogramacionCita/CancelacionReprogramacionCitasCasosUso.js';
 import { AgendamientoCitasCasosUso } from '../../aplicacion/servicios/agendamientoCitasMedicas/AgendamientoCitasCasosUso.js';
-import { MedicosRepositorio } from '../postgres/MedicosRepositorio.js';
-import { PacientesRepositorio } from '../postgres/PacientesRepositorio.js';
+import { MedicosRepositorio } from '../repositorios/postgres/MedicosRepositorio.js';
+import { PacientesRepositorio } from '../repositorios/postgres/PacientesRepositorio.js';
 
 function citasMedicasEnrutador(app: FastifyInstance, citasMedicasController: CitasMedicasControlador) {
   app.get('/citas-medicas', citasMedicasController.obtenerCitas);
@@ -23,7 +23,7 @@ export async function construirCitasEnrutados(app: FastifyInstance) {
 
   const medicoRepositorio = new MedicosRepositorio();
   const pacientesRepositorio = new PacientesRepositorio();
-  const cancelacionReprogramacionCasosUso = new CancelacionesReprogramacionesCitasCasosUso(
+  const cancelacionReprogramacionCasosUso = new CancelacionReprogramacionCitasCasosUso(
     citasMedicasRepositorio,
     medicoRepositorio
   );

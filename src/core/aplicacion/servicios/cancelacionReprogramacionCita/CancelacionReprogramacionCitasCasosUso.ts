@@ -1,12 +1,12 @@
 import { conversionAFechaColombia } from '../../../../common/conversionAFechaColombia.js';
-import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
-import { ICitasMedicasRepositorio } from '../../../dominio/CitaMedica/ICitasMedicasRepositorio.js';
-import { IMedicosRepositorio } from '../../../dominio/Medico/IMedicosRepositorio.js';
+import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
+import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
+import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
-import { ICancelacionesReprogramacionesCitasCasosUso } from './ICancelacionesReprogramacionesCitasCasosUso.js';
+import { ICancelacionReprogramacionCitasCasosUso } from './ICancelacionReprogramacionCitasCasosUso.js';
 import { estadoCita } from '../../../../common/estadoCita.enum.js';
 
-export class CancelacionesReprogramacionesCitasCasosUso implements ICancelacionesReprogramacionesCitasCasosUso {
+export class CancelacionReprogramacionCitasCasosUso implements ICancelacionReprogramacionCitasCasosUso {
   constructor(
     private citasMedicasRepositorio: ICitasMedicasRepositorio,
     private medicosRepositorio: IMedicosRepositorio

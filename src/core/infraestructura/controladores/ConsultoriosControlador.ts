@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { IConsultorio } from "../../dominio/Consultorio/IConsultorio.js"
-import { IConsultorioCasosUso } from "../../aplicacion/Consultorio/IConsultoriosCasosUso.js";
+import { IConsultorio } from "../../dominio/consultorio/IConsultorio.js"
+import { IConsultorioCasosUso } from "../../aplicacion/consultorio/IConsultoriosCasosUso.js";
 import { ConsultorioDTO, CrearConsultorioEsquema } from "../esquemas/consultorioEsquema.js"
 import { ZodError } from "zod";
 

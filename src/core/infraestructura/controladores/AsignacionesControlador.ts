@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { ZodError } from 'zod';
-import { IAsignacionCasosUso } from '../../aplicacion/servicios/AsignacionMedico/IAsignacionCasosUso.js';
+import { IAsignacionCasosUso } from '../../aplicacion/servicios/asignacionMedico/IAsignacionCasosUso.js';
 import {
   asignacionEsquema,
   IAsignacionCreacionDTO,
@@ -36,14 +36,15 @@ export class AsignacionesControlador {
           })),
         });
       }
-
+      // ***********
+      // -> Verificar este error para que sea acorde a la convención de errores ( se repite en el condicional anterior)
       if (err instanceof Error) {
-        return reply.code(EstadoHttp.CONFLICTO).send({
+        return reply.code(EstadoHttp.PETICION_INVALIDA).send({
           mensaje: 'Fallo en las Condiciones de Uso',
           error: err.message,
         });
       }
-
+      // ***********
       return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
         mensaje: 'Error interno del servidor al crear la asignación',
         error: (err as any).message || 'Error desconocido.',

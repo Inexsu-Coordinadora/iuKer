@@ -1,4 +1,4 @@
-import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
+import { ICitaMedica } from '../../dominio/citaMedica/ICitaMedica.js';
 
 export interface ICitasMedicasCasosUso {
   obtenerCitas(limite?: number): Promise<ICitaMedica[]>;

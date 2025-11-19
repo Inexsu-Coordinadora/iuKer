@@ -1,5 +1,5 @@
-import { IConsultorio } from "../../dominio/Consultorio/IConsultorio.js";
-import { IConsultoriosRepositorio } from "../../dominio/Consultorio/IConsultoriosRepositorio.js";
+import { IConsultorio } from "../../dominio/consultorio/IConsultorio.js";
+import { IConsultoriosRepositorio } from "../../dominio/consultorio/IConsultoriosRepositorio.js";
 
 export class ConsultorioCasosUso {
   constructor(private consultorioRepositorio: IConsultoriosRepositorio) {}

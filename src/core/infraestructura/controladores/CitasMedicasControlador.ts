@@ -1,16 +1,16 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { ICitasMedicasCasosUso } from '../../aplicacion/CitaMedica/ICitasMedicasCasosUso.js';
+import { ICitasMedicasCasosUso } from '../../aplicacion/citaMedica/ICitasMedicasCasosUso.js';
 import { citaMedicaDTO, crearCitaMedicaEsquema } from '../esquemas/citaMedicaEsquema.js';
 import { ZodError } from 'zod';
-import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
-import { ICancelacionesReprogramacionesCitasCasosUso } from '../../aplicacion/servicios/CancelacionReprogramacionCita/ICancelacionesReprogramacionesCitasCasosUso.js';
+import { ICitaMedica } from '../../dominio/citaMedica/ICitaMedica.js';
+import { ICancelacionReprogramacionCitasCasosUso } from '../../aplicacion/servicios/cancelacionReprogramacionCita/ICancelacionReprogramacionCitasCasosUso.js';
 import { IAgendamientoCitasCasosUso } from '../../aplicacion/servicios/agendamientoCitasMedicas/IAgendamientoCitasCasosUso.js';
 import { EstadoHttp } from './estadoHttp.enum.js';
 
 export class CitasMedicasControlador {
   constructor(
     private citasMedicasCasosUso: ICitasMedicasCasosUso,
-    private cancelacionReprogramacionCasosUso: ICancelacionesReprogramacionesCitasCasosUso,
+    private cancelacionReprogramacionCasosUso: ICancelacionReprogramacionCitasCasosUso,
     private agendamientoCitasCasosUso: IAgendamientoCitasCasosUso
   ) {}
 

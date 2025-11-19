@@ -1,4 +1,4 @@
-import { IConsultorio } from "./IConsultorio.js";
+import { IConsultorio } from './IConsultorio.js';
 
 export class Consultorio implements IConsultorio{
   idConsultorio: string;

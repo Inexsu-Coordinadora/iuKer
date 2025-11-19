@@ -1,12 +1,12 @@
 import { FastifyInstance } from 'fastify';
-import { IAsignacionMedicoRepositorio } from '../../dominio/AsignacionMedico/IAsignacionMedicoRepositorio.js';
+import { IAsignacionMedicoRepositorio } from '../../dominio/asignacionMedico/IAsignacionMedicoRepositorio.js';
 import { AsignacionesControlador } from '../controladores/AsignacionesControlador.js';
-import { AsignacionMedicoRepositorio } from '../postgres/AsignacionMedicoRepositorio.js';
-import { AsignacionCasosUso } from '../../aplicacion/servicios/AsignacionMedico/AsignacionCasosUso.js';
-import { IMedicosRepositorio } from '../../dominio/Medico/IMedicosRepositorio.js';
-import { IConsultoriosRepositorio } from '../../dominio/Consultorio/IConsultoriosRepositorio.js';
-import { MedicosRepositorio } from '../../infraestructura/postgres/MedicosRepositorio.js';
-import { ConsultorioRepositorio } from '../postgres/ConsultoriosRepositorio.js';
+import { AsignacionMedicoRepositorio } from '../repositorios/postgres/AsignacionMedicoRepositorio.js';
+import { AsignacionCasosUso } from '../../aplicacion/servicios/asignacionMedico/AsignacionCasosUso.js';
+import { IMedicosRepositorio } from '../../dominio/medico/IMedicosRepositorio.js';
+import { IConsultoriosRepositorio } from '../../dominio/consultorio/IConsultoriosRepositorio.js';
+import { MedicosRepositorio } from '../repositorios/postgres/MedicosRepositorio.js';
+import { ConsultorioRepositorio } from '../repositorios/postgres/ConsultoriosRepositorio.js';
 
 function asignacionesEnrutador(
   app: FastifyInstance,

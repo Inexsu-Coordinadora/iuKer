@@ -1,7 +1,7 @@
-import { IConsultoriosRepositorio } from "../../dominio/Consultorio/IConsultoriosRepositorio.js";
+import { IConsultoriosRepositorio } from "../../../dominio/consultorio/IConsultoriosRepositorio.js";
 import { ejecutarConsulta } from "./clientePostgres.js";
-import { IConsultorio } from "../../dominio/Consultorio/IConsultorio.js";
-import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
+import { IConsultorio } from "../../../dominio/consultorio/IConsultorio.js";
+import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
 
 export class ConsultorioRepositorio implements IConsultoriosRepositorio {
 

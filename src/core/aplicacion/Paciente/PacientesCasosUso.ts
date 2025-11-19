@@ -1,7 +1,7 @@
 import { IPacientesCasosUso } from './IPacientesCasosUso.js';
-import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
-import { Paciente } from '../../dominio/Paciente/Paciente.js';
-import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';
+import { IPaciente } from '../../dominio/paciente/IPaciente.js';
+import { Paciente } from '../../dominio/paciente/Paciente.js';
+import { IPacientesRepositorio } from '../../dominio/paciente/IPacientesRepositorio.js';
 
 export class PacientesCasosUso implements IPacientesCasosUso {
   constructor(private pacientesRepositorio: IPacientesRepositorio) {}

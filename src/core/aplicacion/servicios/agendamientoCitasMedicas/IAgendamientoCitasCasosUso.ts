@@ -1,4 +1,4 @@
-import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
+import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 
 export interface IAgendamientoCitasCasosUso {

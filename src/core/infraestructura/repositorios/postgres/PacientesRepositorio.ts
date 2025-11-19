@@ -1,8 +1,8 @@
-import { IPacientesRepositorio } from '../../dominio/Paciente/IPacientesRepositorio.js';
-import { IPaciente } from '../../dominio/Paciente/IPaciente.js';
+import { IPacientesRepositorio } from '../../../dominio/paciente/IPacientesRepositorio.js';
+import { IPaciente } from '../../../dominio/paciente/IPaciente.js';
 import { ejecutarConsulta } from './clientePostgres.js';
-import { Paciente } from '../../dominio/Paciente/Paciente.js';
-import { camelCaseASnakeCase } from '../../../common/camelCaseASnakeCase.js';
+import { Paciente } from '../../../dominio/paciente/Paciente.js';
+import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
 
 export class PacientesRepositorio implements IPacientesRepositorio {
   async existePacientePorDocumento(
