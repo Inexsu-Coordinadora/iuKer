@@ -165,22 +165,22 @@ export class PacientesControlador {
         limite
       );
 
-      return reply.code(200).send({
-        mensaje: `Citas del paciente con documento '${numeroDoc}': `,
-        citas: citas,
-      });
-    } catch (er) {
-      const { numeroDoc } = request.params;
-      if (er) {
-        return reply.code(404).send({
-          mensaje: `El paciente con documento '${numeroDoc}' no existe en el sistema`,
-          error: er instanceof Error ? er.message : er,
-        });
-      }
-      return reply.code(500).send({
-        mensaje: `Error al obtener las citas del paciente con documento '${numeroDoc}'`,
-        error: er instanceof Error ? er.message : er,
-      });
+            return reply.code(EstadoHttp.OK).send({
+                mensaje: `Citas del paciente con documento '${numeroDoc}': `,
+                citas: citas
+            });
+        } catch(er){
+          const { numeroDoc} = request.params;
+            if(er){
+                return reply.code(EstadoHttp.NO_ENCONTRADO).send({
+                    mensaje: `El paciente con documento '${numeroDoc}' no existe en el sistema`,
+                    error: er instanceof Error? er.message : er
+                })
+            }
+            return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
+                mensaje: `Error al obtener las citas del paciente con documento '${numeroDoc}'`,
+                error: er instanceof Error? er.message : er
+            });
+        }
     }
   };
-}
