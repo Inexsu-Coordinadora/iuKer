@@ -2,10 +2,10 @@ import { conversionAFechaColombia } from '../../../../common/conversionAFechaCol
 import { ICitaMedica } from '../../../dominio/CitaMedica/ICitaMedica.js';
 import { IRepositorioCitaMedica } from '../../../dominio/CitaMedica/IRepositorioCitaMedica.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
-import { ICancelacionReprogramacionCitaServicio } from './ICancelacionReprogramacionCitaCasosUso.js';
+import { ICancelacionReprogramacionCitaCasosUso } from './ICancelacionReprogramacionCitaCasosUso.js';
 import { MedicosRepositorio } from '../../../infraestructura/postgres/MedicosRepositorio.js';
 import { estadoCita } from '../../../../common/estadoCita.enum.js';
-export class CancelacionReprogramacionCitaServicio implements ICancelacionReprogramacionCitaServicio {
+export class CancelacionReprogramacionCitaCasosUso implements ICancelacionReprogramacionCitaCasosUso {
   constructor(private citasMedicasRepositorio: IRepositorioCitaMedica) {}
 
   async cancelarCita(idCita: string): Promise<ICitaMedica> {

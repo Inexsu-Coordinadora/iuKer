@@ -3,15 +3,14 @@ import { ICitaMedicaCasosUso } from '../../aplicacion/CitaMedica/ICitaMedicaCaso
 import { citaMedicaDTO, crearCitaMedicaEsquema } from '../esquemas/citaMedicaEsquema.js';
 import { ZodError } from 'zod';
 import { ICitaMedica } from '../../dominio/CitaMedica/ICitaMedica.js';
-import { ICancelacionReprogramacionCitaServicio } from
-'../../aplicacion/servicios/CancelacionReprogramacionCita/ICancelacionReprogramacionCitaCasosUso.js';
+import { ICancelacionReprogramacionCitaCasosUso } from '../../aplicacion/servicios/CancelacionReprogramacionCita/ICancelacionReprogramacionCitaCasosUso.js';
 import { IAgendamientoCitaCasosUso } from '../../aplicacion/servicios/agendamientoCita/IAgendamientoCitaCasosUso.js';
 import { EstadoHttp } from './estadoHttp.enum.js';
 
 export class CitasControlador {
   constructor(
     private citasCasosUso: ICitaMedicaCasosUso,
-    private cancelacionReprogramacionServicio: ICancelacionReprogramacionCitaServicio,
+    private cancelacionReprogramacionCasosUso: ICancelacionReprogramacionCitaCasosUso,
     private angendamientoCitaCasosUso: IAgendamientoCitaCasosUso
   ) {}
 
@@ -96,7 +95,7 @@ export class CitasControlador {
     try {
       const { idCita } = req.params;
       const datosCita = req.body;
-      const citaFinalizada = await this.cancelacionReprogramacionServicio.finalizarCita(
+      const citaFinalizada = await this.cancelacionReprogramacionCasosUso.finalizarCita(
         idCita
       );
 
@@ -140,7 +139,7 @@ export class CitasControlador {
       const { idCita } = req.params;
       const nuevosDatos = crearCitaMedicaEsquema.parse(req.body);
 
-      const citaReprogramada = await this.cancelacionReprogramacionServicio.reprogramarCita(
+      const citaReprogramada = await this.cancelacionReprogramacionCasosUso.reprogramarCita(
         idCita,
         nuevosDatos
       );
@@ -170,7 +169,7 @@ export class CitasControlador {
   ) => {
     try {
       const { idCita } = req.params;
-      const citaCancelada = await this.cancelacionReprogramacionServicio.cancelarCita(idCita);
+      const citaCancelada = await this.cancelacionReprogramacionCasosUso.cancelarCita(idCita);
 
       return res.code(EstadoHttp.OK).send({
         mensaje: 'Cita cancelada correctamente',

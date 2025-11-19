@@ -150,33 +150,31 @@ export class PacientesControlador {
   };
 
   obtenerCitasPorPaciente = async (
-        request: FastifyRequest<{ Params: { numeroDoc: string }; Querystring: { limite?: string } }>,
-        reply: FastifyReply
+    request: FastifyRequest<{ Params: { numeroDoc: string }; Querystring: { limite?: string } }>,
+    reply: FastifyReply
     ) => {
-        try{
-            const { numeroDoc} = request.params;
-            const limite = request.query?.limite ? Number(request.query.limite) : undefined;
+      try{
+        const { numeroDoc} = request.params;
+        const limite = request.query?.limite ? Number(request.query.limite) : undefined;
 
-            const citas = await this.consultaCitasPacienteCasosUso.ejecutarServicio?.(numeroDoc, limite);
+        const citas = await this.consultaCitasPacienteCasosUso.ejecutarServicio?.(numeroDoc, limite);
 
-            return reply.code(200).send({
-                mensaje: `Citas del paciente con documento '${numeroDoc}': `,
-                citas: citas
-            });
-        } catch(er){
-          const { numeroDoc} = request.params;
-            if(er){
-                
-                return reply.code(404).send({
-                    mensaje: `El paciente con documento '${numeroDoc}' no existe en el sistema`,
-                    error: er instanceof Error? er.message : er
-                })
-            }
-            return reply.code(500).send({
-                mensaje: `Error al obtener las citas del paciente con documento '${numeroDoc}'`,
-                error: er instanceof Error? er.message : er
-            });
-        }
+        return reply.code(200).send({
+          mensaje: `Citas del paciente con documento '${numeroDoc}': `,
+          citas: citas
+        });
+      } catch(er){
+        const { numeroDoc} = request.params;
+          if(er){
+            return reply.code(404).send({
+              mensaje: `El paciente con documento '${numeroDoc}' no existe en el sistema`,
+              error: er instanceof Error? er.message : er
+            })
+          }
+        return reply.code(500).send({
+          mensaje: `Error al obtener las citas del paciente con documento '${numeroDoc}'`,
+          error: er instanceof Error? er.message : er
+        });
+      }
     }
-
 }
