@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import { FastifyError } from 'fastify';
 import { configuracion } from '../../common/configuracion.js';
-import { construirCitasEnrutados } from './rutas/citasMedicasEnrutador.js';
+import { construirCitasEnrutador } from './rutas/citasMedicasEnrutador.js';
 import { construirPacientesEnrutador } from './rutas/pacientesEnrutador.js';
 import { construirMedicosEnrutador } from './rutas/medicosEnrutador.js';
 import { construirConsultorioEnrutador } from './rutas/consultoriosEnrutador.js';
@@ -12,7 +12,7 @@ const app = Fastify({ logger: true });
 app.register(
   async (appInstance) => {
     construirConsultorioEnrutador(appInstance);
-    construirCitasEnrutados(appInstance);
+    construirCitasEnrutador(appInstance);
     construirMedicosEnrutador(appInstance);
     construirPacientesEnrutador(appInstance);
     //Servicios
