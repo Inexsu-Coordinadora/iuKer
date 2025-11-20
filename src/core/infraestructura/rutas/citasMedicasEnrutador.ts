@@ -17,7 +17,7 @@ function citasMedicasEnrutador(app: FastifyInstance, citasMedicasController: Cit
   app.delete('/citas-medicas/eliminacion/:idCita', citasMedicasController.eliminarCita);
 }
 
-export async function construirCitasEnrutados(app: FastifyInstance) {
+export async function construirCitasEnrutador(app: FastifyInstance) {
   const citasMedicasRepositorio = new CitasMedicasRepositorio();
   const citasCasosUso = new CitasMedicasCasosUso(citasMedicasRepositorio);
 
