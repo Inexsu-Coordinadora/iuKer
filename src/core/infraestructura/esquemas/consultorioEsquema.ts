@@ -10,13 +10,6 @@ export const CrearConsultorioEsquema = z.object({
     .string()
     .optional()
     .transform((valor) => valor ?? null),
-  estado: z
-    .number()
-    .int("El estado debe ser un número entero")
-    .refine(
-      (val) => val === 6 || val === 7,
-      { message: "El estado debe ser 6 (Ocupado) o 7 (Disponible)" }
-    ),
 });
 
 export type ConsultorioDTO = z.infer<typeof CrearConsultorioEsquema>;

@@ -17,8 +17,8 @@ export class ConsultoriosControlador{
 
       return reply.code(EstadoHttp.OK).send({
         mensaje:"Consultorios encontrados de forma exitosa",
-        consultorios: consultoriosEncontrados,
-        consultoriosEncontrados: consultoriosEncontrados.length
+        cantidadConsultoriosEncontrados: consultoriosEncontrados.length,
+        consultoriosEncontrados
       });
     } catch (error){
       return reply.code(EstadoHttp.NO_ENCONTRADO).send({
@@ -42,7 +42,7 @@ export class ConsultoriosControlador{
       }
       return reply.code(EstadoHttp.OK).send({
         mensaje:"Consultorio encontrado correctamente",
-        consultorio:consultorioEncontrado,
+        consultorioEncontrado,
       });
     } catch (error){
       return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
@@ -64,22 +64,16 @@ export class ConsultoriosControlador{
           idConsultorio: nuevoConsultorioDTO.idConsultorio
         });
       }
-      if (nuevoConsultorioDTO.estado !== 6 && nuevoConsultorioDTO.estado !== 7){
-        return reply.code(EstadoHttp.PETICION_INVALIDA).send({
-          mensaje:"El estado debe ser 6 o 7"
-        });
-      }
       const nuevoConsultorio: IConsultorio = {
         idConsultorio: nuevoConsultorioDTO.idConsultorio,
         ubicacion: nuevoConsultorioDTO.ubicacion,
-        estado: nuevoConsultorioDTO.estado
       }
 
-      const idNuevoConsultorio = await this.consultorioCasosUso.agregarConsultorio(nuevoConsultorio);
+      await this.consultorioCasosUso.agregarConsultorio(nuevoConsultorio);
 
       return reply.code(EstadoHttp.CREADO).send({
         mensaje: "El consultorio se agrego correctamente",
-        idNuevoConsultorio: idNuevoConsultorio,
+        nuevoConsultorio,
       });
     } catch (error) {
       if (error instanceof ZodError){
@@ -100,15 +94,10 @@ export class ConsultoriosControlador{
   ) => {
     try {
       const { idConsultorio } = request.params;
-      const nuevoConsultorio = request.body;
-      if(nuevoConsultorio.estado !== 6 && nuevoConsultorio.estado !== 7){
-          return reply.code(EstadoHttp.PETICION_INVALIDA).send({
-          mensaje:"El estado debe ser 6 o 7"
-        });
-      }
+      const datosNuevoConsultorio = request.body;
 
       const consultorioActualizado = await this.consultorioCasosUso.
-        actualizarConsultorio(idConsultorio, nuevoConsultorio);
+        actualizarConsultorio(idConsultorio, datosNuevoConsultorio);
 
       if(!consultorioActualizado){
         return reply.code(EstadoHttp.NO_ENCONTRADO).send({
@@ -117,7 +106,7 @@ export class ConsultoriosControlador{
       }
       return reply.code(EstadoHttp.OK).send({
         mensaje:"Consultorio actualizado correctamente",
-        consultorioActualizado: consultorioActualizado
+        consultorioActualizado
       })
     } catch (error){
       return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
@@ -144,14 +133,14 @@ export class ConsultoriosControlador{
       if (!consultorio){
         return reply.code(EstadoHttp.NO_ENCONTRADO).send({
           mensaje:"No existe un consultorio con ese ID",
-          idConsultorio: idConsultorio
+          idConsultorio
         })
       }
       await this.consultorioCasosUso.eliminarConsultorio(idConsultorio);
 
       return reply.code(EstadoHttp.OK).send({
         mensaje:"Consultorio eliminado correctamente",
-        idConsultorio: idConsultorio
+        idConsultorio
       });
     } catch (error){
       return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
