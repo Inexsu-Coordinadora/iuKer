@@ -272,4 +272,10 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
 
     return (await ejecutarConsulta(query, parametros)).rows;
   }
+
+  async eliminarCitasPorMedico(tarjetaProfesional: string): Promise<void> {
+    await ejecutarConsulta('DELETE FROM citas_medicas WHERE id_cita_anterior IN (SELECT id_cita FROM citas_medicas WHERE medico = $1)', [tarjetaProfesional]);
+
+    await ejecutarConsulta('DELETE FROM citas_medicas WHERE medico = $1', [tarjetaProfesional]);
+  }
 }

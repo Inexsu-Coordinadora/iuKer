@@ -33,4 +33,5 @@ export interface ICitasMedicasRepositorio {
   validarDisponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
   validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<boolean>;
   obtenerCitasPorPaciente(numeroDoc: string, limite?: number): Promise<any[]>;
+  eliminarCitasPorMedico(tarjetaProfesional : string) : Promise <void>;
 }
