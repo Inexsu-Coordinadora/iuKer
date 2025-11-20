@@ -92,7 +92,7 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
       numeroDocPaciente: nuevosDatos.numeroDocPaciente,
       fecha: nuevosDatos.fecha,
       horaInicio: nuevosDatos.horaInicio,
-      estado: 1,
+      estado: estadoCita.ACTIVADA,
       idCitaAnterior: idCita,
     };
 

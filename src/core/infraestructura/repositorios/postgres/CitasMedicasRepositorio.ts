@@ -1,5 +1,6 @@
 import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
 import { conversionAFechaColombia } from '../../../../common/conversionAFechaColombia.js';
+import { estadoCita } from '../../../../common/estadoCita.enum.js';
 import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
 import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 import { citaMedicaDTO } from '../../esquemas/citaMedicaEsquema.js';
@@ -117,7 +118,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
       SELECT * FROM citas_medicas
       WHERE medico = $1
       AND fecha = $2
-      AND estado != 5
+      AND estado != ${estadoCita.CANCELADA}
       AND (
         (hora_inicio, hora_fin) OVERLAPS ($3::TIME, ($3::TIME + '30 minutes'::INTERVAL))
       )
@@ -150,7 +151,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
       WHERE tipo_doc_paciente = $1
       AND numero_doc_paciente = $2
       AND fecha = $3
-      AND estado != 5
+      AND estado != ${estadoCita.CANCELADA}
       AND (
       (hora_inicio, hora_fin) OVERLAPS ($4::TIME, ($4::TIME + '30 minutes'::INTERVAL))
       )
@@ -199,7 +200,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
       INNER JOIN asignacion_medicos tm ON cm.medico = tm.tarjeta_profesional_medico
       WHERE tm.id_consultorio = $1
       AND cm.fecha = $2
-      AND cm.estado != 5
+      AND cm.estado != ${estadoCita.CANCELADA}
       AND (
         (cm.hora_inicio, cm.hora_fin) OVERLAPS ($3::TIME, ($3::TIME + '30 minutes'::INTERVAL))
       )
@@ -220,7 +221,9 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
   }
   // Reprograma una cita creando una nueva con referencia a la anterior
   async reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<ICitaMedica> {
-    await ejecutarConsulta('UPDATE citas_medicas SET estado = 3 WHERE id_cita = $1::UUID', [idCitaAnterior]);
+    await ejecutarConsulta(`UPDATE citas_medicas SET estado = ${estadoCita.REPROGRAMADA} WHERE id_cita = $1::UUID`, [
+      idCitaAnterior,
+    ]);
     // Crear la nueva cita con referencia a la anterior
     const citaConReferencia: ICitaMedica = {
       ...nuevasCitas,
@@ -234,7 +237,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
   async cancelarCita(idCita: string): Promise<ICitaMedica> {
     const query = `
       UPDATE citas_medicas
-      SET estado = 5
+      SET estado = ${estadoCita.CANCELADA}
       WHERE id_cita = $1
       RETURNING *;
     `;
@@ -245,7 +248,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
   async finalizarCita(idCita: string): Promise<ICitaMedica> {
     const query = `
       UPDATE citas_medicas
-      SET estado = 4
+      SET estado = ${estadoCita.FINALIZADA}
       WHERE id_cita = $1
       RETURNING *;
     `;
