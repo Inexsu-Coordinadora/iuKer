@@ -14,13 +14,18 @@ export class AgendamientoCitasCasosUso implements IAgendamientoCitasCasosUso {
     private pacientesRepositorio: IPacientesRepositorio
   ) {}
 
-  async ejecutar(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica> {
+  async ejecutar(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica | null> {
     await this.validarPaciente(datosCitaMedica.numeroDocPaciente);
     await this.validarMedico(datosCitaMedica.medico);
-    this.validarFechaVigente(datosCitaMedica);
-    await this.validarTurnoMedico(datosCitaMedica);
-    await this.disponibilidadMedico(datosCitaMedica);
-    await this.validarCitasPaciente(datosCitaMedica);
+    this.validarFechaVigente(datosCitaMedica.fecha, datosCitaMedica.horaInicio);
+    await this.validarTurnoMedico(datosCitaMedica.medico, datosCitaMedica.fecha, datosCitaMedica.horaInicio);
+    await this.validarDisponibilidadMedico(datosCitaMedica.medico, datosCitaMedica.fecha, datosCitaMedica.horaInicio);
+    await this.validarCitasPaciente(
+      datosCitaMedica.tipoDocPaciente,
+      datosCitaMedica.numeroDocPaciente,
+      datosCitaMedica.fecha,
+      datosCitaMedica.horaInicio
+    );
 
     const citaAgendada = new CitaMedica(datosCitaMedica);
 
@@ -39,33 +44,43 @@ export class AgendamientoCitasCasosUso implements IAgendamientoCitasCasosUso {
     if (!medico) throw new Error(`El medico con tajerta profesional '${idMedico}' no existe en el sistema`);
   }
 
-  private validarFechaVigente(datosCitaMedica: citaMedicaDTO): void {
-    const fechaCita = conversionAFechaColombia(datosCitaMedica.fecha, datosCitaMedica.horaInicio);
+  private validarFechaVigente(fecha: string, horaInicio: string): void {
+    const fechaCita = conversionAFechaColombia(fecha, horaInicio);
     if (fechaCita < new Date()) throw new Error('No se puede agendar una cita en el pasado');
   }
 
-  private async disponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<void> {
-    const medicoDisponible = await this.citasMedicasRepositorio.validarDisponibilidadMedico(datosCitaMedica);
+  private async validarDisponibilidadMedico(medico: string, fecha: string, horaInicio: string): Promise<void> {
+    const medicoDisponible = await this.citasMedicasRepositorio.validarDisponibilidadMedico(medico, fecha, horaInicio);
 
     if (medicoDisponible)
-      throw new Error(`El medico '${datosCitaMedica.medico}' ya tiene programada una cita para la hora indicada`);
-  }
-
-  private async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<void> {
-    const turnoExistente = await this.citasMedicasRepositorio.validarTurnoMedico(datosCitaMedica);
-
-    if (!turnoExistente)
       throw new Error(
-        `El médico con tarjeta profesional '${datosCitaMedica.medico} no se encuentra disponible en ese horario'`
+        `El medico con tarjeta profesional '${medico}' ya tiene programada una cita para la hora indicada`
       );
   }
 
-  private async validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<void> {
-    const validarCitas = await this.citasMedicasRepositorio.validarCitasPaciente(datosCitaMedica);
+  private async validarTurnoMedico(medico: string, fecha: string, horaInicio: string): Promise<void> {
+    const turnoExistente = await this.citasMedicasRepositorio.validarTurnoMedico(medico, fecha, horaInicio);
+
+    if (!turnoExistente)
+      throw new Error(`El médico con tarjeta profesional '${medico}' no se encuentra disponible en ese horario`);
+  }
+
+  private async validarCitasPaciente(
+    tipoDocPaciente: number,
+    numeroDocPaciente: string,
+    fecha: string,
+    horaInicio: string
+  ): Promise<void> {
+    const validarCitas = await this.citasMedicasRepositorio.validarCitasPaciente(
+      tipoDocPaciente,
+      numeroDocPaciente,
+      fecha,
+      horaInicio
+    );
 
     if (validarCitas)
       throw new Error(
-        `No se puede agendar la cita porque el paciente con ID '${datosCitaMedica.numeroDocPaciente}' ya tiene una cita agendada en ese horario`
+        `No se puede agendar la cita porque el paciente con ID '${numeroDocPaciente}' ya tiene una cita agendada en ese horario`
       );
   }
 }

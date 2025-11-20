@@ -32,7 +32,7 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
     return await this.citasMedicasRepositorio.cancelarCita(idCita);
   }
   // Reprograma una cita existente
-  async reprogramarCita(idCita: string, nuevosDatos: citaMedicaDTO): Promise<ICitaMedica> {
+  async reprogramarCita(idCita: string, nuevosDatos: citaMedicaDTO): Promise<ICitaMedica | null> {
     const citaExistente = await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
 
     const fechaColombia = conversionAFechaColombia(nuevosDatos.fecha, nuevosDatos.horaInicio);
@@ -55,13 +55,17 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
       throw new Error('El médico asignado no existe en el sistema');
     }
     // Validar disponibilidad del médico (turno asignado)
-    const disponible = await this.citasMedicasRepositorio.validarTurnoMedico(nuevosDatos);
+    const disponible = await this.citasMedicasRepositorio.validarTurnoMedico(
+      nuevosDatos.medico,
+      nuevosDatos.fecha,
+      nuevosDatos.horaInicio
+    );
 
     if (!disponible) {
       throw new Error('El médico no tiene un turno asignado para el día y horario solicitado');
     }
     // Validar traslape del paciente (excluyendo la cita actual)
-    const traslapePaciente = await this.citasMedicasRepositorio.verificarTraslapePaciente(
+    const traslapePaciente = await this.citasMedicasRepositorio.validarCitasPaciente(
       nuevosDatos.tipoDocPaciente,
       nuevosDatos.numeroDocPaciente,
       nuevosDatos.fecha,
@@ -69,19 +73,19 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
       idCita
     );
 
-    if (traslapePaciente.hayTraslape) {
+    if (traslapePaciente) {
       throw new Error('El paciente ya tiene una cita programada en ese horario');
     }
 
     // Validar traslape del médico (excluyendo la cita actual)
-    const traslapeMedico = await this.citasMedicasRepositorio.verificarTraslapeMedico(
+    const traslapeMedico = await this.citasMedicasRepositorio.validarDisponibilidadMedico(
       nuevosDatos.medico,
       nuevosDatos.fecha,
       nuevosDatos.horaInicio,
       idCita
     );
 
-    if (traslapeMedico.hayTraslape) {
+    if (traslapeMedico) {
       throw new Error('El médico ya tiene una cita programada en ese horario');
     }
 
@@ -101,6 +105,8 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
   }
   async finalizarCita(idCita: string): Promise<ICitaMedica> {
     const cita = await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
+    console.log(cita?.estado);
+
     if (!cita) {
       throw new Error('La cita no existe en el sistema');
     }

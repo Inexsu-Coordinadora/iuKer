@@ -3,6 +3,6 @@ import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsque
 
 export interface ICancelacionReprogramacionCitasCasosUso {
   cancelarCita(idCita: string): Promise<ICitaMedica>;
-  reprogramarCita(idCita: string, nuevosDatos: citaMedicaDTO): Promise<ICitaMedica>;
+  reprogramarCita(idCita: string, nuevosDatos: citaMedicaDTO): Promise<ICitaMedica | null>;
   finalizarCita(idCita: string): Promise<ICitaMedica>;
 }
