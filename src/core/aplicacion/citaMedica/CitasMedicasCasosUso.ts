@@ -1,4 +1,3 @@
-import { ICitaMedica } from '../../dominio/citaMedica/ICitaMedica.js';
 import { ICitasMedicasRepositorio } from '../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 import { CitaMedicaResumenDTO } from '../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
 import { ICitasMedicasCasosUso } from './ICitasMedicasCasosUso.js';
