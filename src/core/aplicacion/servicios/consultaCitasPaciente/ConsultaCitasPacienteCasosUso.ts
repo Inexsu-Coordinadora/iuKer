@@ -2,21 +2,34 @@ import { IConsultaCitasPacienteCasosUso } from './IConsultaCitasPacienteCasosUso
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { IPacientesRepositorio } from '../../../dominio/paciente/IPacientesRepositorio.js';
 import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
+import { crearErrorDeDominio } from '../../../dominio/errores/manejoDeErrores.js';
+import { CodigosDeError } from '../../../dominio/errores/codigosDeError.enum.js';
 
-export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso {
+export class ConsultaPacienteCasosUso
+  implements IConsultaCitasPacienteCasosUso
+{
   constructor(
     private pacientesRepositorio: IPacientesRepositorio,
     private citasMedicasRepositorio: ICitasMedicasRepositorio
   ) {}
 
-  async ejecutarServicio(numeroDocPaciente: string, limite?: number): Promise<citaMedicaDTO[]> {
-    const paciente = await this.pacientesRepositorio.obtenerPacientePorId(numeroDocPaciente);
+  async ejecutarServicio(
+    numeroDocPaciente: string,
+    limite?: number
+  ): Promise<citaMedicaDTO[]> {
+    const paciente = await this.pacientesRepositorio.obtenerPacientePorId(
+      numeroDocPaciente
+    );
 
     if (!paciente) {
-      throw new Error(`El paciente con documento '${numeroDocPaciente}' no existe`);
+      throw crearErrorDeDominio(CodigosDeError.PACIENTE_NO_EXISTE);
     }
 
-    const citasPorPaciente = await this.citasMedicasRepositorio.obtenerCitasPorPaciente(numeroDocPaciente, limite);
+    const citasPorPaciente =
+      await this.citasMedicasRepositorio.obtenerCitasPorPaciente(
+        numeroDocPaciente,
+        limite
+      );
 
     if (limite) {
       return citasPorPaciente.slice(0, limite);
@@ -24,4 +37,3 @@ export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso 
     return citasPorPaciente;
   }
 }
-

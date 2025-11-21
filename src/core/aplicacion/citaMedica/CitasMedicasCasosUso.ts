@@ -1,6 +1,8 @@
 import { ICitaMedica } from '../../dominio/citaMedica/ICitaMedica.js';
 import { ICitasMedicasRepositorio } from '../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 import { ICitasMedicasCasosUso } from './ICitasMedicasCasosUso.js';
+import { crearErrorDeDominio } from '../../dominio/errores/manejoDeErrores.js';
+import { CodigosDeError } from '../../dominio/errores/codigosDeError.enum.js';
 
 export class CitasMedicasCasosUso implements ICitasMedicasCasosUso {
   constructor(private citasMedicasRepositorio: ICitasMedicasRepositorio) {}
@@ -17,7 +19,7 @@ export class CitasMedicasCasosUso implements ICitasMedicasCasosUso {
     const validarExistencia = await this.obtenerCitaPorId(idCita);
 
     if (!validarExistencia) {
-      throw new Error('No puede eliminar la cita con ese id porque no existe en el sistema');
+      throw crearErrorDeDominio(CodigosDeError.CITA_NO_EXISTE);
     }
 
     await this.citasMedicasRepositorio.eliminarCita(idCita);

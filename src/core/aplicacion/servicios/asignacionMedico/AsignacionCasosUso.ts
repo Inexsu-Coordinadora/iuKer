@@ -4,6 +4,8 @@ import { IAsignacionCasosUso } from './IAsignacionCasosUso.js';
 import { IAsignacionMedicoRepositorio } from '../../../dominio/asignacionMedico/IAsignacionMedicoRepositorio.js';
 import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio.js';
 import { IConsultoriosRepositorio } from '../../../dominio/consultorio/IConsultoriosRepositorio.js';
+import { crearErrorDeDominio } from '../../../dominio/errores/manejoDeErrores.js';
+import { CodigosDeError } from '../../../dominio/errores/codigosDeError.enum.js';
 
 export class AsignacionCasosUso implements IAsignacionCasosUso {
   constructor(
@@ -13,49 +15,61 @@ export class AsignacionCasosUso implements IAsignacionCasosUso {
   ) {}
 
   async crearAsignacion(nuevaAsignacion: IAsignacionMedico): Promise<string> {
-    //Medico existe
-    const medicoExiste = await this.medicoRepositorio.obtenerMedicoPorTarjetaProfesional(
-      nuevaAsignacion.tarjetaProfesionalMedico
-    );
+    const medicoExiste =
+      await this.medicoRepositorio.obtenerMedicoPorTarjetaProfesional(
+        nuevaAsignacion.tarjetaProfesionalMedico
+      );
     if (!medicoExiste) {
-      throw new Error(`El médico con tarjeta profesional '${nuevaAsignacion.tarjetaProfesionalMedico}' no existe.`);
+      throw crearErrorDeDominio(CodigosDeError.MEDICO_NO_EXISTE);
     }
-    //Consultorio existe
-    const consultorioExiste = await this.consultorioRepositorio.obtenerConsultorioPorId(nuevaAsignacion.idConsultorio);
+
+    const consultorioExiste =
+      await this.consultorioRepositorio.obtenerConsultorioPorId(
+        nuevaAsignacion.idConsultorio
+      );
     if (!consultorioExiste) {
-      throw new Error(`El consultorio con ID '${nuevaAsignacion.idConsultorio}' no existe.`);
+      throw crearErrorDeDominio(CodigosDeError.CONSULTORIO_NO_EXISTE);
     }
     //Comprobación de existencia de una asignación identica
-    const existeAsignacion = await this.asignacionMedicoRepositorio.existeAsignacion(
-      nuevaAsignacion.tarjetaProfesionalMedico,
-      nuevaAsignacion.idConsultorio,
-      nuevaAsignacion.diaSemana,
-      nuevaAsignacion.inicioJornada,
-      nuevaAsignacion.finJornada
-    );
+    const existeAsignacion =
+      await this.asignacionMedicoRepositorio.existeAsignacion(
+        nuevaAsignacion.tarjetaProfesionalMedico,
+        nuevaAsignacion.idConsultorio,
+        nuevaAsignacion.diaSemana,
+        nuevaAsignacion.inicioJornada,
+        nuevaAsignacion.finJornada
+      );
     if (existeAsignacion) {
-      throw new Error('La asignación Medico-Consultorio que intentas crear ya existe de manera identica');
+      throw crearErrorDeDominio(
+        CodigosDeError.ASIGNACION_MEDICO_CONSULTORIO_YA_EXISTE
+      );
     }
-    //Comprobacion de consultorio ocupado
-    const consultorioOcupado = await this.asignacionMedicoRepositorio.consultorioOcupado(
-      nuevaAsignacion.idConsultorio,
-      nuevaAsignacion.diaSemana,
-      nuevaAsignacion.inicioJornada,
-      nuevaAsignacion.finJornada
-    );
+
+    const consultorioOcupado =
+      await this.asignacionMedicoRepositorio.consultorioOcupado(
+        nuevaAsignacion.idConsultorio,
+        nuevaAsignacion.diaSemana,
+        nuevaAsignacion.inicioJornada,
+        nuevaAsignacion.finJornada
+      );
     if (consultorioOcupado) {
-      throw new Error('El consultorio está ocupado en ese rango de tiempo.');
+      throw crearErrorDeDominio(CodigosDeError.CONSULTORIO_OCUPADO);
     }
 
     //creación y persistencia
     const instanciaAsignacion = new AsignacionMedico(nuevaAsignacion);
 
-    const idNuevaAsignacion = await this.asignacionMedicoRepositorio.crearAsignacion(instanciaAsignacion);
+    const idNuevaAsignacion =
+      await this.asignacionMedicoRepositorio.crearAsignacion(
+        instanciaAsignacion
+      );
 
     return idNuevaAsignacion;
   }
 
   async eliminarAsignacion(tarjetaProfesionalMedico: string): Promise<void> {
-    await this.asignacionMedicoRepositorio.eliminarAsignacion(tarjetaProfesionalMedico);
+    await this.asignacionMedicoRepositorio.eliminarAsignacion(
+      tarjetaProfesionalMedico
+    );
   }
 }

@@ -2,6 +2,8 @@ import { IPacientesCasosUso } from './IPacientesCasosUso.js';
 import { IPaciente } from '../../dominio/paciente/IPaciente.js';
 import { Paciente } from '../../dominio/paciente/Paciente.js';
 import { IPacientesRepositorio } from '../../dominio/paciente/IPacientesRepositorio.js';
+import { crearErrorDeDominio } from '../../dominio/errores/manejoDeErrores.js';
+import { CodigosDeError } from '../../dominio/errores/codigosDeError.enum.js';
 
 export class PacientesCasosUso implements IPacientesCasosUso {
   constructor(private pacientesRepositorio: IPacientesRepositorio) {}
@@ -27,9 +29,7 @@ export class PacientesCasosUso implements IPacientesCasosUso {
       );
 
     if (existePaciente) {
-      throw new Error(
-        `El paciente con documento ${instanciaPaciente.numeroDoc} y tipo ${instanciaPaciente.tipoDoc} ya existe en el sistema.`
-      );
+      throw crearErrorDeDominio(CodigosDeError.PACIENTE_YA_EXISTE);
     }
 
     const idNuevoPaciente = await this.pacientesRepositorio.crearPaciente(
