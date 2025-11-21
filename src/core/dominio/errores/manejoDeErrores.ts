@@ -59,6 +59,10 @@ const MAPA_ERRORES = {
     estado: EstadoHttp.NO_ENCONTRADO,
     mensaje: 'El consultorio no existe en el sistema',
   },
+  [CodigosDeError.CONCULTORIO_YA_EXISTE]: {
+    estado: EstadoHttp.CONFLICTO,
+    mensaje: 'El consultorio ya existe en el sistema',
+  },
   [CodigosDeError.CONSULTORIO_OCUPADO]: {
     estado: EstadoHttp.CONFLICTO,
     mensaje: 'El consultorio está ocupado en ese rango de tiempo',

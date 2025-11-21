@@ -19,7 +19,8 @@ export enum CodigosDeError {
 
   //Errores de consultorio - [CONS]
   CONSULTORIO_NO_EXISTE = 'CONS001',
-  CONSULTORIO_OCUPADO = 'CONS002', //Ocupado en ese rango de tiempo
+  CONCULTORIO_YA_EXISTE = 'CONS002',
+  CONSULTORIO_OCUPADO = 'CONS003', //Ocupado en ese rango de tiempo
 
   // Errores Generales/Validación de Entrada - [GEN]
   PARAMETROS_INVALIDOS = 'GEN001',
