@@ -1,4 +1,4 @@
-import { CitaMedicaResumenDTO } from '../dtos/citaMedicaResumenDTO.js';
+import { CitaMedicaRespuestaDTO } from '../dtos/CitaMedicaRespuestaDTO.js';
 
 export interface CitaMedicaFila {
   idCita: string;
@@ -15,7 +15,7 @@ export interface CitaMedicaFila {
   idCitaAnterior: string | null;
 }
 
-export function mapFilaCitaMedica(fila: CitaMedicaFila): CitaMedicaResumenDTO {
+export function mapFilaCitaMedica(fila: CitaMedicaFila): CitaMedicaRespuestaDTO {
   return {
     idCita: fila.idCita,
     paciente: fila.paciente,

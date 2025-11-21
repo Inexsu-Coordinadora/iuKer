@@ -1,6 +1,5 @@
-import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
+import { citaMedicaSolicitudDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 
 export interface IConsultaCitasPacienteCasosUso {
-    ejecutarServicio(numeroDocPaciente : string, limite? : number) : Promise <citaMedicaDTO[]>;
+  ejecutarServicio(numeroDocPaciente: string, limite?: number): Promise<citaMedicaSolicitudDTO[]>;
 }
-

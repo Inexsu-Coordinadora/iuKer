@@ -3,8 +3,8 @@ import { CitaMedica } from '../../../dominio/citaMedica/CitaMedica.js';
 import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio.js';
 import { IPacientesRepositorio } from '../../../dominio/paciente/IPacientesRepositorio.js';
-import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
-import { CitaMedicaResumenDTO } from '../../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
+import { citaMedicaSolicitudDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
+import { CitaMedicaRespuestaDTO } from '../../../infraestructura/repositorios/postgres/dtos/CitaMedicaRespuestaDTO.js';
 import { IAgendamientoCitasCasosUso } from './IAgendamientoCitasCasosUso.js';
 
 export class AgendamientoCitasCasosUso implements IAgendamientoCitasCasosUso {
@@ -14,7 +14,7 @@ export class AgendamientoCitasCasosUso implements IAgendamientoCitasCasosUso {
     private pacientesRepositorio: IPacientesRepositorio
   ) {}
 
-  async ejecutar(datosCitaMedica: citaMedicaDTO): Promise<CitaMedicaResumenDTO | null> {
+  async ejecutar(datosCitaMedica: citaMedicaSolicitudDTO): Promise<CitaMedicaRespuestaDTO | null> {
     await this.validarPaciente(datosCitaMedica.numeroDocPaciente);
     await this.validarMedico(datosCitaMedica.medico);
     this.validarFechaVigente(datosCitaMedica.fecha, datosCitaMedica.horaInicio);

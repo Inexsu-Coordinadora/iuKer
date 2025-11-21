@@ -2,10 +2,10 @@ import { conversionAFechaColombia } from '../../../../common/conversionAFechaCol
 import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
 import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio.js';
-import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
+import { citaMedicaSolicitudDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { ICancelacionReprogramacionCitasCasosUso } from './ICancelacionReprogramacionCitasCasosUso.js';
 import { estadoCita } from '../../../../common/estadoCita.enum.js';
-import { CitaMedicaResumenDTO } from '../../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
+import { CitaMedicaRespuestaDTO } from '../../../infraestructura/repositorios/postgres/dtos/CitaMedicaRespuestaDTO.js';
 
 export class CancelacionReprogramacionCitasCasosUso implements ICancelacionReprogramacionCitasCasosUso {
   constructor(
@@ -13,7 +13,7 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
     private medicosRepositorio: IMedicosRepositorio
   ) {}
 
-  async cancelarCita(idCita: string): Promise<CitaMedicaResumenDTO | null> {
+  async cancelarCita(idCita: string): Promise<CitaMedicaRespuestaDTO | null> {
     // Verificar que la cita existe
     const citaExistente = await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
 
@@ -33,7 +33,7 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
     return await this.citasMedicasRepositorio.cancelarCita(idCita);
   }
   // Reprograma una cita existente
-  async reprogramarCita(idCita: string, nuevosDatos: citaMedicaDTO): Promise<CitaMedicaResumenDTO | null> {
+  async reprogramarCita(idCita: string, nuevosDatos: citaMedicaSolicitudDTO): Promise<CitaMedicaRespuestaDTO | null> {
     const citaExistente = await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
 
     const fechaColombia = conversionAFechaColombia(nuevosDatos.fecha, nuevosDatos.horaInicio);
@@ -104,7 +104,7 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
     // Reprogramar (marca la anterior como reprogramada y crea la nueva)
     return await this.citasMedicasRepositorio.reprogramarCita(idCita, nuevaCita);
   }
-  async finalizarCita(idCita: string): Promise<CitaMedicaResumenDTO | null> {
+  async finalizarCita(idCita: string): Promise<CitaMedicaRespuestaDTO | null> {
     const cita = await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
 
     if (!cita) {

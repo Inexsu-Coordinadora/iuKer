@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { ICitasMedicasCasosUso } from '../../aplicacion/citaMedica/ICitasMedicasCasosUso.js';
-import { citaMedicaDTO, crearCitaMedicaEsquema } from '../esquemas/citaMedicaEsquema.js';
+import { citaMedicaSolicitudDTO, crearCitaMedicaEsquema } from '../esquemas/citaMedicaEsquema.js';
 import { ZodError } from 'zod';
 import { ICitaMedica } from '../../dominio/citaMedica/ICitaMedica.js';
 import { ICancelacionReprogramacionCitasCasosUso } from '../../aplicacion/servicios/cancelacionReprogramacionCita/ICancelacionReprogramacionCitasCasosUso.js';
@@ -54,7 +54,7 @@ export class CitasMedicasControlador {
     }
   };
 
-  agendarCita = async (req: FastifyRequest<{ Body: citaMedicaDTO }>, res: FastifyReply) => {
+  agendarCita = async (req: FastifyRequest<{ Body: citaMedicaSolicitudDTO }>, res: FastifyReply) => {
     try {
       const datosCita = crearCitaMedicaEsquema.parse(req.body);
       const citaAgendada = await this.agendamientoCitasCasosUso.ejecutar(datosCita);
@@ -114,7 +114,7 @@ export class CitasMedicasControlador {
   };
 
   reprogramarCita = async (
-    req: FastifyRequest<{ Params: { idCita: string }; Body: citaMedicaDTO }>,
+    req: FastifyRequest<{ Params: { idCita: string }; Body: citaMedicaSolicitudDTO }>,
     res: FastifyReply
   ) => {
     try {

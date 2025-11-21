@@ -1,5 +1,5 @@
 import { IConsultaCitasPacienteCasosUso } from './IConsultaCitasPacienteCasosUso.js';
-import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
+import { citaMedicaSolicitudDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { IPacientesRepositorio } from '../../../dominio/paciente/IPacientesRepositorio.js';
 import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 
@@ -9,7 +9,7 @@ export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso 
     private citasMedicasRepositorio: ICitasMedicasRepositorio
   ) {}
 
-  async ejecutarServicio(numeroDocPaciente: string, limite?: number): Promise<citaMedicaDTO[]> {
+  async ejecutarServicio(numeroDocPaciente: string, limite?: number): Promise<citaMedicaSolicitudDTO[]> {
     const paciente = await this.pacientesRepositorio.obtenerPacientePorId(numeroDocPaciente);
 
     if (!paciente) {
@@ -24,4 +24,3 @@ export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso 
     return citasPorPaciente;
   }
 }
-

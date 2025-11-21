@@ -1,7 +1,7 @@
-import { CitaMedicaResumenDTO } from '../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
+import { CitaMedicaRespuestaDTO } from '../../infraestructura/repositorios/postgres/dtos/CitaMedicaRespuestaDTO.js';
 
 export interface ICitasMedicasCasosUso {
-  obtenerCitas(limite?: number): Promise<CitaMedicaResumenDTO[]>;
-  obtenerCitaPorId(idCita: string): Promise<CitaMedicaResumenDTO | null>;
+  obtenerCitas(limite?: number): Promise<CitaMedicaRespuestaDTO[]>;
+  obtenerCitaPorId(idCita: string): Promise<CitaMedicaRespuestaDTO | null>;
   eliminarCita(idCita: string): Promise<void>;
 }

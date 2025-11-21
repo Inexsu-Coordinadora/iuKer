@@ -1,4 +1,4 @@
-export interface CitaMedicaResumenDTO {
+export interface CitaMedicaRespuestaDTO {
   idCita: string;
   paciente: string;
   tipoDocPaciente: string;

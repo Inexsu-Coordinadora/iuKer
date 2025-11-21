@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { EsquemasComunes } from './esquemasComunes.js';
-const estadosValidos = [1, 2, 3, 4, 5] as const;
 export const crearCitaMedicaEsquema = z.object({
   medico: z
     .string()
@@ -15,4 +14,4 @@ export const crearCitaMedicaEsquema = z.object({
   horaInicio: EsquemasComunes.Hora,
 });
 
-export type citaMedicaDTO = z.infer<typeof crearCitaMedicaEsquema>;
+export type citaMedicaSolicitudDTO = z.infer<typeof crearCitaMedicaEsquema>;

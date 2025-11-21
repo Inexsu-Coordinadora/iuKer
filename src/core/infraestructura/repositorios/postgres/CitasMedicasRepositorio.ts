@@ -4,7 +4,7 @@ import { estadoCita } from '../../../../common/estadoCita.enum.js';
 import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
 import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 import { ejecutarConsulta } from './clientePostgres.js';
-import { CitaMedicaResumenDTO } from './dtos/citaMedicaResumenDTO.js';
+import { CitaMedicaRespuestaDTO } from './dtos/CitaMedicaRespuestaDTO.js';
 import { CitaMedicaFila, mapFilaCitaMedica } from './mappers/citaMedica.mapper.js';
 
 export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
@@ -37,7 +37,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     `;
   }
 
-  async obtenerCitas(limite?: number): Promise<CitaMedicaResumenDTO[]> {
+  async obtenerCitas(limite?: number): Promise<CitaMedicaRespuestaDTO[]> {
     let query = this._queryBase + `ORDER BY c.fecha ASC`;
 
     const valores: number[] = [];
@@ -54,7 +54,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     return citas;
   }
 
-  async obtenerCitaPorId(idCita: string): Promise<CitaMedicaResumenDTO | null> {
+  async obtenerCitaPorId(idCita: string): Promise<CitaMedicaRespuestaDTO | null> {
     const query = this._queryBase + `WHERE id_cita = $1`;
     const resultado = await ejecutarConsulta(query, [idCita]);
 
@@ -153,7 +153,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     return resultado.rows[0].count > 0;
   }
 
-  async agendarCita(datosCitaMedica: ICitaMedica): Promise<CitaMedicaResumenDTO | null> {
+  async agendarCita(datosCitaMedica: ICitaMedica): Promise<CitaMedicaRespuestaDTO | null> {
     const columnas = Object.keys(datosCitaMedica).map((key) => camelCaseASnakeCase(key));
     const parametros: Array<string | number> = Object.values(datosCitaMedica);
     const placeHolders = columnas.map((_, i) => `$${i + 1}`).join(', ');
@@ -177,7 +177,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
   }
 
   // Reprograma una cita creando una nueva con referencia a la anterior
-  async reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<CitaMedicaResumenDTO | null> {
+  async reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<CitaMedicaRespuestaDTO | null> {
     await ejecutarConsulta(`UPDATE citas_medicas SET estado = ${estadoCita.REPROGRAMADA} WHERE id_cita = $1::UUID`, [
       idCitaAnterior,
     ]);
@@ -192,7 +192,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
   }
 
   // Cancela una cita cambiando su estado
-  async cancelarCita(idCita: string): Promise<CitaMedicaResumenDTO | null> {
+  async cancelarCita(idCita: string): Promise<CitaMedicaRespuestaDTO | null> {
     const query = `
       UPDATE citas_medicas
       SET estado = ${estadoCita.CANCELADA}
@@ -205,7 +205,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     return citaCancelada;
   }
 
-  async finalizarCita(idCita: string): Promise<CitaMedicaResumenDTO | null> {
+  async finalizarCita(idCita: string): Promise<CitaMedicaRespuestaDTO | null> {
     const query = `
       UPDATE citas_medicas
       SET estado = ${estadoCita.FINALIZADA}
@@ -238,7 +238,10 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
   }
 
   async eliminarCitasPorMedico(tarjetaProfesional: string): Promise<void> {
-    await ejecutarConsulta('DELETE FROM citas_medicas WHERE id_cita_anterior IN (SELECT id_cita FROM citas_medicas WHERE medico = $1)', [tarjetaProfesional]);
+    await ejecutarConsulta(
+      'DELETE FROM citas_medicas WHERE id_cita_anterior IN (SELECT id_cita FROM citas_medicas WHERE medico = $1)',
+      [tarjetaProfesional]
+    );
 
     await ejecutarConsulta('DELETE FROM citas_medicas WHERE medico = $1', [tarjetaProfesional]);
   }
