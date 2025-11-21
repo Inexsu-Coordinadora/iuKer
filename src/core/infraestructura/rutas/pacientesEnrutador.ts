@@ -8,7 +8,7 @@ import { ConsultaPacienteCasosUso } from '../../aplicacion/servicios/consultaCit
 function pacientesEnrutador(app: FastifyInstance, pacientesControlador: PacientesControlador) {
   app.get('/pacientes', pacientesControlador.obtenerPacientes);
   app.get('/pacientes/:numeroDoc', pacientesControlador.obtenerPacientePorId);
-  app.get('/pacientes/:numeroDoc/cita', pacientesControlador.obtenerCitasPorPaciente);
+  app.get('/pacientes/:numeroDoc/citas', pacientesControlador.obtenerCitasPorPaciente);
   app.post('/pacientes', pacientesControlador.crearPaciente);
   app.put('/pacientes/:numeroDoc', pacientesControlador.actualizarPaciente);
   app.delete('/pacientes/:numeroDoc', pacientesControlador.borrarPaciente);
