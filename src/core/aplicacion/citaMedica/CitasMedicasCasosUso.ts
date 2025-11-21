@@ -12,7 +12,15 @@ export class CitasMedicasCasosUso implements ICitasMedicasCasosUso {
   }
 
   async obtenerCitaPorId(idCita: string): Promise<ICitaMedica | null> {
-    return await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
+    const citaEncontrada = await this.citasMedicasRepositorio.obtenerCitaPorId(
+      idCita
+    );
+
+    if (!citaEncontrada) {
+      throw crearErrorDeDominio(CodigosDeError.CITA_NO_EXISTE);
+    }
+
+    return citaEncontrada;
   }
 
   async eliminarCita(idCita: string): Promise<void> {

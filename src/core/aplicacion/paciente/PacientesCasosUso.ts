@@ -16,6 +16,10 @@ export class PacientesCasosUso implements IPacientesCasosUso {
     const pacienteObtenido =
       await this.pacientesRepositorio.obtenerPacientePorId(numeroDoc);
 
+    if (!pacienteObtenido) {
+      throw crearErrorDeDominio(CodigosDeError.PACIENTE_NO_EXISTE);
+    }
+
     return pacienteObtenido;
   }
 
@@ -43,6 +47,14 @@ export class PacientesCasosUso implements IPacientesCasosUso {
     numeroDoc: string,
     paciente: Paciente
   ): Promise<IPaciente> {
+    const pacienteExiste = await this.pacientesRepositorio.obtenerPacientePorId(
+      numeroDoc
+    );
+
+    if (!pacienteExiste) {
+      throw crearErrorDeDominio(CodigosDeError.PACIENTE_NO_EXISTE);
+    }
+
     const pacienteActualizado =
       await this.pacientesRepositorio.actualizarPaciente(numeroDoc, paciente);
     return pacienteActualizado || null;
