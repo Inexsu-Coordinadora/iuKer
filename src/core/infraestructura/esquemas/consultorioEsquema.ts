@@ -1,11 +1,8 @@
 import { z } from "zod";
+import { EsquemasComunes } from "./esquemasComunes.js";
 
 export const CrearConsultorioEsquema = z.object({
-  idConsultorio: z
-    .string()
-    .nonempty("El ID del consultorio es obligatorio")
-    .min(1, "El ID debe tener al menos 1 carácter")
-    .max(5, "El ID no puede exceder 5 caracteres"),
+  idConsultorio: EsquemasComunes.idConsultorio,
   ubicacion: z
     .string()
     .optional()
