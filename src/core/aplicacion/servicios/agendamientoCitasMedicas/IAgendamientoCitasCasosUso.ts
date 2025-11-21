@@ -1,6 +1,6 @@
-import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
+import { CitaMedicaResumenDTO } from '../../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
 
 export interface IAgendamientoCitasCasosUso {
-  ejecutar(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica>;
+  ejecutar(datosCitaMedica: citaMedicaDTO): Promise<CitaMedicaResumenDTO | null>;
 }

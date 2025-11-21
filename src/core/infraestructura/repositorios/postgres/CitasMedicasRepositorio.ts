@@ -1,13 +1,45 @@
 import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
 import { conversionAFechaColombia } from '../../../../common/conversionAFechaColombia.js';
+import { estadoCita } from '../../../../common/estadoCita.enum.js';
 import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
 import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
-import { citaMedicaDTO } from '../../esquemas/citaMedicaEsquema.js';
 import { ejecutarConsulta } from './clientePostgres.js';
+import { CitaMedicaResumenDTO } from './dtos/citaMedicaResumenDTO.js';
+import { CitaMedicaFila, mapFilaCitaMedica } from './mappers/citaMedica.mapper.js';
 
 export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
-  async obtenerCitas(limite?: number): Promise<ICitaMedica[]> {
-    let query = 'SELECT * FROM citas_medicas';
+  private get _queryBase(): string {
+    return `
+    SELECT
+      c.id_cita AS "idCita",
+      (p.nombre || ' ' || COALESCE (p.apellido, '')) AS paciente,
+      td.descripcion AS "tipoDocPaciente",
+      c.numero_doc_paciente AS "numeroDocPaciente",
+      (m.nombre || ' ' || COALESCE (m.apellido, '')) AS medico,
+      co.ubicacion,
+      co.id_consultorio AS consultorio,
+      c.fecha,
+      c.hora_inicio AS "horaInicio",
+      e.id_estado AS estado,
+      e.descripcion AS "estadoCita",
+      c.id_cita_anterior AS "idCitaAnterior"
+    FROM citas_medicas c
+    INNER JOIN pacientes p ON c.tipo_doc_paciente = p.tipo_doc AND c.numero_doc_paciente = p.numero_doc
+    INNER JOIN medicos m ON c.medico = m.tarjeta_profesional
+    INNER JOIN estados e ON c.estado = e.id_estado
+    INNER JOIN tipo_documentos td ON c.tipo_doc_paciente = td.id_documento
+    LEFT JOIN asignacion_medicos am
+      ON m.tarjeta_profesional = am.tarjeta_profesional_medico
+      AND EXTRACT(DOW FROM c.fecha) = am.dia_semana
+      AND c.hora_inicio >= am.inicio_jornada
+      AND c.hora_fin <= am.fin_jornada
+    LEFT JOIN consultorios co ON am.id_consultorio = co.id_consultorio
+    `;
+  }
+
+  async obtenerCitas(limite?: number): Promise<CitaMedicaResumenDTO[]> {
+    let query = this._queryBase + `ORDER BY c.fecha ASC`;
+
     const valores: number[] = [];
 
     if (limite !== undefined) {
@@ -16,58 +48,97 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     }
 
     const resultado = await ejecutarConsulta(query, valores);
-    return resultado.rows;
+
+    const filas: CitaMedicaFila[] = resultado.rows;
+    const citas = filas.map(mapFilaCitaMedica);
+    return citas;
   }
 
-  async obtenerCitaPorId(idCita: string): Promise<ICitaMedica | null> {
-    const query = 'SELECT * FROM citas_medicas WHERE id_cita = $1';
+  async obtenerCitaPorId(idCita: string): Promise<CitaMedicaResumenDTO | null> {
+    const query = this._queryBase + `WHERE id_cita = $1`;
     const resultado = await ejecutarConsulta(query, [idCita]);
 
-    return resultado.rows[0] || null;
+    if (resultado.rows.length === 0) return null;
+
+    const infoCita: CitaMedicaFila = resultado.rows[0];
+    const cita = mapFilaCitaMedica(infoCita);
+
+    return cita;
   }
 
-  async validarDisponibilidadMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
-    const valores = [datosCitaMedica.medico, datosCitaMedica.fecha, datosCitaMedica.horaInicio];
+  // Verifica si existe Traslape para un medico en una fecha y hora especifica
+  // Excluye citas canceladas y, si se desea, una cita especifica
+  async validarDisponibilidadMedico(
+    medico: string,
+    fecha: string,
+    horaInicio: string,
+    idCitaAExcluir?: string
+  ): Promise<boolean> {
+    const fechaColombia = conversionAFechaColombia(fecha, horaInicio);
 
-    const query = `
-      SELECT COUNT(*) FROM citas_medicas
+    let query = `
+      SELECT * FROM citas_medicas
       WHERE medico = $1
       AND fecha = $2
-      AND hora_inicio < ($3::time + INTERVAL '30 minutes')
-      AND hora_fin > $3::time;
+      AND estado != ${estadoCita.CANCELADA}
+      AND (
+        (hora_inicio, hora_fin) OVERLAPS ($3::TIME, ($3::TIME + '30 minutes'::INTERVAL))
+      )
     `;
 
-    const resultado = await ejecutarConsulta(query, valores);
+    const params: (number | string | Date)[] = [medico, fechaColombia, horaInicio];
+    // Usado para excluir la cita a la hora de reprogramar, para evitar traslape
+    if (idCitaAExcluir) {
+      query += ` AND id_cita != $4`;
+      params.push(idCitaAExcluir);
+    }
 
-    return resultado.rows[0].count > 0;
+    const resultado = await ejecutarConsulta(query, params);
+    return resultado.rows.length > 0;
+    /* return {
+      hayTraslape: resultado.rows.length > 0,
+      citaConflicto: resultado.rows[0] || undefined,
+    }; */
   }
 
-  async validarCitasPaciente(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
-    const valores = [
-      datosCitaMedica.tipoDocPaciente,
-      datosCitaMedica.numeroDocPaciente,
-      datosCitaMedica.fecha,
-      datosCitaMedica.horaInicio,
-    ];
-
-    const query = `
-      SELECT COUNT(*) FROM citas_medicas
+  // Verifica si existe traslape para un paciente en una fecha y hora especifica
+  async validarCitasPaciente(
+    tipoDocPaciente: number,
+    numeroDocPaciente: string,
+    fecha: string,
+    horaInicio: string,
+    idCitaAExcluir?: string
+  ): Promise<boolean> {
+    const fechaColombia = conversionAFechaColombia(fecha, horaInicio);
+    let query = `
+      SELECT * FROM citas_medicas
       WHERE tipo_doc_paciente = $1
       AND numero_doc_paciente = $2
       AND fecha = $3
-      AND hora_inicio < ($4::time + INTERVAL '30 minutes')
-      AND hora_fin > $4::time;
+      AND estado != ${estadoCita.CANCELADA}
+      AND (
+      (hora_inicio, hora_fin) OVERLAPS ($4::TIME, ($4::TIME + '30 minutes'::INTERVAL))
+      )
     `;
 
-    const resultado = await ejecutarConsulta(query, valores);
+    const params: (number | string | Date)[] = [tipoDocPaciente, numeroDocPaciente, fechaColombia, horaInicio];
+    if (idCitaAExcluir) {
+      query += ` AND id_cita != $5`;
+      params.push(idCitaAExcluir);
+    }
 
-    return resultado.rows[0].count > 0;
+    const resultado = await ejecutarConsulta(query, params);
+    return resultado.rows.length > 0;
+    /* return {
+      hayTraslape: resultado.rows.length > 0,
+      citaConflicto: resultado.rows[0] || undefined,
+    }; */
   }
 
-  async validarTurnoMedico(datosCitaMedica: citaMedicaDTO): Promise<boolean> {
-    const fechaColombia = conversionAFechaColombia(datosCitaMedica.fecha, datosCitaMedica.horaInicio);
+  async validarTurnoMedico(medico: string, fecha: string, horaInicio: string): Promise<boolean> {
+    const fechaColombia = conversionAFechaColombia(fecha, horaInicio);
     const diaSemana = fechaColombia.getDay();
-    const valores = [datosCitaMedica.medico, diaSemana, datosCitaMedica.horaInicio];
+    const valores = [medico, diaSemana, horaInicio];
 
     const query = `
       SELECT COUNT(*) FROM asignacion_medicos
@@ -82,19 +153,20 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     return resultado.rows[0].count > 0;
   }
 
-  async agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica> {
+  async agendarCita(datosCitaMedica: ICitaMedica): Promise<CitaMedicaResumenDTO | null> {
     const columnas = Object.keys(datosCitaMedica).map((key) => camelCaseASnakeCase(key));
     const parametros: Array<string | number> = Object.values(datosCitaMedica);
     const placeHolders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
-      INSERT INTO citas_medicas (${columnas.join(', ')})
-      VALUES (${placeHolders})
-      RETURNING *;
+    INSERT INTO citas_medicas (${columnas.join(', ')})
+    VALUES (${placeHolders})
+    RETURNING *;
     `;
 
-    const respuesta = await ejecutarConsulta(query, parametros);
-    return respuesta.rows[0];
+    const resultado = await ejecutarConsulta(query, parametros);
+    const citaAgendada = this.obtenerCitaPorId(resultado.rows[0].id_cita);
+    return citaAgendada;
   }
 
   async eliminarCita(idCita: string): Promise<void> {
@@ -103,124 +175,12 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     // Luego eliminar la cita original
     await ejecutarConsulta('DELETE FROM citas_medicas WHERE id_cita = $1', [idCita]);
   }
-  // Verifica si existe Traslape para un medico en una fecha y hora especifica
-  // Excluye citas canceladas y, si se desea, una cita especifica
-  async verificarTraslapeMedico(
-    medico: string,
-    fecha: string,
-    horaInicio: string,
-    idCitaAExcluir?: string
-  ): Promise<{ hayTraslape: boolean; citaConflicto?: ICitaMedica }> {
-    const fechaColombia = conversionAFechaColombia(fecha, horaInicio);
 
-    let query = `
-      SELECT * FROM citas_medicas
-      WHERE medico = $1
-      AND fecha = $2
-      AND estado != 5
-      AND (
-        (hora_inicio, hora_fin) OVERLAPS ($3::TIME, ($3::TIME + '30 minutes'::INTERVAL))
-      )
-    `;
-
-    const params: any[] = [medico, fechaColombia, horaInicio];
-    // Usado para excluir la cita a la hora de reprogramar, para evitar traslape
-    if (idCitaAExcluir) {
-      query += ` AND id_cita != $4`;
-      params.push(idCitaAExcluir);
-    }
-
-    const resultado = await ejecutarConsulta(query, params);
-    return {
-      hayTraslape: resultado.rows.length > 0,
-      citaConflicto: resultado.rows[0] || undefined,
-    };
-  }
-  // Verifica si existe traslape para un paciente en una fecha y hora especifica
-  async verificarTraslapePaciente(
-    tipoDocPaciente: number,
-    numeroDocPaciente: string,
-    fecha: string,
-    horaInicio: string,
-    idCitaAExcluir?: string
-  ): Promise<{ hayTraslape: boolean; citaConflicto?: ICitaMedica }> {
-    const fechaColombia = conversionAFechaColombia(fecha, horaInicio);
-    let query = `
-      SELECT * FROM citas_medicas
-      WHERE tipo_doc_paciente = $1
-      AND numero_doc_paciente = $2
-      AND fecha = $3
-      AND estado != 5
-      AND (
-      (hora_inicio, hora_fin) OVERLAPS ($4::TIME, ($4::TIME + '30 minutes'::INTERVAL))
-      )
-    `;
-
-    const params: any[] = [tipoDocPaciente, numeroDocPaciente, fechaColombia, horaInicio];
-    if (idCitaAExcluir) {
-      query += ` AND id_cita != $5`;
-      params.push(idCitaAExcluir);
-    }
-
-    const resultado = await ejecutarConsulta(query, params);
-    return {
-      hayTraslape: resultado.rows.length > 0,
-      citaConflicto: resultado.rows[0] || undefined,
-    };
-  }
-
-  async verificarTraslapeConsultorio(
-    medico: string,
-    fecha: string,
-    horaInicio: string,
-    idCitaAExcluir?: string
-  ): Promise<{ hayTraslape: boolean; citaConflicto?: ICitaMedica }> {
-    const fechaColombia = conversionAFechaColombia(fecha, horaInicio);
-    const diaSemana = fechaColombia.getDay();
-
-    const queryTurno = `
-      SELECT id_consultorio FROM asignacion_medicos
-      WHERE tarjeta_profesional_medico = $1
-      AND dia_semana = $2
-      AND inicio_jornada <= $3::TIME
-      AND fin_jornada >= ($3::TIME + '30 minutes'::INTERVAL)
-      LIMIT 1
-    `;
-    const turnoResultado = await ejecutarConsulta(queryTurno, [medico, diaSemana, horaInicio]);
-
-    if (turnoResultado.rows.length === 0) {
-      return { hayTraslape: false };
-    }
-    const consultorio = turnoResultado.rows[0].id_consultorio;
-
-    // se verifica si hay otras citas con el mismo horario
-    let queryCitas = `
-      SELECT cm.* FROM citas_medicas cm
-      INNER JOIN asignacion_medicos tm ON cm.medico = tm.tarjeta_profesional_medico
-      WHERE tm.id_consultorio = $1
-      AND cm.fecha = $2
-      AND cm.estado != 5
-      AND (
-        (cm.hora_inicio, cm.hora_fin) OVERLAPS ($3::TIME, ($3::TIME + '30 minutes'::INTERVAL))
-      )
-    `;
-
-    const params: any[] = [consultorio, fecha, horaInicio];
-
-    if (idCitaAExcluir) {
-      queryCitas += ` AND cm.id_cita != $4`;
-      params.push(idCitaAExcluir);
-    }
-
-    const citasResultado = await ejecutarConsulta(queryCitas, params);
-    return {
-      hayTraslape: citasResultado.rows.length > 0,
-      citaConflicto: citasResultado.rows[0] || undefined,
-    };
-  }
   // Reprograma una cita creando una nueva con referencia a la anterior
-  async reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<ICitaMedica> {
-    await ejecutarConsulta('UPDATE citas_medicas SET estado = 3 WHERE id_cita = $1::UUID', [idCitaAnterior]);
+  async reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<CitaMedicaResumenDTO | null> {
+    await ejecutarConsulta(`UPDATE citas_medicas SET estado = ${estadoCita.REPROGRAMADA} WHERE id_cita = $1::UUID`, [
+      idCitaAnterior,
+    ]);
     // Crear la nueva cita con referencia a la anterior
     const citaConReferencia: ICitaMedica = {
       ...nuevasCitas,
@@ -230,28 +190,32 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
 
     return await this.agendarCita(citaConReferencia);
   }
+
   // Cancela una cita cambiando su estado
-  async cancelarCita(idCita: string): Promise<ICitaMedica> {
+  async cancelarCita(idCita: string): Promise<CitaMedicaResumenDTO | null> {
     const query = `
       UPDATE citas_medicas
-      SET estado = 5
+      SET estado = ${estadoCita.CANCELADA}
       WHERE id_cita = $1
       RETURNING *;
     `;
 
     const resultado = await ejecutarConsulta(query, [idCita]);
-    return resultado.rows[0];
+    const citaCancelada = this.obtenerCitaPorId(resultado.rows[0].id_cita);
+    return citaCancelada;
   }
-  async finalizarCita(idCita: string): Promise<ICitaMedica> {
+
+  async finalizarCita(idCita: string): Promise<CitaMedicaResumenDTO | null> {
     const query = `
       UPDATE citas_medicas
-      SET estado = 4
+      SET estado = ${estadoCita.FINALIZADA}
       WHERE id_cita = $1
       RETURNING *;
     `;
 
     const resultado = await ejecutarConsulta(query, [idCita]);
-    return resultado.rows[0];
+    const citaFinalizada = this.obtenerCitaPorId(resultado.rows[0].id_cita);
+    return citaFinalizada;
   }
 
   async obtenerCitasPorPaciente(numeroDoc: string, limite?: number): Promise<any[]> {

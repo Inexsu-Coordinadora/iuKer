@@ -1,15 +1,15 @@
-import { ICitaMedica } from '../../dominio/citaMedica/ICitaMedica.js';
 import { ICitasMedicasRepositorio } from '../../dominio/citaMedica/ICitasMedicasRepositorio.js';
+import { CitaMedicaResumenDTO } from '../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
 import { ICitasMedicasCasosUso } from './ICitasMedicasCasosUso.js';
 
 export class CitasMedicasCasosUso implements ICitasMedicasCasosUso {
   constructor(private citasMedicasRepositorio: ICitasMedicasRepositorio) {}
 
-  async obtenerCitas(limite?: number): Promise<ICitaMedica[]> {
+  async obtenerCitas(limite?: number): Promise<CitaMedicaResumenDTO[]> {
     return await this.citasMedicasRepositorio.obtenerCitas(limite);
   }
 
-  async obtenerCitaPorId(idCita: string): Promise<ICitaMedica | null> {
+  async obtenerCitaPorId(idCita: string): Promise<CitaMedicaResumenDTO | null> {
     return await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
   }
 

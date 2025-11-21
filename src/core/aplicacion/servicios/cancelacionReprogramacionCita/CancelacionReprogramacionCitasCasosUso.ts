@@ -5,6 +5,7 @@ import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
 import { ICancelacionReprogramacionCitasCasosUso } from './ICancelacionReprogramacionCitasCasosUso.js';
 import { estadoCita } from '../../../../common/estadoCita.enum.js';
+import { CitaMedicaResumenDTO } from '../../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
 
 export class CancelacionReprogramacionCitasCasosUso implements ICancelacionReprogramacionCitasCasosUso {
   constructor(
@@ -12,7 +13,7 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
     private medicosRepositorio: IMedicosRepositorio
   ) {}
 
-  async cancelarCita(idCita: string): Promise<ICitaMedica> {
+  async cancelarCita(idCita: string): Promise<CitaMedicaResumenDTO | null> {
     // Verificar que la cita existe
     const citaExistente = await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
 
@@ -21,18 +22,18 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
     }
 
     // Verificar que la cita no esté ya cancelada o finalizada
-    if (citaExistente.estado === estadoCita.CANCELADA) {
+    if (citaExistente.codigoEstadoCita === estadoCita.CANCELADA) {
       throw new Error(`La cita con id '${idCita}' ya está cancelada`);
     }
 
-    if (citaExistente.estado === estadoCita.FINALIZADA) {
+    if (citaExistente.codigoEstadoCita === estadoCita.FINALIZADA) {
       throw new Error(`No puede cancelar la cita con id '${idCita}' porque ya fue finalizada`);
     }
 
     return await this.citasMedicasRepositorio.cancelarCita(idCita);
   }
   // Reprograma una cita existente
-  async reprogramarCita(idCita: string, nuevosDatos: citaMedicaDTO): Promise<ICitaMedica> {
+  async reprogramarCita(idCita: string, nuevosDatos: citaMedicaDTO): Promise<CitaMedicaResumenDTO | null> {
     const citaExistente = await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
 
     const fechaColombia = conversionAFechaColombia(nuevosDatos.fecha, nuevosDatos.horaInicio);
@@ -42,11 +43,11 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
       throw new Error(`No puede reprogramar la cita con id '${idCita}' porque no existe en el sistema`);
     }
 
-    if (citaExistente.estado === estadoCita.CANCELADA) {
+    if (citaExistente.codigoEstadoCita === estadoCita.CANCELADA) {
       throw new Error('No puede reprogramar una cita cancelada');
     }
 
-    if (citaExistente.estado === estadoCita.FINALIZADA) {
+    if (citaExistente.codigoEstadoCita === estadoCita.FINALIZADA) {
       throw new Error('No puede reprogramar una cita finalizada');
     }
     // verificar que el medico si existe
@@ -55,13 +56,17 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
       throw new Error('El médico asignado no existe en el sistema');
     }
     // Validar disponibilidad del médico (turno asignado)
-    const disponible = await this.citasMedicasRepositorio.validarTurnoMedico(nuevosDatos);
+    const disponible = await this.citasMedicasRepositorio.validarTurnoMedico(
+      nuevosDatos.medico,
+      nuevosDatos.fecha,
+      nuevosDatos.horaInicio
+    );
 
     if (!disponible) {
       throw new Error('El médico no tiene un turno asignado para el día y horario solicitado');
     }
     // Validar traslape del paciente (excluyendo la cita actual)
-    const traslapePaciente = await this.citasMedicasRepositorio.verificarTraslapePaciente(
+    const traslapePaciente = await this.citasMedicasRepositorio.validarCitasPaciente(
       nuevosDatos.tipoDocPaciente,
       nuevosDatos.numeroDocPaciente,
       nuevosDatos.fecha,
@@ -69,19 +74,19 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
       idCita
     );
 
-    if (traslapePaciente.hayTraslape) {
+    if (traslapePaciente) {
       throw new Error('El paciente ya tiene una cita programada en ese horario');
     }
 
     // Validar traslape del médico (excluyendo la cita actual)
-    const traslapeMedico = await this.citasMedicasRepositorio.verificarTraslapeMedico(
+    const traslapeMedico = await this.citasMedicasRepositorio.validarDisponibilidadMedico(
       nuevosDatos.medico,
       nuevosDatos.fecha,
       nuevosDatos.horaInicio,
       idCita
     );
 
-    if (traslapeMedico.hayTraslape) {
+    if (traslapeMedico) {
       throw new Error('El médico ya tiene una cita programada en ese horario');
     }
 
@@ -92,25 +97,26 @@ export class CancelacionReprogramacionCitasCasosUso implements ICancelacionRepro
       numeroDocPaciente: nuevosDatos.numeroDocPaciente,
       fecha: nuevosDatos.fecha,
       horaInicio: nuevosDatos.horaInicio,
-      estado: 1,
+      estado: estadoCita.ACTIVADA,
       idCitaAnterior: idCita,
     };
 
     // Reprogramar (marca la anterior como reprogramada y crea la nueva)
     return await this.citasMedicasRepositorio.reprogramarCita(idCita, nuevaCita);
   }
-  async finalizarCita(idCita: string): Promise<ICitaMedica> {
+  async finalizarCita(idCita: string): Promise<CitaMedicaResumenDTO | null> {
     const cita = await this.citasMedicasRepositorio.obtenerCitaPorId(idCita);
+
     if (!cita) {
       throw new Error('La cita no existe en el sistema');
     }
-    if (cita.estado === estadoCita.REPROGRAMADA) {
+    if (cita.codigoEstadoCita === estadoCita.REPROGRAMADA) {
       throw new Error('No se puede finalizar una cita no vigente');
     }
-    if (cita?.estado === estadoCita.CANCELADA) {
+    if (cita?.codigoEstadoCita === estadoCita.CANCELADA) {
       throw new Error('No se puede finalizar una cita cancelada');
     }
-    if (cita?.estado === estadoCita.FINALIZADA) {
+    if (cita?.codigoEstadoCita === estadoCita.FINALIZADA) {
       throw new Error('La cita ya fue finalizada anteriormente');
     }
     return await this.citasMedicasRepositorio.finalizarCita(idCita);
