@@ -1,10 +1,10 @@
 import { conversionAFechaColombia } from '../../../../common/conversionAFechaColombia.js';
 import { CitaMedica } from '../../../dominio/citaMedica/CitaMedica.js';
-import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
 import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
 import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio.js';
 import { IPacientesRepositorio } from '../../../dominio/paciente/IPacientesRepositorio.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
+import { CitaMedicaResumenDTO } from '../../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
 import { IAgendamientoCitasCasosUso } from './IAgendamientoCitasCasosUso.js';
 
 export class AgendamientoCitasCasosUso implements IAgendamientoCitasCasosUso {
@@ -14,7 +14,7 @@ export class AgendamientoCitasCasosUso implements IAgendamientoCitasCasosUso {
     private pacientesRepositorio: IPacientesRepositorio
   ) {}
 
-  async ejecutar(datosCitaMedica: citaMedicaDTO): Promise<ICitaMedica | null> {
+  async ejecutar(datosCitaMedica: citaMedicaDTO): Promise<CitaMedicaResumenDTO | null> {
     await this.validarPaciente(datosCitaMedica.numeroDocPaciente);
     await this.validarMedico(datosCitaMedica.medico);
     this.validarFechaVigente(datosCitaMedica.fecha, datosCitaMedica.horaInicio);

@@ -1,8 +1,8 @@
-import { ICitaMedica } from '../../../dominio/citaMedica/ICitaMedica.js';
 import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
+import { CitaMedicaResumenDTO } from '../../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
 
 export interface ICancelacionReprogramacionCitasCasosUso {
-  cancelarCita(idCita: string): Promise<ICitaMedica>;
-  reprogramarCita(idCita: string, nuevosDatos: citaMedicaDTO): Promise<ICitaMedica | null>;
-  finalizarCita(idCita: string): Promise<ICitaMedica>;
+  cancelarCita(idCita: string): Promise<CitaMedicaResumenDTO | null>;
+  reprogramarCita(idCita: string, nuevosDatos: citaMedicaDTO): Promise<CitaMedicaResumenDTO | null>;
+  finalizarCita(idCita: string): Promise<CitaMedicaResumenDTO | null>;
 }

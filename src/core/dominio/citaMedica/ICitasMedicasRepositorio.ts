@@ -1,9 +1,10 @@
+import { CitaMedicaResumenDTO } from '../../infraestructura/repositorios/postgres/dtos/citaMedicaResumenDTO.js';
 import { ICitaMedica } from './ICitaMedica.js';
 
 export interface ICitasMedicasRepositorio {
-  obtenerCitas(limite?: number): Promise<ICitaMedica[]>;
-  obtenerCitaPorId(idCita: string): Promise<ICitaMedica | null>;
-  agendarCita(datosCitaMedica: ICitaMedica): Promise<ICitaMedica | null>;
+  obtenerCitas(limite?: number): Promise<CitaMedicaResumenDTO[]>;
+  obtenerCitaPorId(idCita: string): Promise<CitaMedicaResumenDTO | null>;
+  agendarCita(datosCitaMedica: ICitaMedica): Promise<CitaMedicaResumenDTO | null>;
   eliminarCita(idCita: string): Promise<void>;
 
   // Métodos para validaciones de traslape
@@ -25,9 +26,9 @@ export interface ICitasMedicasRepositorio {
   validarTurnoMedico(medico: string, fecha: string, horaInicio: string): Promise<boolean>;
 
   // Métodos para reprogramación y cancelación
-  reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<ICitaMedica | null>;
-  cancelarCita(idCita: string): Promise<ICitaMedica>;
-  finalizarCita(idCita: string): Promise<ICitaMedica>;
+  reprogramarCita(idCitaAnterior: string, nuevasCitas: ICitaMedica): Promise<CitaMedicaResumenDTO | null>;
+  cancelarCita(idCita: string): Promise<CitaMedicaResumenDTO | null>;
+  finalizarCita(idCita: string): Promise<CitaMedicaResumenDTO | null>;
 
   obtenerCitasPorPaciente(numeroDoc: string, limite?: number): Promise<any[]>;
 }
