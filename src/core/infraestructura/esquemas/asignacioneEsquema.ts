@@ -1,9 +1,7 @@
 import { z } from 'zod';
 import { crearMedicoEsquema } from './medicoEsquema.js';
 import { CrearConsultorioEsquema } from './consultorioEsquema.js';
-
-// Expresión regular (RegEx) para validar el formato de hora HH:MM. Ej: 08:00 o 23:59
-const HORA_REGEX = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+import { EsquemasComunes } from './esquemasComunes.js';
 
 const TarjetaProfesionalSchema = crearMedicoEsquema.shape.tarjetaProfesional;
 const ConsultorioIdSchema = CrearConsultorioEsquema.shape.idConsultorio;
@@ -20,21 +18,8 @@ export const asignacionEsquema = z
       .min(1, 'El día de la semana debe ser 1 (Lunes) o mayor.')
       .max(7, 'El día de la semana debe ser 7 (Domingo) o menor.'),
 
-    inicioJornada: z
-      .string()
-      .regex(
-        HORA_REGEX,
-        'El formato de hora de inicio es inválido. Use HH:MM (Ej: 08:00).'
-      )
-      .nonempty('La hora de inicio es obligatoria.'),
-
-    finJornada: z
-      .string()
-      .regex(
-        HORA_REGEX,
-        'El formato de hora de fin es inválido. Use HH:MM (Ej: 17:00).'
-      )
-      .nonempty('La hora de fin es obligatoria.'),
+    inicioJornada: EsquemasComunes.Hora,
+    finJornada: EsquemasComunes.Hora,
   })
   .strict()
 

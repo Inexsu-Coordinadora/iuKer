@@ -15,12 +15,11 @@ export class ConsultorioCasosUso {
 
   async obtenerConsultorioPorId(idConsultorio: string): Promise<IConsultorio | null> {
     const consultorioObtenido = await this.consultorioRepositorio.obtenerConsultorioPorId(idConsultorio);
-    console.log(consultorioObtenido);
     return consultorioObtenido;
   }
 
-  async actualizarConsultorio(idConsultorio: string, consultorio: IConsultorio): Promise<IConsultorio | null> {
-    const consultorioActualizado = await this.consultorioRepositorio.actualizarConsultorio(idConsultorio, consultorio);
+  async actualizarConsultorio(idConsultorio: string, datosConsultorio: IConsultorio): Promise<IConsultorio | null> {
+    const consultorioActualizado = await this.consultorioRepositorio.actualizarConsultorio(idConsultorio, datosConsultorio);
     return consultorioActualizado || null;
   }
 
