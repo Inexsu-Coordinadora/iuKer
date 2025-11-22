@@ -3,23 +3,36 @@ import { IPaciente } from '../../../dominio/paciente/IPaciente.js';
 import { ejecutarConsulta } from './clientePostgres.js';
 import { Paciente } from '../../../dominio/paciente/Paciente.js';
 import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
+import { mapFilaPaciente, pacienteFila } from './mappers/paciente.mapper.js';
+import { pacienteRespuestaDTO } from './dtos/pacienteRespuestaDTO.js';
 
 export class PacientesRepositorio implements IPacientesRepositorio {
-  async existePacientePorDocumento(
-    numeroDoc: string,
-    tipoDoc: number
-  ): Promise<boolean> {
+  private get _queryBase(): string {
+    return `
+     SELECT
+      tipo_doc AS "tipoDocPaciente",
+      numero_doc AS "numeroDocPaciente",
+      nombre,
+      apellido,
+      fecha_nacimiento AS "fechaNacimiento",
+      sexo,
+      email,
+      telefono,
+      direccion
+    FROM pacientes
+    `;
+  }
+  async existePacientePorDocumento(numeroDoc: string, tipoDoc: number): Promise<boolean> {
     // Consulta optimizada: solo necesitamos saber si existe una fila que coincida.
-    const query =
-      'SELECT 1 FROM pacientes WHERE numero_doc = $1 AND tipo_doc = $2 LIMIT 1';
+    const query = 'SELECT 1 FROM pacientes WHERE numero_doc = $1 AND tipo_doc = $2 LIMIT 1';
     const result = await ejecutarConsulta(query, [numeroDoc, tipoDoc]);
 
     // Si la consulta devuelve al menos una fila (length > 0), el paciente existe.
     return result.rows.length > 0;
   }
 
-  async obtenerPacientes(limite?: number): Promise<IPaciente[]> {
-    let query = 'SELECT * FROM pacientes';
+  async obtenerPacientes(limite?: number): Promise<pacienteRespuestaDTO[]> {
+    let query = this._queryBase;
     const limiteParam: number[] = [];
 
     if (limite !== undefined) {
@@ -27,23 +40,27 @@ export class PacientesRepositorio implements IPacientesRepositorio {
       limiteParam.push(limite);
     }
 
-    const result = await ejecutarConsulta(query, limiteParam);
-    return result.rows;
+    const resultado = await ejecutarConsulta(query, limiteParam);
+    const filas: pacienteFila[] = resultado.rows;
+    const pacientes = filas.map(mapFilaPaciente);
+    return pacientes;
   }
 
-  async obtenerPacientePorId(numeroDoc: string): Promise<IPaciente> {
-    const query = 'SELECT * FROM pacientes WHERE numero_doc = $1';
-    const result = await ejecutarConsulta(query, [numeroDoc]);
+  async obtenerPacientePorId(numeroDoc: string): Promise<pacienteRespuestaDTO | null> {
+    const query = this._queryBase + 'WHERE numero_doc = $1';
+    const resultado = await ejecutarConsulta(query, [numeroDoc]);
 
-    return result.rows[0] || null;
+    if (resultado.rows.length === 0) return null;
+
+    const infoPaciente: pacienteFila = resultado.rows[0];
+    const paciente = mapFilaPaciente(infoPaciente);
+
+    return paciente;
   }
 
-  async crearPaciente(nuevoPaciente: IPaciente): Promise<string> {
-    const columnas: string[] = Object.keys(nuevoPaciente).map((key) =>
-      camelCaseASnakeCase(key)
-    );
-    const parametros: Array<string | number | Date> =
-      Object.values(nuevoPaciente);
+  async crearPaciente(nuevoPaciente: IPaciente): Promise<pacienteRespuestaDTO | null> {
+    const columnas: string[] = Object.keys(nuevoPaciente).map((key) => camelCaseASnakeCase(key));
+    const parametros: Array<string | number | Date> = Object.values(nuevoPaciente);
     const placeholders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
@@ -52,19 +69,14 @@ export class PacientesRepositorio implements IPacientesRepositorio {
       RETURNING *
     `;
 
-    const result = await ejecutarConsulta(query, parametros);
-    return result.rows[0].numeroDoc;
+    const resultado = await ejecutarConsulta(query, parametros);
+    const pacienteCreado = await this.obtenerPacientePorId(resultado.rows[0].numero_doc);
+    return pacienteCreado;
   }
 
-  async actualizarPaciente(
-    numeroDoc: string,
-    datosPaciente: IPaciente
-  ): Promise<IPaciente> {
-    const columnas: string[] = Object.keys(datosPaciente).map((key) =>
-      camelCaseASnakeCase(key)
-    );
-    const parametros: Array<string | number | Date> =
-      Object.values(datosPaciente);
+  async actualizarPaciente(numeroDoc: string, datosPaciente: IPaciente): Promise<pacienteRespuestaDTO | null> {
+    const columnas: string[] = Object.keys(datosPaciente).map((key) => camelCaseASnakeCase(key));
+    const parametros: Array<string | number | Date> = Object.values(datosPaciente);
     const clausulaSet = columnas.map((col, i) => `${col}=$${i + 1}`).join(', ');
     parametros.push(numeroDoc);
 
@@ -75,18 +87,18 @@ export class PacientesRepositorio implements IPacientesRepositorio {
       RETURNING *;
     `;
 
-    const result = await ejecutarConsulta(query, parametros);
+    const resultado = await ejecutarConsulta(query, parametros);
 
-    if (!result.rows[0]) {
+    if (!resultado.rows[0]) {
       throw new Error(`Error al actualizar el Paciente con ID ${numeroDoc}.`);
     }
 
-    return new Paciente(result.rows[0]);
+    const pacienteActualizado = await this.obtenerPacientePorId(resultado.rows[0].numero_doc);
+
+    return pacienteActualizado;
   }
 
   async borrarPaciente(numeroDoc: string): Promise<void> {
-    await ejecutarConsulta('DELETE FROM pacientes WHERE numero_doc = $1', [
-      numeroDoc,
-    ]);
+    await ejecutarConsulta('DELETE FROM pacientes WHERE numero_doc = $1', [numeroDoc]);
   }
 }

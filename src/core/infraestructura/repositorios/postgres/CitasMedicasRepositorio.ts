@@ -165,7 +165,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     `;
 
     const resultado = await ejecutarConsulta(query, parametros);
-    const citaAgendada = this.obtenerCitaPorId(resultado.rows[0].id_cita);
+    const citaAgendada = await this.obtenerCitaPorId(resultado.rows[0].id_cita);
     return citaAgendada;
   }
 
@@ -201,7 +201,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     `;
 
     const resultado = await ejecutarConsulta(query, [idCita]);
-    const citaCancelada = this.obtenerCitaPorId(resultado.rows[0].id_cita);
+    const citaCancelada = await this.obtenerCitaPorId(resultado.rows[0].id_cita);
     return citaCancelada;
   }
 
@@ -214,7 +214,7 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     `;
 
     const resultado = await ejecutarConsulta(query, [idCita]);
-    const citaFinalizada = this.obtenerCitaPorId(resultado.rows[0].id_cita);
+    const citaFinalizada = await this.obtenerCitaPorId(resultado.rows[0].id_cita);
     return citaFinalizada;
   }
 

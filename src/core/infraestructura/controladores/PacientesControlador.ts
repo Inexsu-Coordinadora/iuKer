@@ -56,11 +56,11 @@ export class PacientesControlador {
   crearPaciente = async (request: FastifyRequest<{ Body: PacienteDTO }>, reply: FastifyReply) => {
     try {
       const nuevoPaciente = pacienteEsquema.parse(request.body);
-      const idNuevoPaciente = await this.pacientesCasosUso.crearPaciente(nuevoPaciente);
+      const pacienteCreado = await this.pacientesCasosUso.crearPaciente(nuevoPaciente);
 
       return reply.code(EstadoHttp.CREADO).send({
         mensaje: 'El paciente se creó correctamente',
-        idNuevoPaciente: idNuevoPaciente,
+        pacienteCreado,
       });
     } catch (err) {
       if (err instanceof ZodError) {

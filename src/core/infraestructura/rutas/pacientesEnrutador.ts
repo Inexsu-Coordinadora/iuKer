@@ -17,7 +17,7 @@ function pacientesEnrutador(app: FastifyInstance, pacientesControlador: Paciente
 export async function construirPacientesEnrutador(app: FastifyInstance) {
   const pacientesRepositorio = new PacientesRepositorio();
   const citasMedicasRepositorio = new CitasMedicasRepositorio();
-  const pacientesCasosUso = new PacientesCasosUso(pacientesRepositorio);
+  const pacientesCasosUso = new PacientesCasosUso(pacientesRepositorio, citasMedicasRepositorio);
   const consultarCitasPacienteCasosUso = new ConsultaPacienteCasosUso(pacientesRepositorio, citasMedicasRepositorio);
 
   const pacientesControlador = new PacientesControlador(pacientesCasosUso, consultarCitasPacienteCasosUso);
