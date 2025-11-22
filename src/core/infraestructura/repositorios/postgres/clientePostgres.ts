@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { configuracion } from '../../../../common/configuracion.js';
 
-const pool = new Pool({
+export const pool = new Pool({
   host: configuracion.baseDatos.host,
   user: configuracion.baseDatos.usuario,
   database: configuracion.baseDatos.nombreDb,
@@ -9,9 +9,6 @@ const pool = new Pool({
   password: configuracion.baseDatos.contrasena,
 });
 
-export async function ejecutarConsulta(
-  consulta: string,
-  parametros?: Array<number | string | Date>
-) {
+export async function ejecutarConsulta(consulta: string, parametros?: Array<number | string | Date>) {
   return await pool.query(consulta, parametros);
 }
