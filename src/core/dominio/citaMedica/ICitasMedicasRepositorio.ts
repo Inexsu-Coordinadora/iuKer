@@ -1,4 +1,5 @@
 import { CitaMedicaRespuestaDTO } from '../../infraestructura/repositorios/postgres/dtos/CitaMedicaRespuestaDTO.js';
+
 import { ICitaMedica } from './ICitaMedica.js';
 
 export interface ICitasMedicasRepositorio {
@@ -32,4 +33,5 @@ export interface ICitasMedicasRepositorio {
 
   obtenerCitasPorPaciente(numeroDoc: string, limite?: number): Promise<any[]>;
   eliminarCitasPorMedico(tarjetaProfesional: string): Promise<void>;
+  eliminarCitasPorPaciente(tipoDocPaciente: number, numeroDocPaciente: string): Promise<void>;
 }

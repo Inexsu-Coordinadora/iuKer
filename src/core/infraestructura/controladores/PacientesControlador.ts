@@ -12,15 +12,10 @@ export class PacientesControlador {
     private consultaCitasPacienteCasosUso: IConsultaCitasPacienteCasosUso
   ) {}
 
-  obtenerPacientes = async (
-    request: FastifyRequest<{ Querystring: { limite?: number } }>,
-    reply: FastifyReply
-  ) => {
+  obtenerPacientes = async (request: FastifyRequest<{ Querystring: { limite?: number } }>, reply: FastifyReply) => {
     try {
       const { limite } = request.query;
-      const pacientesObtenidos = await this.pacientesCasosUso.obtenerPacientes(
-        limite
-      );
+      const pacientesObtenidos = await this.pacientesCasosUso.obtenerPacientes(limite);
 
       return reply.code(EstadoHttp.OK).send({
         mensaje: 'Estos son los pacientes obtenidos',
@@ -35,14 +30,10 @@ export class PacientesControlador {
     }
   };
 
-  obtenerPacientePorId = async (
-    request: FastifyRequest<{ Params: { numeroDoc: string } }>,
-    reply: FastifyReply
-  ) => {
+  obtenerPacientePorId = async (request: FastifyRequest<{ Params: { numeroDoc: string } }>, reply: FastifyReply) => {
     try {
       const { numeroDoc } = request.params;
-      const pacienteObtenido =
-        await this.pacientesCasosUso.obtenerPacientePorId(numeroDoc);
+      const pacienteObtenido = await this.pacientesCasosUso.obtenerPacientePorId(numeroDoc);
 
       if (!pacienteObtenido) {
         return reply.code(EstadoHttp.NO_ENCONTRADO).send({
@@ -62,15 +53,10 @@ export class PacientesControlador {
     }
   };
 
-  crearPaciente = async (
-    request: FastifyRequest<{ Body: PacienteDTO }>,
-    reply: FastifyReply
-  ) => {
+  crearPaciente = async (request: FastifyRequest<{ Body: PacienteDTO }>, reply: FastifyReply) => {
     try {
       const nuevoPaciente = pacienteEsquema.parse(request.body);
-      const idNuevoPaciente = await this.pacientesCasosUso.crearPaciente(
-        nuevoPaciente
-      );
+      const idNuevoPaciente = await this.pacientesCasosUso.crearPaciente(nuevoPaciente);
 
       return reply.code(EstadoHttp.CREADO).send({
         mensaje: 'El paciente se creó correctamente',
@@ -79,8 +65,7 @@ export class PacientesControlador {
     } catch (err) {
       if (err instanceof ZodError) {
         return reply.code(EstadoHttp.PETICION_INVALIDA).send({
-          mensaje:
-            'Error al crear un Paciente, hay alguna invalidez en los datos enviados',
+          mensaje: 'Error al crear un Paciente, hay alguna invalidez en los datos enviados',
           error: err.issues[0]?.message || 'Error desconocido',
         });
       }
@@ -103,11 +88,7 @@ export class PacientesControlador {
       const { numeroDoc } = request.params;
       const nuevoPaciente = request.body;
 
-      const pacienteActualizado =
-        await this.pacientesCasosUso.actualizarPaciente(
-          numeroDoc,
-          nuevoPaciente
-        );
+      const pacienteActualizado = await this.pacientesCasosUso.actualizarPaciente(numeroDoc, nuevoPaciente);
 
       if (!pacienteActualizado) {
         return reply.code(EstadoHttp.NO_ENCONTRADO).send({
@@ -127,10 +108,7 @@ export class PacientesControlador {
     }
   };
 
-  borrarPaciente = async (
-    request: FastifyRequest<{ Params: { numeroDoc: string } }>,
-    reply: FastifyReply
-  ) => {
+  borrarPaciente = async (request: FastifyRequest<{ Params: { numeroDoc: string } }>, reply: FastifyReply) => {
     try {
       const { numeroDoc } = request.params;
       await this.pacientesCasosUso.borrarPaciente(numeroDoc);
@@ -156,31 +134,26 @@ export class PacientesControlador {
   ) => {
     try {
       const { numeroDoc } = request.params;
-      const limite = request.query?.limite
-        ? Number(request.query.limite)
-        : undefined;
+      const limite = request.query?.limite ? Number(request.query.limite) : undefined;
 
-      const citas = await this.consultaCitasPacienteCasosUso.ejecutarServicio?.(
-        numeroDoc,
-        limite
-      );
+      const citas = await this.consultaCitasPacienteCasosUso.ejecutarServicio?.(numeroDoc, limite);
 
-            return reply.code(EstadoHttp.OK).send({
-                mensaje: `Citas del paciente con documento '${numeroDoc}': `,
-                citas: citas
-            });
-        } catch(er){
-          const { numeroDoc} = request.params;
-            if(er){
-                return reply.code(EstadoHttp.NO_ENCONTRADO).send({
-                    mensaje: `El paciente con documento '${numeroDoc}' no existe en el sistema`,
-                    error: er instanceof Error? er.message : er
-                })
-            }
-            return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
-                mensaje: `Error al obtener las citas del paciente con documento '${numeroDoc}'`,
-                error: er instanceof Error? er.message : er
-            });
-        }
+      return reply.code(EstadoHttp.OK).send({
+        mensaje: `Citas del paciente con documento '${numeroDoc}': `,
+        citas: citas,
+      });
+    } catch (er) {
+      const { numeroDoc } = request.params;
+      if (er) {
+        return reply.code(EstadoHttp.NO_ENCONTRADO).send({
+          mensaje: `El paciente con documento '${numeroDoc}' no existe en el sistema`,
+          error: er instanceof Error ? er.message : er,
+        });
+      }
+      return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
+        mensaje: `Error al obtener las citas del paciente con documento '${numeroDoc}'`,
+        error: er instanceof Error ? er.message : er,
+      });
     }
   };
+}
