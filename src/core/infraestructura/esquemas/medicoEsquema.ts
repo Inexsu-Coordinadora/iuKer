@@ -21,5 +21,5 @@ export const crearMedicoEsquema = z.object({
   telefono: EsquemasComunes.Telefono,
 });
 
-export type MedicoDTO = z.infer<typeof crearMedicoEsquema>;
-export type MedicoActualizarDTO = Partial<MedicoDTO>;
+export type MedicoSolicitudDTO = z.infer<typeof crearMedicoEsquema>;
+export type MedicoActualizarSolicitudDTO = Partial<MedicoSolicitudDTO>;

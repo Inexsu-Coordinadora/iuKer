@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { IMedicosCasosUso } from '../../aplicacion/medico/IMedicosCasosUso.js';
-import { MedicoDTO, MedicoActualizarDTO, crearMedicoEsquema } from '../esquemas/medicoEsquema.js';
+import { MedicoSolicitudDTO, MedicoActualizarSolicitudDTO, crearMedicoEsquema } from '../esquemas/medicoEsquema.js';
 import { ZodError } from 'zod';
 import { EstadoHttp } from './estadoHttp.enum.js';
 
@@ -8,16 +8,16 @@ export class MedicosControlador{
     constructor(private medicosCasosUso : IMedicosCasosUso) {}
 
     crearMedico = async(
-        request : FastifyRequest <{Body : MedicoDTO}>,
+        request : FastifyRequest <{Body : MedicoSolicitudDTO}>,
         reply : FastifyReply
     ) => {
         try {
             const nuevoMedico = crearMedicoEsquema.parse(request.body);
-            const nuevaTarjetaProfesional = await this.medicosCasosUso.crearMedico(nuevoMedico);
+            const medico = await this.medicosCasosUso.crearMedico(nuevoMedico);
 
             return reply.code(EstadoHttp.CREADO).send({
                 mensaje: "El médico se creo correctamente",
-                TarjetaProfesional: nuevaTarjetaProfesional
+                medicoCreado : medico
             });
         }catch (er) {
             if (er instanceof ZodError){
@@ -81,7 +81,7 @@ export class MedicosControlador{
     };
 
     actualizarMedico = async(
-        request : FastifyRequest <{Params : { tarjetaProfesional : string}, Body : MedicoActualizarDTO}>,
+        request : FastifyRequest <{Params : { tarjetaProfesional : string}, Body : MedicoActualizarSolicitudDTO}>,
         reply : FastifyReply
     ) => {
         try{

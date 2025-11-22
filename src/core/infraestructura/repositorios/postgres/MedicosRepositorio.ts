@@ -2,9 +2,11 @@ import { IMedicosRepositorio } from '../../../dominio/medico/IMedicosRepositorio
 import { ejecutarConsulta } from './clientePostgres.js';
 import { IMedico } from '../../../dominio/medico/IMedico.js';
 import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
+import { MedicoFila, mapFilaMedico } from './mappers/medico.mappers.js';
+import { MedicoRepuestaDTO } from './dtos/MedicoRespuestaDTO.js';
 
 export class MedicosRepositorio implements IMedicosRepositorio {
-    async crearMedico(datosMedico : IMedico) : Promise <string> {
+    async crearMedico(datosMedico : IMedico) : Promise <MedicoRepuestaDTO> {
         const keys = Object.keys(datosMedico);
         const snakeColumn = keys.map((k) => camelCaseASnakeCase(k));
         const parametros = keys.map((k) => (datosMedico as any) [k]);
@@ -13,19 +15,32 @@ export class MedicosRepositorio implements IMedicosRepositorio {
         const query = `
         INSERT INTO medicos (${snakeColumn.join(", ")})
         VALUES (${placeholders})
-        RETURNING tarjeta_profesional AS "tarjetaProfesional";
+        RETURNING
+        tarjeta_profesional AS "tarjetaProfesional",
+        tipo_doc AS "tipoDoc",
+        numero_doc AS "numeroDoc",
+        nombre,
+        apellido,
+        fecha_nacimiento AS "fechaNacimiento",
+        sexo,
+        especialidad,
+        email,
+        telefono;
         `;
 
-        const respuesta = await ejecutarConsulta(query, parametros);
-
-        return respuesta.rows[0].tarjetaProfesional;
+        const resultado = await ejecutarConsulta(query, parametros);
+        const fila: MedicoFila = resultado.rows[0];
+        const medico = mapFilaMedico(fila);
+        return medico;
     };
 
-    async listarMedicos(limite? : number) : Promise <IMedico[]> {
+    async listarMedicos(limite? : number) : Promise <MedicoRepuestaDTO[]> {
         let query =
-        `SELECT tarjeta_profesional, tipo_doc, numero_doc, nombre,
-        apellido, fecha_nacimiento, sexo, especialidad, email, telefono
-        FROM medicos`;
+        `SELECT m.tarjeta_profesional AS "tarjetaProfesional", tp.descripcion AS "tipoDoc", m.numero_doc AS "numeroDoc", m.nombre,
+        m.apellido, m.fecha_nacimiento AS "fechaNacimiento", m.sexo, m.especialidad, m.email, m.telefono
+        FROM medicos m
+		LEFT JOIN tipo_documentos tp ON tp.id_documento = m.tipo_doc
+        ORDER BY m.tarjeta_profesional ASC`;
 
         const valores : number[] = [];
 
@@ -34,20 +49,28 @@ export class MedicosRepositorio implements IMedicosRepositorio {
             valores.push(limite);
         }
 
-        return (await ejecutarConsulta(query, valores)).rows;
+        const resultado = await ejecutarConsulta(query, valores);
+        const filas: MedicoFila[] = resultado.rows;
+        const medicos = filas.map(mapFilaMedico);
+        return medicos;
     };
 
-    async obtenerMedicoPorTarjetaProfesional(tarjetaProfesional: string) : Promise <IMedico | null> {
+    async obtenerMedicoPorTarjetaProfesional(tarjetaProfesional: string) : Promise <MedicoRepuestaDTO | null> {
         const query = `
-        SELECT tarjeta_profesional, tipo_doc, numero_doc, nombre,
-        apellido, fecha_nacimiento, sexo, especialidad, email, telefono
-        FROM medicos
-        WHERE tarjeta_profesional = $1
+        SELECT m.tarjeta_profesional AS "tarjetaProfesional", tp.descripcion AS "tipoDoc", m.numero_doc AS "numeroDoc", m.nombre,
+        m.apellido, m.fecha_nacimiento AS "fechaNacimiento", m.sexo, m.especialidad, m.email, m.telefono
+        FROM medicos m
+		LEFT JOIN tipo_documentos tp ON tp.id_documento = m.tipo_doc
+        WHERE m.tarjeta_profesional = $1
         `;
-        return (await ejecutarConsulta(query,[tarjetaProfesional])).rows[0] || null;
+
+        const resultado = await ejecutarConsulta(query, [tarjetaProfesional]);
+        const filas: MedicoFila[] = resultado.rows;
+        const medicos = filas.map(mapFilaMedico);
+        return medicos[0] || null;
     };
 
-    async actualizarMedico(tarjetaProfesional : string, datosMedico : Partial <IMedico>) : Promise <IMedico | null> {
+    async actualizarMedico(tarjetaProfesional : string, datosMedico : Partial <IMedico>) : Promise <MedicoRepuestaDTO | null> {
 
         const entries = Object.entries(datosMedico).filter(([, v]) => v !== undefined);
         if (entries.length === 0) {
@@ -66,7 +89,10 @@ export class MedicosRepositorio implements IMedicosRepositorio {
         RETURNING *;
         `;
 
-        return (await ejecutarConsulta(query,parametros)).rows[0];
+        const resultado = await ejecutarConsulta(query, parametros);
+        const filas: MedicoFila[] = resultado.rows;
+        const medicos = filas.map(mapFilaMedico);
+        return medicos[0] || null;
     };
 
     async eliminarMedico(tarjetaProfesional : string) : Promise <void>{
