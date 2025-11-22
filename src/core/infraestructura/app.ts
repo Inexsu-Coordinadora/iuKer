@@ -8,7 +8,7 @@ import { construirConsultorioEnrutador } from './rutas/consultoriosEnrutador.js'
 import { construirAsignacionesEnrutador } from '../infraestructura/rutas/asignacionesEnrutador.js';
 import { manejadorGlobalDeErrores } from './controladores/manejoGlobalDeErrores.js';
 
-const app = Fastify({ logger: true });
+export const app = Fastify({ logger: true });
 
 // Traducción de ErrorDeAplicacion a respuestas HTTP.
 app.setErrorHandler(manejadorGlobalDeErrores);
