@@ -22,7 +22,7 @@ const MAPA_ERRORES = {
   },
   [CodigosDeError.AGENDADANDO_CITA_EN_EL_PASADO]: {
     estado: EstadoHttp.CONFLICTO,
-    mensaje: 'Está intentando agendar una cita en fechas ',
+    mensaje: 'Está intentando agendar una cita en el pasado',
   },
   //Errores de Paciente
   [CodigosDeError.PACIENTE_YA_EXISTE]: {
