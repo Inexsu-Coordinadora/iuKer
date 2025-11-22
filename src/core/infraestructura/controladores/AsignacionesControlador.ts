@@ -3,7 +3,7 @@ import { ZodError } from 'zod';
 import { IAsignacionCasosUso } from '../../aplicacion/servicios/asignacionMedico/IAsignacionCasosUso.js';
 import {
   asignacionEsquema,
-  IAsignacionCreacionDTO,
+  AsignacionSolicitudDTO,
 } from '../esquemas/asignacioneEsquema.js';
 import { EstadoHttp } from './estadoHttp.enum.js';
 
@@ -11,7 +11,7 @@ export class AsignacionesControlador {
   constructor(private asignacionCasosUso: IAsignacionCasosUso) {}
 
   crearAsignacion = async (
-    request: FastifyRequest<{ Body: IAsignacionCreacionDTO }>,
+    request: FastifyRequest<{ Body: AsignacionSolicitudDTO }>,
     reply: FastifyReply
   ) => {
     try {
