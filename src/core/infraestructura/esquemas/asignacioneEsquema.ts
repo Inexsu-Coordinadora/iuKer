@@ -30,4 +30,4 @@ export const asignacionEsquema = z
     path: ['inicioJornada'],
   });
 
-export type IAsignacionCreacionDTO = z.infer<typeof asignacionEsquema>;
+export type AsignacionSolicitudDTO = z.infer<typeof asignacionEsquema>;

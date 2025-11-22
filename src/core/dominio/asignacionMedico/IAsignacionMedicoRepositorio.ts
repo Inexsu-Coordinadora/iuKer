@@ -1,7 +1,10 @@
 import { IAsignacionMedico } from './IAsignacionMedico.js';
+import { AsignacionIdRespuestaDTO } from '../../infraestructura/repositorios/postgres/dtos/AsignacionRespuestaDTO.js';
 
 export interface IAsignacionMedicoRepositorio {
-  crearAsignacion(nuevaAsignacion: IAsignacionMedico): Promise<string>;
+  crearAsignacion(
+    nuevaAsignacion: IAsignacionMedico
+  ): Promise<AsignacionIdRespuestaDTO>;
 
   existeAsignacion(
     tarjetaProfesionalMedico: string,

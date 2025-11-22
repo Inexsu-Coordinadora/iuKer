@@ -2,6 +2,11 @@ import { ejecutarConsulta } from './clientePostgres.js';
 import { IAsignacionMedico } from '../../../dominio/asignacionMedico/IAsignacionMedico.js';
 import { IAsignacionMedicoRepositorio } from '../../../dominio/asignacionMedico/IAsignacionMedicoRepositorio.js';
 import { camelCaseASnakeCase } from '../../../../common/camelCaseASnakeCase.js';
+import { AsignacionIdRespuestaDTO } from './dtos/AsignacionRespuestaDTO.js';
+import {
+  AsignacionIdFila,
+  mapIdFilaAsignacion,
+} from './mappers/asignacion.mapper.js';
 
 export class AsignacionMedicoRepositorio
   implements IAsignacionMedicoRepositorio
@@ -55,22 +60,26 @@ export class AsignacionMedicoRepositorio
     return result.rows.length > 0;
   }
 
-  async crearAsignacion(nuevaAsignacion: IAsignacionMedico): Promise<string> {
-    //Creación si pasa la comprobación
+  async crearAsignacion(
+    nuevaAsignacion: IAsignacionMedico
+  ): Promise<AsignacionIdRespuestaDTO> {
     const columnas: string[] = Object.keys(nuevaAsignacion).map((key) =>
       camelCaseASnakeCase(key)
     );
-    const parametros: any[] = Object.values(nuevaAsignacion);
+    const parametros: Array<string | number> = Object.values(nuevaAsignacion);
     const placeholders = columnas.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
       INSERT INTO asignacion_medicos (${columnas.join(', ')})
       VALUES (${placeholders})
-      RETURNING *
+      RETURNING id_asignacion
     `;
 
     const result = await ejecutarConsulta(query, parametros);
-    return result.rows[0].id_asignacion;
+
+    const fila: AsignacionIdFila = result.rows[0];
+
+    return mapIdFilaAsignacion(fila);
   }
 
   async eliminarAsignacion(tarjetaProfesionalMedico: string): Promise<void> {
