@@ -27,11 +27,6 @@ module.exports = {
   testMatch: ['**/?(*.)+(spec|test).ts'],
   testTimeout: 15000,
   collectCoverage: true,
-  collectCoverageFrom: [
-    'src/core/**/*.ts',
-    '!src/**/index.ts',
-    '!src/**/rutas/*.ts',
-    '!src/*/repositorios/postgres/*.ts',
-  ],
+  collectCoverageFrom: ['src/**/*.ts'],
   coverageDirectory: 'coverage',
 };
