@@ -3,15 +3,9 @@ import { z } from 'zod';
 const Hora = z
   .string()
   .nonempty('La hora no puede estar vacía')
-  .regex(
-    /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
-    'El formato de hora debe ser HH:MM (Ej: 08:00).'
-  );
+  .regex(/^([01][0-9]|2[0-3]):[0-5][0-9]$/, 'El formato de hora debe ser HH:MM (Ej: 08:00).');
 
-const Email = z
-  .string()
-  .nonempty('El correo electrónico es obligatorio')
-  .email('El correo electrónico no es válido');
+const Email = z.string().nonempty('El correo electrónico es obligatorio').email('El correo electrónico no es válido');
 
 const Nombre = z
   .string()
@@ -28,10 +22,7 @@ const Apellido = z
 const Fecha = z
   .string()
   .nonempty('La fecha es obligatoria')
-  .regex(
-    /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
-    'La fecha debe estar en formato YYYY-MM-DD (ej. 2025-11-04)'
-  );
+  .regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, 'La fecha debe estar en formato YYYY-MM-DD (ej. 2025-11-04)');
 
 const Sexo = z
   .string()
