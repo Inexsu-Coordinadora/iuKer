@@ -9,4 +9,4 @@ export const CrearConsultorioEsquema = z.object({
     .transform((valor) => valor ?? null),
 });
 
-export type ConsultorioDTO = z.infer<typeof CrearConsultorioEsquema>;
+export type consultorioSolicitudDTO = z.infer<typeof CrearConsultorioEsquema>;

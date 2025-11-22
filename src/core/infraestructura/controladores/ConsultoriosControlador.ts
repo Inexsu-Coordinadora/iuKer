@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { IConsultorio } from "../../dominio/consultorio/IConsultorio.js"
 import { IConsultorioCasosUso } from "../../aplicacion/consultorio/IConsultoriosCasosUso.js";
-import { ConsultorioDTO, CrearConsultorioEsquema } from "../esquemas/consultorioEsquema.js"
+import { consultorioSolicitudDTO, CrearConsultorioEsquema } from "../esquemas/consultorioEsquema.js"
 import { EstadoHttp } from "./estadoHttp.enum.js";
 import { ZodError } from "zod";
 
@@ -52,21 +52,21 @@ export class ConsultoriosControlador{
     }
   };
   agregarConsultorio = async(
-    request: FastifyRequest<{ Body:ConsultorioDTO }>,
+    request: FastifyRequest<{ Body:consultorioSolicitudDTO }>,
     reply: FastifyReply
   ) => {
     try {
-      const nuevoConsultorioDTO = CrearConsultorioEsquema.parse(request.body);
-      const existeConsultorio = await this.consultorioCasosUso.obtenerConsultorioPorId(nuevoConsultorioDTO.idConsultorio);
+      const nuevoconsultorioSolicitudDTO = CrearConsultorioEsquema.parse(request.body);
+      const existeConsultorio = await this.consultorioCasosUso.obtenerConsultorioPorId(nuevoconsultorioSolicitudDTO.idConsultorio);
       if(existeConsultorio){
         return reply.code(EstadoHttp.PETICION_INVALIDA).send({
           mensaje:"Ya existe un consultorio con ese ID",
-          idConsultorio: nuevoConsultorioDTO.idConsultorio
+          idConsultorio: nuevoconsultorioSolicitudDTO.idConsultorio
         });
       }
       const nuevoConsultorio: IConsultorio = {
-        idConsultorio: nuevoConsultorioDTO.idConsultorio,
-        ubicacion: nuevoConsultorioDTO.ubicacion,
+        idConsultorio: nuevoconsultorioSolicitudDTO.idConsultorio,
+        ubicacion: nuevoconsultorioSolicitudDTO.ubicacion,
       }
 
       await this.consultorioCasosUso.agregarConsultorio(nuevoConsultorio);
@@ -88,6 +88,7 @@ export class ConsultoriosControlador{
       });
     }
   };
+
   actualizarConsultorio = async(
     request: FastifyRequest<{ Params: {idConsultorio: string}; Body:IConsultorio }>,
     reply: FastifyReply
@@ -127,9 +128,9 @@ export class ConsultoriosControlador{
           mensaje:"El ID del consultorio es obligatorio y no puede estar vacio"
         });
       }
-      // ? BUSCAR PARSEO PARA EVITAR INGRESAR LETRAS EN VEZ DE IDS (NUMEROS) EN FORMATO STRING
+
       const consultorio = await this.consultorioCasosUso.obtenerConsultorioPorId(idConsultorio);
-      // Valida que el consultorio exista
+
       if (!consultorio){
         return reply.code(EstadoHttp.NO_ENCONTRADO).send({
           mensaje:"No existe un consultorio con ese ID",
