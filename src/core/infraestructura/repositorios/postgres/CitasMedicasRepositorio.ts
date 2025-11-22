@@ -6,6 +6,8 @@ import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedi
 import { ejecutarConsulta } from './clientePostgres.js';
 import { CitaMedicaRespuestaDTO } from './dtos/CitaMedicaRespuestaDTO.js';
 import { CitaMedicaFila, mapFilaCitaMedica } from './mappers/citaMedica.mapper.js';
+import { ConsultaCitasPacienteRespuestaDTO } from './dtos/ConsultaCitasPacienteRespuestaDTO.js';
+import { CitaPacienteFila, mapFilaCitaPaciente } from './mappers/consultaCitasPaciente.mapper.js';
 
 export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
   private get _queryBase(): string {
@@ -218,14 +220,15 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
     return citaFinalizada;
   }
 
-  async obtenerCitasPorPaciente(numeroDoc: string, limite?: number): Promise<any[]> {
+  async obtenerCitasPorPaciente(numeroDoc: string, limite?: number): Promise<ConsultaCitasPacienteRespuestaDTO[]> {
     const parametros: Array<string | number> = [numeroDoc];
     let query = `
-    SELECT DISTINCT c.fecha, c.hora_inicio, c.estado, (m.nombre || ' ' || COALESCE (m.apellido, '')) AS nombre_medico, co.ubicacion
+    SELECT DISTINCT c.fecha, c.hora_inicio AS "horaInicio", e.descripcion AS "estado", (m.nombre || ' ' || COALESCE (m.apellido, '')) AS "nombreMedico", co.ubicacion
     FROM citas_medicas c
     LEFT JOIN medicos m ON m.tarjeta_profesional = c.medico
     LEFT JOIN asignacion_medicos am ON am.tarjeta_profesional_medico = m.tarjeta_profesional
     LEFT JOIN consultorios co ON co.id_consultorio = am.id_consultorio
+	  LEFT JOIN estados e ON c.estado = e.id_estado
     WHERE c.numero_doc_paciente = $1
     ORDER BY c.fecha ASC
     `;
@@ -234,7 +237,11 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
       parametros.push(limite);
     }
 
-    return (await ejecutarConsulta(query, parametros)).rows;
+    const resultado = await ejecutarConsulta(query, parametros);
+
+    const filas: CitaPacienteFila[] = resultado.rows;
+    const citas = filas.map(mapFilaCitaPaciente);
+    return citas;
   }
 
   async eliminarCitasPorMedico(tarjetaProfesional: string): Promise<void> {

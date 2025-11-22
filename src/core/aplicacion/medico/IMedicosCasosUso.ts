@@ -1,10 +1,10 @@
-import { IMedico } from "../../dominio/medico/IMedico.js";
-import { MedicoDTO, MedicoActualizarDTO } from "../../infraestructura/esquemas/medicoEsquema.js";
+import { MedicoSolicitudDTO, MedicoActualizarSolicitudDTO } from "../../infraestructura/esquemas/medicoEsquema.js";
+import { MedicoRepuestaDTO } from "../../infraestructura/repositorios/postgres/dtos/MedicoRespuestaDTO.js";
 
 export interface IMedicosCasosUso {
-    crearMedico(datosMedico : MedicoDTO) : Promise <string>;
-    listarMedicos(limite? : number) : Promise <IMedico[]>;
-    obtenerMedicoPorTarjetaProfesional(tarjetaProfesional : string) : Promise <IMedico | null>;
-    actualizarMedico(tarjetaProfesional : string, datosMedico : MedicoActualizarDTO) : Promise <IMedico | null>;
+    crearMedico(datosMedico : MedicoSolicitudDTO) : Promise <MedicoRepuestaDTO>;
+    listarMedicos(limite? : number) : Promise <MedicoRepuestaDTO[]>;
+    obtenerMedicoPorTarjetaProfesional(tarjetaProfesional : string) : Promise <MedicoRepuestaDTO | null>;
+    actualizarMedico(tarjetaProfesional : string, datosMedico : MedicoActualizarSolicitudDTO) : Promise <MedicoRepuestaDTO | null>;
     eliminarMedico(tarjetaProfesional : string) : Promise <void>;
 }
