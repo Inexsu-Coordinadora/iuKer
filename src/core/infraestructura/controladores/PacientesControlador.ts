@@ -23,10 +23,7 @@ export class PacientesControlador {
         cantidadPacientesObtenidos: pacientesObtenidos.length,
       });
     } catch (err) {
-      return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
-        mensaje: 'No se pudieron obtener los Pacientes',
-        error: err instanceof Error ? err.message : err,
-      });
+      throw err;
     }
   };
 
@@ -35,21 +32,12 @@ export class PacientesControlador {
       const { numeroDoc } = request.params;
       const pacienteObtenido = await this.pacientesCasosUso.obtenerPacientePorId(numeroDoc);
 
-      if (!pacienteObtenido) {
-        return reply.code(EstadoHttp.NO_ENCONTRADO).send({
-          mensaje: 'Paciente no encontrado',
-        });
-      }
-
       return reply.code(EstadoHttp.OK).send({
         mensaje: 'Paciente encontrado',
         paciente: pacienteObtenido,
       });
     } catch (err) {
-      return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
-        mensaje: 'Error al intentar obtener los datos del paciente',
-        error: err instanceof Error ? err.message : err,
-      });
+      throw err;
     }
   };
 
@@ -63,17 +51,7 @@ export class PacientesControlador {
         pacienteCreado,
       });
     } catch (err) {
-      if (err instanceof ZodError) {
-        return reply.code(EstadoHttp.PETICION_INVALIDA).send({
-          mensaje: 'Error al crear un Paciente, hay alguna invalidez en los datos enviados',
-          error: err.issues[0]?.message || 'Error desconocido',
-        });
-      }
-
-      return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
-        mensaje: 'Error al crear un Paciente',
-        error: err instanceof Error ? err.message : String(err),
-      });
+      throw err;
     }
   };
 
@@ -90,21 +68,12 @@ export class PacientesControlador {
 
       const pacienteActualizado = await this.pacientesCasosUso.actualizarPaciente(numeroDoc, nuevoPaciente);
 
-      if (!pacienteActualizado) {
-        return reply.code(EstadoHttp.NO_ENCONTRADO).send({
-          mensaje: 'Paciente no encontrado',
-        });
-      }
-
       return reply.code(EstadoHttp.OK).send({
         mensaje: 'Paciente actualizado satisfactoriamente',
         pacienteActualizado: pacienteActualizado,
       });
     } catch (err) {
-      return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
-        mensaje: 'Error al actualizar a el paciente',
-        error: err instanceof Error ? err.message : err,
-      });
+      throw err;
     }
   };
 
@@ -118,10 +87,7 @@ export class PacientesControlador {
         numeroDoc: numeroDoc,
       });
     } catch (err) {
-      return reply.code(EstadoHttp.ERROR_INTERNO_SERVIDOR).send({
-        mensaje: 'Error al borrar a el paciente del sistema',
-        error: err instanceof Error ? err.message : err,
-      });
+      throw err;
     }
   };
 

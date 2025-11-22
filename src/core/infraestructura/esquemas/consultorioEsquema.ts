@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { EsquemasComunes } from "./esquemasComunes.js";
+import { z } from 'zod';
+import { EsquemasComunes } from './esquemasComunes.js';
 
 export const CrearConsultorioEsquema = z.object({
   idConsultorio: EsquemasComunes.idConsultorio,
