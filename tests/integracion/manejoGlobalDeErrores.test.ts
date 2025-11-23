@@ -10,17 +10,14 @@ describe('Manejo Global de Errores (Integración)', () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    // Creamos una instancia de Fastify aislada para probar solo el manejador
     app = Fastify();
     app.setErrorHandler(manejadorGlobalDeErrores);
 
-    // Definimos rutas trampa que lanzan los errores que queremos probar
     app.get('/test/error-dominio', async () => {
       throw new ErrorDeAplicacion(EstadoHttp.CONFLICTO, 'Error de dominio simulado', CodigosDeError.PACIENTE_YA_EXISTE);
     });
 
     app.get('/test/error-zod', async () => {
-      // Simulamos un error de validación de Zod
       const issue: any = {
         code: 'invalid_type',
         expected: 'string',

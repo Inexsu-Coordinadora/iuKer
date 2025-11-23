@@ -97,10 +97,6 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
 
     const resultado = await ejecutarConsulta(query, params);
     return resultado.rows.length > 0;
-    /* return {
-      hayTraslape: resultado.rows.length > 0,
-      citaConflicto: resultado.rows[0] || undefined,
-    }; */
   }
 
   // Verifica si existe traslape para un paciente en una fecha y hora especifica
@@ -131,10 +127,6 @@ export class CitasMedicasRepositorio implements ICitasMedicasRepositorio {
 
     const resultado = await ejecutarConsulta(query, params);
     return resultado.rows.length > 0;
-    /* return {
-      hayTraslape: resultado.rows.length > 0,
-      citaConflicto: resultado.rows[0] || undefined,
-    }; */
   }
 
   async validarTurnoMedico(medico: string, fecha: string, horaInicio: string): Promise<boolean> {
