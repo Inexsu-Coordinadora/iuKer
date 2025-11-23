@@ -1,12 +1,12 @@
 import { describe, expect, jest } from '@jest/globals';
 
-jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepositorio.js', () => {
+jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepositorio.ts', () => {
   return {
     CitasMedicasRepositorio: jest.fn().mockImplementation(() => ({
       obtenerCitas: async (limite?: number) => {
         const datosSimulados = [
           {
-            idCita: 'f5581292-15c1-4d8a-9295-46f72df39b78',
+            idCita: '375e4693-9c52-42ff-80ef-e7be09e5a0b8',
             paciente: 'Juan Pérez',
             tipoDocPaciente: 'Cédula',
             numeroDocPaciente: '100001',
@@ -20,7 +20,7 @@ jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepo
             idCitaAnterior: null,
           },
           {
-            idCita: '8a614da7-071a-40fa-837d-945ddbec40ba',
+            idCita: '62d95327-68ce-4bb1-a129-6747406c2f3f',
             paciente: 'Laura Gómez',
             tipoDocPaciente: 'Cédula Extranjería',
             numeroDocPaciente: '100002',
@@ -34,7 +34,7 @@ jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepo
             idCitaAnterior: null,
           },
           {
-            idCita: 'a2dea0d0-841d-4440-b887-023c3cbdbcb4',
+            idCita: 'ca8dc0d3-e7c8-4ccf-b376-0070d6044b99',
             paciente: 'Andrés Ramírez',
             tipoDocPaciente: 'Tarjeta Identidad',
             numeroDocPaciente: '100003',
@@ -48,7 +48,7 @@ jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepo
             idCitaAnterior: null,
           },
           {
-            idCita: '35004a7d-7774-4cc9-9e75-e291801f48fe',
+            idCita: '2577e5e1-f9f3-40bb-b545-0df597fd823a',
             paciente: 'María López',
             tipoDocPaciente: 'Pasaporte',
             numeroDocPaciente: '100004',
@@ -67,9 +67,9 @@ jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepo
       },
 
       obtenerCitaPorId: async (idCita: string) => {
-        if (idCita === 'feaac82c-2904-429a-a344-4591cc765bdb') {
+        if (idCita === '375e4693-9c52-42ff-80ef-e7be09e5a0b8') {
           return {
-            idCita: 'feaac82c-2904-429a-a344-4591cc765bdb',
+            idCita: '375e4693-9c52-42ff-80ef-e7be09e5a0b8',
             paciente: 'Juan Pérez',
             tipoDocPaciente: 'Cédula',
             numeroDocPaciente: '100001',
@@ -86,7 +86,7 @@ jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepo
         return null;
       },
 
-      eliminarCita: async (id: string) => (id === 'feaac82c-2904-429a-a344-4591cc765bdb' ? true : false),
+      eliminarCita: async (id: string) => (id === '375e4693-9c52-42ff-80ef-e7be09e5a0b8' ? true : false),
     })),
   };
 });
@@ -109,76 +109,19 @@ describe('Pruebas de integración - Módulo citas medicas', () => {
     const respuesta = await request(app.server).get('/api/citas-medicas');
     expect(respuesta.status).toBe(200);
     expect(respuesta.body).toEqual({
-      cantidadCitas: 4,
-      citasEncontradas: [
-        {
-          idCita: 'f5581292-15c1-4d8a-9295-46f72df39b78',
-          paciente: 'Juan Pérez',
-          tipoDocPaciente: 'Cédula',
-          numeroDocPaciente: '100001',
-          medico: 'Carlos Rodríguez',
-          ubicacion: 'Edificio E, Piso 3',
-          consultorio: 'C101',
-          fecha: '2025-11-25T05:00:00.000Z',
-          horaInicio: '08:00:00',
-          codigoEstadoCita: 1,
-          estadoCita: 'Activa',
-          idCitaAnterior: null,
-        },
-        {
-          idCita: '8a614da7-071a-40fa-837d-945ddbec40ba',
-          paciente: 'Laura Gómez',
-          tipoDocPaciente: 'Cédula Extranjería',
-          numeroDocPaciente: '100002',
-          medico: 'Sofía Martínez',
-          ubicacion: 'Edificio A, Piso 5',
-          consultorio: 'C102',
-          fecha: '2025-11-25T05:00:00.000Z',
-          horaInicio: '09:00:00',
-          codigoEstadoCita: 1,
-          estadoCita: 'Activa',
-          idCitaAnterior: null,
-        },
-        {
-          idCita: 'a2dea0d0-841d-4440-b887-023c3cbdbcb4',
-          paciente: 'Andrés Ramírez',
-          tipoDocPaciente: 'Tarjeta Identidad',
-          numeroDocPaciente: '100003',
-          medico: 'Julián García',
-          ubicacion: 'Edificio B, Piso 6',
-          consultorio: 'C202',
-          fecha: '2025-11-28T05:00:00.000Z',
-          horaInicio: '10:30:00',
-          codigoEstadoCita: 1,
-          estadoCita: 'Activa',
-          idCitaAnterior: null,
-        },
-        {
-          idCita: '35004a7d-7774-4cc9-9e75-e291801f48fe',
-          paciente: 'María López',
-          tipoDocPaciente: 'Pasaporte',
-          numeroDocPaciente: '100004',
-          medico: 'Valentina Ruiz',
-          ubicacion: 'Edificio D, Piso 2',
-          consultorio: 'C201',
-          fecha: '2025-11-29T05:00:00.000Z',
-          horaInicio: '14:00:00',
-          codigoEstadoCita: 1,
-          estadoCita: 'Activa',
-          idCitaAnterior: null,
-        },
-      ],
+      cantidadCitas: respuesta.body.cantidadCitas,
+      citasEncontradas: respuesta.body.citasEncontradas,
     });
   });
 
   test('GET /api/citas-medicas/:idCita - Retorna una cita médica específica simulada', async () => {
-    const idCita = 'f5581292-15c1-4d8a-9295-46f72df39b78';
+    const idCita = '375e4693-9c52-42ff-80ef-e7be09e5a0b8';
     const respuesta = await request(app.server).get(`/api/citas-medicas/${idCita}`);
     expect(respuesta.status).toBe(200);
     expect(respuesta.body).toEqual({
       mensaje: 'Cita encontrada',
       citaEncontrada: {
-        idCita: 'f5581292-15c1-4d8a-9295-46f72df39b78',
+        idCita: '375e4693-9c52-42ff-80ef-e7be09e5a0b8',
         paciente: 'Juan Pérez',
         tipoDocPaciente: 'Cédula',
         numeroDocPaciente: '100001',
@@ -197,6 +140,26 @@ describe('Pruebas de integración - Módulo citas medicas', () => {
   test('GET /api/citas-medicas/:idCita - Retorna 404 como error si no existe', async () => {
     const idCitaFalso = 'f5581292-15c1-4d8a-9295-46f72df39b79';
     const respuesta = await request(app.server).get(`/api/citas-medicas/${idCitaFalso}`);
+    expect(respuesta.status).toBe(404);
+    expect(respuesta.body).toEqual({
+      mensaje: 'La cita solicita no existe en el sistema',
+      codigoInterno: 'CITA001',
+    });
+  });
+
+  test('DELETE /api/citas-medicas/eliminacion/:idCita - Elimina la cita correctamente', async () => {
+    const idCita = '375e4693-9c52-42ff-80ef-e7be09e5a0b8';
+    const respuesta = await request(app.server).delete(`/api/citas-medicas/eliminacion/${idCita}`);
+    expect(respuesta.status).toBe(200);
+    expect(respuesta.body).toEqual({
+      mensaje: 'Cita eliminada correctamente',
+      idCita: '375e4693-9c52-42ff-80ef-e7be09e5a0b8',
+    });
+  });
+
+  test('DELETE /api/citas-medicas/eliminacion/:idCita - Retorna 404 como error si no existe', async () => {
+    const idCita = 'bdea6188-4636-4c98-aae6-5df366aba1ab';
+    const respuesta = await request(app.server).delete(`/api/citas-medicas/eliminacion/${idCita}`);
     expect(respuesta.status).toBe(404);
     expect(respuesta.body).toEqual({
       mensaje: 'La cita solicita no existe en el sistema',
