@@ -1,0 +1,21 @@
+meta {
+  name: errorReprogramarCitaCancelada
+  type: http
+  seq: 13
+}
+
+put {
+  url: http://127.0.0.1:3008/api/citas-medicas/reprogramacion/976f511c-a2a6-4aa7-9089-641f6fbe20b3
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "medico": "MP001",
+    "tipoDocPaciente": 1,
+    "numeroDocPaciente": "100001",
+    "fecha": "2025-12-08",
+    "horaInicio": "09:00"
+  }
+}

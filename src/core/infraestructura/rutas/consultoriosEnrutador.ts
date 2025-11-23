@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { ConsultoriosControlador } from "../../infraestructura/controladores/ConsultoriosControlador.js";
-import { IRepositorioConsultorio } from "../../dominio/Consultorio/IRepositorioConsultorio.js";
-import { ConsultorioRepositorio } from "../postgres/ConsultorioRepositorio.js"
-import { ConsultorioCasosUso } from "../../aplicacion/Consultorio/ConsultorioCasosUso.js";
+import { IConsultoriosRepositorio } from "../../dominio/consultorio/IConsultoriosRepositorio.js";
+import { ConsultorioRepositorio } from "../repositorios/postgres/ConsultoriosRepositorio.js"
+import { ConsultorioCasosUso } from "../../aplicacion/consultorio/ConsultoriosCasosUso.js";
 
 function consultorioEnrutador(
   app: FastifyInstance,
@@ -16,7 +16,7 @@ function consultorioEnrutador(
 }
 
 export async function construirConsultorioEnrutador(app: FastifyInstance) {
-  const consultorioRepositorio: IRepositorioConsultorio = new ConsultorioRepositorio();
+  const consultorioRepositorio: IConsultoriosRepositorio = new ConsultorioRepositorio();
   const consultorioCasosUso = new ConsultorioCasosUso(consultorioRepositorio);
   const consultorioControlador = new ConsultoriosControlador(consultorioCasosUso);
 

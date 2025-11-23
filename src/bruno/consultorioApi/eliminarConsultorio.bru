@@ -1,0 +1,16 @@
+meta {
+  name: eliminarConsultorio
+  type: http
+  seq: 7
+}
+
+delete {
+  url: http://127.0.0.1:3008/api/consultorios/C301
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
