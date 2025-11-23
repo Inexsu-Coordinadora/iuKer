@@ -23,7 +23,7 @@ export class MedicosControlador {
 
       return reply.code(EstadoHttp.CREADO).send({
         mensaje: 'El médico se creo correctamente',
-        TarjetaProfesional: nuevaTarjetaProfesional,
+        tarjetaProfesional: nuevaTarjetaProfesional,
       });
     } catch (er) {
       throw er;
