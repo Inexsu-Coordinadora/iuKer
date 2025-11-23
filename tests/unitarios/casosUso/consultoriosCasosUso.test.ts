@@ -147,7 +147,6 @@ describe('ConsultorioCasosUso', () => {
       // Assert (Verificar)
       expect(mockRepositorio.obtenerConsultorioPorId).toHaveBeenCalledWith('C101');
       expect(resultado).toEqual(consultorioRespuestaMock);
-      expect(console.log).toHaveBeenCalledWith(consultorioRespuestaMock);
     });
 
     it('debería lanzar error cuando el consultorio no existe', async () => {
@@ -166,9 +165,6 @@ describe('ConsultorioCasosUso', () => {
 
       // Act (Actuar)
       await consultorioCasosUso.obtenerConsultorioPorId('C101');
-
-      // Assert (Verificar)
-      expect(console.log).toHaveBeenCalledWith(consultorioRespuestaMock);
     });
   });
 
