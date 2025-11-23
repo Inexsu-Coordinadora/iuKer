@@ -171,7 +171,36 @@ describe('Pruebas de integración - Módulo citas medicas', () => {
     });
   });
 
-  //fin
-  //fin
-  //fin
+  test('GET /api/citas-medicas/:idCita - Retorna una cita médica específica simulada', async () => {
+    const idCita = 'f5581292-15c1-4d8a-9295-46f72df39b78';
+    const respuesta = await request(app.server).get(`/api/citas-medicas/${idCita}`);
+    expect(respuesta.status).toBe(200);
+    expect(respuesta.body).toEqual({
+      mensaje: 'Cita encontrada',
+      citaEncontrada: {
+        idCita: 'f5581292-15c1-4d8a-9295-46f72df39b78',
+        paciente: 'Juan Pérez',
+        tipoDocPaciente: 'Cédula',
+        numeroDocPaciente: '100001',
+        medico: 'Carlos Rodríguez',
+        ubicacion: 'Edificio E, Piso 3',
+        consultorio: 'C101',
+        fecha: '2025-11-25T05:00:00.000Z',
+        horaInicio: '08:00:00',
+        codigoEstadoCita: 1,
+        estadoCita: 'Activa',
+        idCitaAnterior: null,
+      },
+    });
+  });
+
+  test('GET /api/citas-medicas/:idCita - Retorna 404 como error si no existe', async () => {
+    const idCitaFalso = 'f5581292-15c1-4d8a-9295-46f72df39b79';
+    const respuesta = await request(app.server).get(`/api/citas-medicas/${idCitaFalso}`);
+    expect(respuesta.status).toBe(404);
+    expect(respuesta.body).toEqual({
+      mensaje: 'La cita solicita no existe en el sistema',
+      codigoInterno: 'CITA001',
+    });
+  });
 });
