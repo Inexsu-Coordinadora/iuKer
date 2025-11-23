@@ -1,12 +1,12 @@
 import { describe, expect, jest } from '@jest/globals';
 
-jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepositorio.ts', () => {
+jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepositorio.js', () => {
   return {
     CitasMedicasRepositorio: jest.fn().mockImplementation(() => ({
       obtenerCitas: async (limite?: number) => {
         const datosSimulados = [
           {
-            idCita: '375e4693-9c52-42ff-80ef-e7be09e5a0b8',
+            idCita: '94435d4c-4c12-49b5-8c55-2dbef3b9d2a8',
             paciente: 'Juan Pérez',
             tipoDocPaciente: 'Cédula',
             numeroDocPaciente: '100001',
@@ -67,9 +67,9 @@ jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepo
       },
 
       obtenerCitaPorId: async (idCita: string) => {
-        if (idCita === '375e4693-9c52-42ff-80ef-e7be09e5a0b8') {
+        if (idCita === '94435d4c-4c12-49b5-8c55-2dbef3b9d2a8') {
           return {
-            idCita: '375e4693-9c52-42ff-80ef-e7be09e5a0b8',
+            idCita: '94435d4c-4c12-49b5-8c55-2dbef3b9d2a8',
             paciente: 'Juan Pérez',
             tipoDocPaciente: 'Cédula',
             numeroDocPaciente: '100001',
@@ -86,14 +86,14 @@ jest.mock('../../src/core/infraestructura/repositorios/postgres/CitasMedicasRepo
         return null;
       },
 
-      eliminarCita: async (id: string) => (id === '375e4693-9c52-42ff-80ef-e7be09e5a0b8' ? true : false),
+      eliminarCita: async (id: string) => (id === '94435d4c-4c12-49b5-8c55-2dbef3b9d2a8' ? true : false),
     })),
   };
 });
 
 import request from 'supertest';
-import { app } from '../../src/core/infraestructura/app';
-import { pool } from '../../src/core/infraestructura/repositorios/postgres/clientePostgres';
+import { app } from '../../src/core/infraestructura/app.js';
+import { pool } from '../../src/core/infraestructura/repositorios/postgres/clientePostgres.js';
 
 describe('Pruebas de integración - Módulo citas medicas', () => {
   beforeAll(async () => {
@@ -115,13 +115,13 @@ describe('Pruebas de integración - Módulo citas medicas', () => {
   });
 
   test('GET /api/citas-medicas/:idCita - Retorna una cita médica específica simulada', async () => {
-    const idCita = '375e4693-9c52-42ff-80ef-e7be09e5a0b8';
+    const idCita = '94435d4c-4c12-49b5-8c55-2dbef3b9d2a8';
     const respuesta = await request(app.server).get(`/api/citas-medicas/${idCita}`);
     expect(respuesta.status).toBe(200);
     expect(respuesta.body).toEqual({
       mensaje: 'Cita encontrada',
       citaEncontrada: {
-        idCita: '375e4693-9c52-42ff-80ef-e7be09e5a0b8',
+        idCita: '94435d4c-4c12-49b5-8c55-2dbef3b9d2a8',
         paciente: 'Juan Pérez',
         tipoDocPaciente: 'Cédula',
         numeroDocPaciente: '100001',
@@ -148,12 +148,12 @@ describe('Pruebas de integración - Módulo citas medicas', () => {
   });
 
   test('DELETE /api/citas-medicas/eliminacion/:idCita - Elimina la cita correctamente', async () => {
-    const idCita = '375e4693-9c52-42ff-80ef-e7be09e5a0b8';
+    const idCita = '94435d4c-4c12-49b5-8c55-2dbef3b9d2a8';
     const respuesta = await request(app.server).delete(`/api/citas-medicas/eliminacion/${idCita}`);
     expect(respuesta.status).toBe(200);
     expect(respuesta.body).toEqual({
       mensaje: 'Cita eliminada correctamente',
-      idCita: '375e4693-9c52-42ff-80ef-e7be09e5a0b8',
+      idCita: '94435d4c-4c12-49b5-8c55-2dbef3b9d2a8',
     });
   });
 

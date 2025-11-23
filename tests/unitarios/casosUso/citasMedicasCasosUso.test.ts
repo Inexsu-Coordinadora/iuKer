@@ -1,8 +1,8 @@
 import { describe, expect, beforeEach, jest } from '@jest/globals';
-import { CitasMedicasCasosUso } from '../../../src/core/aplicacion/citaMedica/CitasMedicasCasosUso';
-import { ICitasMedicasRepositorio } from '../../../src/core/dominio/citaMedica/ICitasMedicasRepositorio';
-import { CitaMedicaRespuestaDTO } from '../../../src/core/infraestructura/repositorios/postgres/dtos/CitaMedicaRespuestaDTO';
-import { CodigosDeError } from '../../../src/core/dominio/errores/codigosDeError.enum';
+import { CitasMedicasCasosUso } from '../../../src/core/aplicacion/citaMedica/CitasMedicasCasosUso.js';
+import { ICitasMedicasRepositorio } from '../../../src/core/dominio/citaMedica/ICitasMedicasRepositorio.js';
+import { CitaMedicaRespuestaDTO } from '../../../src/core/infraestructura/repositorios/postgres/dtos/CitaMedicaRespuestaDTO.js';
+import { CodigosDeError } from '../../../src/core/dominio/errores/codigosDeError.enum.js';
 
 describe('Pruebas unitarias CitasMedicasCasosUso', () => {
   let citasMedicasRepoMock: jest.Mocked<ICitasMedicasRepositorio>;

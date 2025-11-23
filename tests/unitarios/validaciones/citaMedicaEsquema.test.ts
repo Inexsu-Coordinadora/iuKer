@@ -1,4 +1,4 @@
-import { crearCitaMedicaEsquema } from '../../../src/core/infraestructura/esquemas/citaMedicaEsquema';
+import { crearCitaMedicaEsquema } from '../../../src/core/infraestructura/esquemas/citaMedicaEsquema.js';
 describe('Validación crearCitaMedicaEsquema', () => {
   const dtoBase = {
     medico: 'MED123',
