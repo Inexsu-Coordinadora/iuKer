@@ -83,10 +83,22 @@ export class MedicosRepositorio implements IMedicosRepositorio {
         parametros.push(tarjetaProfesional);
 
         const query =`
-        UPDATE medicos
+        UPDATE medicos m
         SET ${setClause}
+        FROM tipo_documentos tp
         WHERE tarjeta_profesional = $${parametros.length}
-        RETURNING *;
+        AND tp.id_documento = m.tipo_doc
+        RETURNING
+        m.tarjeta_profesional AS "tarjetaProfesional",
+        tp.descripcion AS "tipoDoc",
+        m.numero_doc AS "numeroDoc",
+        m.nombre,
+        m.apellido,
+        m.fecha_nacimiento AS "fechaNacimiento",
+        m.sexo,
+        m.especialidad,
+        m.email,
+        m.telefono;
         `;
 
         const resultado = await ejecutarConsulta(query, parametros);

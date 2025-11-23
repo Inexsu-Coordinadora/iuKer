@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Sistema de gestión clínica con validaciones y operaciones CRUD",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/index.js",
@@ -18,7 +19,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/Inexsu-Coordinadora/iuKer/issues"
   },
