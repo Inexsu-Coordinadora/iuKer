@@ -30,11 +30,16 @@ npm list
 
 En tu terminal veras la lista de dependencias, deben coinicidir con la siguiente
 <pre>
+├── @types/jest@30.0.0
 ├── @types/node@24.9.2
 ├── @types/pg@8.15.6
+├── @types/supertest@6.0.3
 ├── dotenv@17.2.3
 ├── fastify@5.6.1
+├── jest@30.2.0
 ├── pg@8.16.3
+├── supertest@7.1.4
+├── ts-jest@29.4.5
 ├── tsx@4.20.6
 ├── typescript@5.9.3
 └── zod@4.1.12
@@ -86,6 +91,40 @@ npm start
 ```
 
 ---
+
+## 7️⃣ Ejecuta los tests automatizados
+
+En este proyecto se configuraron pruebas unitarias y de integración usando Jest y Supertest, ejecutadas con Node en modo `--experimental-vm-modules` para soportar módulos ES.  
+Los scripts de prueba están definidos en el archivo `package.json`, por lo que puedes ejecutarlos directamente con `npm test`.
+
+### 7.1 Requisitos previos para los tests
+
+Antes de correr los tests, asegúrate de que:
+
+- Ya instalaste todas las dependencias con:
+```bash
+npm install
+```
+- Tu archivo `.env` está configurado correctamente (puedes reutilizar el mismo `.env` de desarrollo o uno específico para testing).
+- Tienes la base de datos creada: Ya ejecutaste las migraciones y scripts de creacion e inserción de la carpeta `/migraciones`.
+
+### 7.2 Ejecutar todas las pruebas una vez
+
+Para ejecutar el conjunto completo de pruebas unitarias e integración una sola vez:
+```bash
+npm test
+```
+
+Este comando ejecuta Jest con el siguiente script interno:
+```bash
+node --experimental-vm-modules node_modules/jest/bin/jest.js
+```
+### 7.3 Interpretar los resultados
+
+- Si todas las pruebas pasan, verás un resumen con el número total de tests ejecutados y el detalle por archivo.
+- Si alguna prueba falla, Jest mostrará el mensaje de error, el archivo y el test específico que falló para facilitar la depuración.
+- Revisa los porcentajes de **Statements**, **Branches**, **Functions** y **Lines** para validar que se cumple el objetivo de cobertura definido para el sprint.
+
 
 <a id="erroresDependencias"></a>
 # ⚠️ Errores
