@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/Inexsu-Coordinadora/iuKer#readme",
   "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "cors": "^2.8.5",
     "dotenv": "17.2.3",
     "fastify": "5.6.1",
     "pg": "8.16.3",

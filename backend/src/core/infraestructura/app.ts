@@ -7,8 +7,13 @@ import { construirMedicosEnrutador } from './rutas/medicosEnrutador.js';
 import { construirConsultorioEnrutador } from './rutas/consultoriosEnrutador.js';
 import { construirAsignacionesEnrutador } from '../infraestructura/rutas/asignacionesEnrutador.js';
 import { manejadorGlobalDeErrores } from './controladores/manejoGlobalDeErrores.js';
+import cors from '@fastify/cors';
 
 export const app = Fastify({ logger: true });
+
+app.register(cors, {
+  origin: 'http://localhost:5173'
+});
 
 // Traducción de ErrorDeAplicacion a respuestas HTTP.
 app.setErrorHandler(manejadorGlobalDeErrores);
