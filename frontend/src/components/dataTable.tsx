@@ -140,7 +140,7 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
     };
 
     setFormData({
-      medico: cita.medico,
+      medico: '',
       tipoDocPaciente: tipoDocMap[cita.tipoDocPaciente] || '1',
       numeroDocPaciente: cita.numeroDocPaciente,
       fecha: cita.fecha.split('T')[0], // Formatear fecha para input type="date"
