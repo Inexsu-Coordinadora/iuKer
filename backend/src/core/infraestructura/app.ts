@@ -11,8 +11,16 @@ import cors from '@fastify/cors';
 
 export const app = Fastify({ logger: true });
 
+// app.register(cors, {
+//   origin: 'http://localhost:5173'
+// });
 app.register(cors, {
-  origin: 'http://localhost:5173'
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Agregar los métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
+  credentials: true,
+  preflight: true, // Importante para manejar preflight requests
+  strictPreflight: false,
 });
 
 // Traducción de ErrorDeAplicacion a respuestas HTTP.
