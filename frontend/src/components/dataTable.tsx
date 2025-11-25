@@ -36,6 +36,8 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
   const [searchId, setSearchId] = useState<string>('');
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [currentCitaId, setCurrentCitaId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     medico: '',
     tipoDocPaciente: '',
@@ -125,9 +127,27 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
   };
 
   // Manejar reagendamiento
-  const handleReagendar = async (cita: CitaMedica) => {
-    console.log('Reagendar cita:', cita);
-    alert(`Reagendar cita: ${cita.idCita}`);
+  const handleReagendar = (cita: CitaMedica) => {
+    setIsEditing(true);
+    setCurrentCitaId(cita.idCita);
+
+    // Prellenar el formulario con los datos actuales
+    const tipoDocMap: { [key: string]: string } = {
+      CC: '1',
+      CE: '2',
+      PA: '3',
+      TI: '4',
+    };
+
+    setFormData({
+      medico: cita.medico,
+      tipoDocPaciente: tipoDocMap[cita.tipoDocPaciente] || '1',
+      numeroDocPaciente: cita.numeroDocPaciente,
+      fecha: cita.fecha.split('T')[0], // Formatear fecha para input type="date"
+      horaInicio: cita.horaInicio,
+    });
+
+    setShowModal(true);
     setOpenMenuId(null);
   };
 
@@ -150,6 +170,8 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
 
   // Abrir modal para agendar cita
   const handleOpenModal = () => {
+    setIsEditing(false);
+    setCurrentCitaId(null);
     setShowModal(true);
     setFormData({
       medico: '',
@@ -163,6 +185,8 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
   // Cerrar modal
   const handleCloseModal = () => {
     setShowModal(false);
+    setIsEditing(false);
+    setCurrentCitaId(null);
   };
 
   // Manejar cambios en el formulario
@@ -174,8 +198,8 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
     }));
   };
 
-  // Agendar nueva cita
-  const handleAgendarCita = async (e: React.FormEvent) => {
+  // Agendar o reagendar cita
+  const handleSubmitCita = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (
@@ -198,13 +222,21 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
         horaInicio: formData.horaInicio,
       };
 
-      await axios.post(baseUrl, payload);
-      alert('Cita agendada exitosamente');
+      if (isEditing && currentCitaId) {
+        // Reagendar (PUT)
+        await axios.put(`${baseUrl}/reprogramacion/${currentCitaId}`, payload);
+        alert('Cita reagendada exitosamente');
+      } else {
+        // Agendar nueva (POST)
+        await axios.post(baseUrl, payload);
+        alert('Cita agendada exitosamente');
+      }
+
       handleCloseModal();
       await fetchAllCitas();
     } catch (err) {
-      console.error('Error al agendar la cita:', err);
-      alert('Error al agendar la cita');
+      console.error('Error al procesar la cita:', err);
+      alert(`Error al ${isEditing ? 'reagendar' : 'agendar'} la cita`);
     }
   };
 
@@ -377,13 +409,15 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
         {/* Footer */}
         <div className='text-center mt-8 text-sm text-gray-500'>Copyright © 2025 iuKer®</div>
 
-        {/* Modal para agendar cita */}
+        {/* Modal para agendar/reagendar cita */}
         {showModal && (
           <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
             <div className='bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto'>
               {/* Header del modal */}
               <div className='p-6 border-b' style={{ borderColor: primaryColor }}>
-                <h2 className='text-2xl font-semibold text-gray-800'>Agendar Nueva Cita</h2>
+                <h2 className='text-2xl font-semibold text-gray-800'>
+                  {isEditing ? 'Reagendar Cita' : 'Agendar Nueva Cita'}
+                </h2>
               </div>
 
               {/* Formulario */}
@@ -473,11 +507,11 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
                   Cancelar
                 </button>
                 <button
-                  onClick={handleAgendarCita}
+                  onClick={handleSubmitCita}
                   className='px-6 py-2 text-white rounded-lg hover:opacity-90 transition-opacity'
                   style={{ backgroundColor: primaryColor }}
                 >
-                  Agendar Cita
+                  {isEditing ? 'Reagendar Cita' : 'Agendar Cita'}
                 </button>
               </div>
             </div>
