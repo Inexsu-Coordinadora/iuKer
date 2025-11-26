@@ -105,6 +105,7 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
   // Cargar datos al montar el componente
   useEffect(() => {
     fetchAllCitas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Cerrar menú al hacer clic fuera
@@ -350,7 +351,7 @@ const DataTable: React.FC<DataTableProps> = ({ baseUrl, title, primaryColor }) =
                         }`}
                         style={{ borderColor: index !== data.length - 1 ? primaryColor : 'transparent' }}
                       >
-                        <td className='px-6 py-4 text-sm text-gray-700 font-mono text-xs'>{cita.idCita}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700 font-mono'>{cita.idCita}</td>
                         <td className='px-6 py-4 text-sm text-gray-700'>{cita.paciente}</td>
                         <td className='px-6 py-4 text-sm text-gray-700'>{cita.tipoDocPaciente}</td>
                         <td className='px-6 py-4 text-sm text-gray-700'>{cita.numeroDocPaciente}</td>
