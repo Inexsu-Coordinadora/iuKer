@@ -54,7 +54,7 @@ VALUES
 -- CITAS MÉDICAS
 INSERT INTO citas_medicas (medico, tipo_doc_paciente, numero_doc_paciente, fecha, hora_inicio, estado, id_cita_anterior)
 VALUES
-('MP001', 1, '100001', '2025-11-25', '08:00', 1, NULL),
-('MP002', 3, '100002', '2025-11-25', '09:00', 1, NULL),
+('MP001', 1, '100001', '2025-12-23', '08:00', 1, NULL),
+('MP002', 3, '100002', '2025-12-23', '09:00', 1, NULL),
 ('MP003', 2, '100003', '2025-11-28', '10:30', 1, NULL),
 ('MP004', 4, '100004', '2025-11-29', '14:00', 1, NULL);
