@@ -1,27 +1,39 @@
 import { IConsultaCitasPacienteCasosUso } from './IConsultaCitasPacienteCasosUso.js';
-import { citaMedicaDTO } from '../../../infraestructura/esquemas/citaMedicaEsquema.js';
-import { IPacientesRepositorio } from '../../../dominio/Paciente/IPacientesRepositorio.js';
-import { CitasRepositorio } from '../../../infraestructura/postgres/CitasRepositorio.js';
+import { IPacientesRepositorio } from '../../../dominio/paciente/IPacientesRepositorio.js';
+import { ICitasMedicasRepositorio } from '../../../dominio/citaMedica/ICitasMedicasRepositorio.js';
+import { crearErrorDeDominio } from '../../../dominio/errores/manejoDeErrores.js';
+import { CodigosDeError } from '../../../dominio/errores/codigosDeError.enum.js';
+import { ConsultaCitasPacienteRespuestaDTO } from '../../../infraestructura/repositorios/postgres/dtos/ConsultaCitasPacienteRespuestaDTO.js';
 
-export class ConsultaPacienteCasosUso implements IConsultaCitasPacienteCasosUso{
-    constructor (private repositorioPacientes : IPacientesRepositorio,
-        private repositorioCitaMedica : CitasRepositorio
-    ) {}
+export class ConsultaPacienteCasosUso
+  implements IConsultaCitasPacienteCasosUso
+{
+  constructor(
+    private pacientesRepositorio: IPacientesRepositorio,
+    private citasMedicasRepositorio: ICitasMedicasRepositorio
+  ) {}
 
-    async ejecutarServicio(numeroDocPaciente : string, limite? : number) : Promise <citaMedicaDTO[]>{
-        const paciente = await this.repositorioPacientes.obtenerPacientePorId(numeroDocPaciente);
+  async ejecutarServicio(
+    numeroDocPaciente: string,
+    limite?: number
+  ): Promise<ConsultaCitasPacienteRespuestaDTO[]> {
+    const paciente = await this.pacientesRepositorio.obtenerPacientePorId(
+      numeroDocPaciente
+    );
 
-        if(!paciente){
-            throw new Error(`El paciente con documento '${numeroDocPaciente}' no existe`);
-        }
-
-        const citasPorPaciente = await this.repositorioCitaMedica.obtenerCitasPorPaciente(numeroDocPaciente, limite);
-        
-        if(limite){
-            return citasPorPaciente.slice(0,limite);
-        }
-        return citasPorPaciente;
-
+    if (!paciente) {
+      throw crearErrorDeDominio(CodigosDeError.PACIENTE_NO_EXISTE);
     }
-    
+
+    const citasPorPaciente =
+      await this.citasMedicasRepositorio.obtenerCitasPorPaciente(
+        numeroDocPaciente,
+        limite
+      );
+
+    if (limite) {
+      return citasPorPaciente.slice(0, limite);
+    }
+    return citasPorPaciente;
+  }
 }

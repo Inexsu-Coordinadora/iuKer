@@ -1,22 +1,26 @@
 import Fastify from 'fastify';
 import { FastifyError } from 'fastify';
 import { configuracion } from '../../common/configuracion.js';
-import { construirCitasEnrutados } from './rutas/citasMedicasEnrutador.js';
+import { construirCitasEnrutador } from './rutas/citasMedicasEnrutador.js';
 import { construirPacientesEnrutador } from './rutas/pacientesEnrutador.js';
 import { construirMedicosEnrutador } from './rutas/medicosEnrutador.js';
 import { construirConsultorioEnrutador } from './rutas/consultoriosEnrutador.js';
-import { construirAsignacionEnrutador } from '../infraestructura/rutas/asignacionEnrutador.js';
+import { construirAsignacionesEnrutador } from '../infraestructura/rutas/asignacionesEnrutador.js';
+import { manejadorGlobalDeErrores } from './controladores/manejoGlobalDeErrores.js';
 
-const app = Fastify({ logger: true });
+export const app = Fastify({ logger: true });
+
+// Traducción de ErrorDeAplicacion a respuestas HTTP.
+app.setErrorHandler(manejadorGlobalDeErrores);
 
 app.register(
   async (appInstance) => {
     construirConsultorioEnrutador(appInstance);
-    construirCitasEnrutados(appInstance);
+    construirCitasEnrutador(appInstance);
     construirMedicosEnrutador(appInstance);
     construirPacientesEnrutador(appInstance);
     //Servicios
-    construirAsignacionEnrutador(appInstance);
+    construirAsignacionesEnrutador(appInstance);
   },
   { prefix: '/api' }
 );
